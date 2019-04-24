@@ -1,8 +1,10 @@
 var React = require('react');
 
+import styles from './style.css';
+
 class Greeting extends React.Component {
   render(){
-    return <h1>Hello World Today!</h1>;
+    return <div class={styles.box}>Hello World Today!</div>;
   }
 }
 
