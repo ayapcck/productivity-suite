@@ -10,15 +10,17 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /nodue_modules/,
+        exclude: /node_modules/,
         loader: 'babel-loader'
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         loader: 'style-loader'
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         loader: 'css-loader',
         query: {
           modules: true,
