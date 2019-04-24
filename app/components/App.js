@@ -1,9 +1,9 @@
 var React = require('react');
 
-class Greeting extends React.Component {
+import styles from './style.css';
+
+export default class Greeting extends React.Component {
   render(){
-    return <h1>Hello World Today!</h1>;
+    return <div class={styles.box}>Hello World Today!</div>;
   }
 }
-
-module.exports = Greeting;
