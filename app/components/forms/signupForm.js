@@ -1,8 +1,9 @@
 var React = require('react');
 
 import InputBox from './inputBox.js';
+import FormButton from './button.js';
 
-import styles from './loginForm.css';
+import styles from './form.css';
 
 export default class SignupForm extends React.Component {
   render() {
@@ -12,6 +13,7 @@ export default class SignupForm extends React.Component {
 		<InputBox text="Email" />
 		<InputBox text="Password"  type="password" />
 		<InputBox text="Confirm Password" type="password" />
+		<FormButton text="Submit" />
 	</div>
 	return signupForm;
   }

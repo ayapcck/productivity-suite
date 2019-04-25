@@ -44,8 +44,8 @@ export default class App extends React.Component {
 };
 
 const RedirectLink = ({text, onClick}) => (
-	<React.Fragment>
+	<div className={styles.textContainer}>
 		<h4 className={styles.formText}>{text}</h4>
 		<h4 className={classnames(styles.redirectLink, styles.formText)} onClick={onClick}>Click Here</h4>
-	</React.Fragment>
+	</div>
 );

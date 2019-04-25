@@ -1,6 +1,6 @@
 var React = require('react');
 
-import styles from './loginForm.css';
+import styles from './form.css';
 
 export default class InputBox extends React.Component {
 	render() {

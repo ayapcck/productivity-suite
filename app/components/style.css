@@ -5,12 +5,16 @@
 	grid-template-rows: 20% auto 20%;
 }
 
+.formText {
+	text-align: center;
+	margin: 0;
+}
+
 .redirectLink {
 	clickable: true;
 	cursor: pointer;
 }
 
-.formText {
-	text-align: center;
-	margin: 0;
+.textContainer {
+	margin: auto 0 5% 0;
 }
