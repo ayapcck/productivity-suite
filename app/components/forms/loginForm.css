@@ -1,10 +1,17 @@
-.loginForm {
-	padding: 10px;
+.form {
+	padding: 0 10%;
+	margin: 0 auto;
+}
+
+.formTitle {
+	text-align: center;
+	margin: 0;
+	padding: 15px 0;
 }
 
 .inputBox {
-	height: 15%;
-	width: 70%;
+	line-height: 2;
+	width: -webkit-fill-available;
 	box-sizing: border-box;
 	background-color: #ffffff;
 }
