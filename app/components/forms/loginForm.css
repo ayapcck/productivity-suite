@@ -1,0 +1,18 @@
+.loginForm {
+	padding: 10px;
+}
+
+.inputBox {
+	height: 15%;
+	width: 70%;
+	box-sizing: border-box;
+	background-color: #ffffff;
+}
+
+.inputLabel {
+	margin: 0;
+}
+
+.inputContainer {
+	padding: 5px;
+}

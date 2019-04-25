@@ -5,7 +5,7 @@ import styles from './centerPanel.css';
 export default class CenterPanel extends React.Component {
   render() {
     var centeredPanel = <div className={styles.centeredBox}>
-		Hello
+		{this.props.content}
 	</div>
 	return centeredPanel;
   }
