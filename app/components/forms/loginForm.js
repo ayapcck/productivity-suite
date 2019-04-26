@@ -9,8 +9,8 @@ export default class LoginForm extends React.Component {
   render() {
     var loginForm = <div className={styles.form}>
 		<h1 className={styles.formTitle}>Log In</h1>
-		<InputBox text="Username" />
-		<InputBox text="Password"  type="password" />
+		<InputBox text="Username" name="loginUsername"/>
+		<InputBox text="Password" name="loginPassword" type="password" />
 		<FormButton text="Submit" />
 	</div>
 	return loginForm;
