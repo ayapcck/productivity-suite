@@ -36,7 +36,7 @@ export default class Tooltip extends React.Component {
 			className={classnames(styles.tooltip, styles.top)}>
 			
 			<div className={styles.tooltipArrow} />
-			<div className={styles.tooltipLabel}>TooltipComponent</div>
+			<div className={styles.tooltipLabel}>{this.props.tooltipText}</div>
 		</div>
 		return tooltip;
 	}
