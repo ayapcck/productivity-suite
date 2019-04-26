@@ -39,13 +39,26 @@ export default class InputBox extends React.Component {
 	}
 	
 	render() {
+		var inputBoxProperties = {
+			name: this.props.name,
+			type: this.props.type,
+			className: styles.inputBox,
+			placeholder: this.props.text,
+			onMouseEnter: this.tooltipOn,
+			onMouseMove: this.updateTooltip,
+			onMouseLeave: this.tooltipOff,
+			onChange: this.props.onChange,
+			pattern: this.props.pattern
+		}
 		var returnBox = <div className={styles.inputContainer}>
 			{ this.props.tooltipText != "" && this.state.showTooltip && 
 			<Tooltip top={this.state.boxY} left={this.state.mouseX} 
 				name={this.props.name + "Tooltip"} tooltipText={this.props.tooltipText} /> }
-			<input name={this.props.name} type={this.props.type} className={styles.inputBox} placeholder={this.props.text} 
-				onMouseEnter={this.tooltipOn} onMouseMove={this.updateTooltip} onMouseLeave={this.tooltipOff} 
-				onChange={this.props.onChange} />
+			{this.props.required ? 
+				<input {...inputBoxProperties} required /> : 
+				<input {...inputBoxProperties} />
+			}
+			
 		</div>
 		return returnBox;
 	}
