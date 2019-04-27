@@ -3,6 +3,8 @@ body, html {
 	margin: 0;
 }
 
-.mainContent {
+.loginContainer {
 	height: 100%;
+	width: 100%;
+	position: absolute;
 }
