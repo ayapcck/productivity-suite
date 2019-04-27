@@ -1,0 +1,40 @@
+.form {
+	padding: 5% 10% 5% 10%;
+}
+
+.formButton {
+	width: 25%;
+	border: 2px solid black;
+	border-radius: 15px;
+	margin: 5px auto;
+	text-align: center;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+.formButton:hover {
+	background-color: #ff0000;
+}
+.formButton:active {
+	background-color: #0000ff;
+}
+
+.formTitle {
+	text-align: center;
+	margin: 0;
+	padding: 0 0 10px 0;
+}
+
+.inputBox {
+	line-height: 2;
+	width: -webkit-fill-available;
+	box-sizing: border-box;
+	background-color: #ffffff;
+}
+
+.inputLabel {
+	margin: 0;
+}
+
+.inputContainer {
+	padding: 5px;
+}
