@@ -20,10 +20,25 @@ export default class SignupForm extends React.Component {
   
   handleSubmit(e) {
 	e.preventDefault();
-	var text="Username: " + e.target[0].value;
-	var text1="Email: " + e.target[1].value;
-	var text2="Password: " + e.target[2].value;
-	var text3="Confirm Password: " + e.target[3].value;
+	var username="Username: " + e.target[0].value;
+	var email="Email: " + e.target[1].value;
+	var password="Password: " + e.target[2].value;
+	var confirmPassword="Confirm Password: " + e.target[3].value;
+	
+	var headers = new Headers()
+	var fetchOptions = {
+		method: 'Get',
+		headers: headers,
+		mode: 'cors',
+		cache: 'default'
+	}
+	
+	fetch('http://192.168.0.26:5000/viewUsers', fetchOptions)
+		.then(response => {
+			return response.json();
+		}).then(myJson => {
+			alert(JSON.stringify(myJson));
+		})
   }
   
   render() {
