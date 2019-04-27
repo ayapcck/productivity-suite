@@ -9,36 +9,41 @@ export default class SignupForm extends React.Component {
   constructor(props) {
 	super(props);
 	
-	this.state = {
-		username: "",
-		email: "",
-		password: ""
-	}
-	
 	this.handleSubmit = this.handleSubmit.bind(this);
   }
   
-  handleSubmit(e) {
-	e.preventDefault();
-	var username="Username: " + e.target[0].value;
-	var email="Email: " + e.target[1].value;
-	var password="Password: " + e.target[2].value;
-	var confirmPassword="Confirm Password: " + e.target[3].value;
-	
+  postUser(username, email, password) {
 	var headers = new Headers()
 	var fetchOptions = {
-		method: 'Get',
+		method: 'POST',
 		headers: headers,
 		mode: 'cors',
 		cache: 'default'
 	}
 	
-	fetch('http://192.168.0.26:5000/viewUsers', fetchOptions)
+	var url = "http://192.168.0.26:5000/addUser?user=" + username +
+		"&email=" + email + 
+		"&password=" + password + "";
+	
+	fetch(url, fetchOptions)
 		.then(response => {
 			return response.json();
 		}).then(myJson => {
 			alert(JSON.stringify(myJson));
-		})
+		});
+  }
+	
+  
+  handleSubmit(e) {
+	e.preventDefault();
+	var username = e.target[0].value;
+	var email = e.target[1].value;
+	var password = e.target[2].value;
+	var confirmPassword = e.target[3].value;
+	
+	password == confirmPassword ? 
+		this.postUser(username, email, password) : 
+		alert("Not working");
   }
   
   render() {
