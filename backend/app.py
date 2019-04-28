@@ -45,7 +45,7 @@ def addUser():
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
-	response = ""
+	response = Response(json.dumps({'response': 'Account created successfully', 'status': 200}))
 	try:
 		curs.execute(sql)
 		conn.commit()

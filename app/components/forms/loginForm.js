@@ -46,8 +46,8 @@ export default class LoginForm extends React.Component {
     var loginForm = <div className={styles.form}>
 		<h1 className={styles.formTitle}>Log In</h1>
 		<form onSubmit={this.handleSubmit}>
-			<InputBox text="Username" name="loginUsername" tooltipText="Username used to sign up" required={true} />
-			<InputBox text="Password" name="loginPassword" type="password" required={true} />
+			<InputBox text="Username" name="loginUsername" tooltipText="Username used to sign up" requiredField={true} />
+			<InputBox text="Password" name="loginPassword" type="password" requiredField={true} />
 			<FormButton text="Submit" type="submit" />
 		</form>
 	</div>
