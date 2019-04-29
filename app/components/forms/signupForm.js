@@ -37,6 +37,7 @@ export default class SignupForm extends React.Component {
 		.then(response => {
 			return response.json();
 		}).then(myJson => {
+			// TODO: clear form on successful creation
 			alert(JSON.stringify(myJson));
 		});
   }

@@ -22,6 +22,7 @@ def generateResponse(error, user, email):
 	e = str(error[1])
 	status = 400
 	message = e
+	print(e)
 	e = e.lower()
 	if "duplicate" in e:
 		status = 409
@@ -63,8 +64,11 @@ def getUser():
 	conn = mysql.connect()
 	curs = conn.cursor()
 	curs.execute(sql)
-	res = curs.fetchone()
-	return Response(json.dumps(res), mimetype="application/json")
+	sqlRes = curs.fetchone()
+	status = 200
+	if sqlRes == None:
+		status = 404
+	return Response(status=status)
 	
 @app.route('/viewUsers')
 @cross_origin()

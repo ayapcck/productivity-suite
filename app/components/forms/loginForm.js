@@ -2,6 +2,7 @@ var React = require('react');
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
+import { loadJson } from '../utilities/jsonHelpers.js';
 
 import styles from './form.css';
 
@@ -23,14 +24,15 @@ export default class LoginForm extends React.Component {
 	
 	var url = "http://192.168.0.26:5000/getUser?user=" + username + "";
 	
-	fetch(url, fetchOptions)
-		.then(response => {
-			return response.json();
-		}).then(myJson => {
-			var retPassword = myJson[2];
+	loadJson(url, fetchOptions).then(myJsonUser => {
+			var retPassword = myJsonUser[2];
 			password == retPassword ?
 				alert("Logged In") :
-				alert("Incorrect password");
+				alert("Incorrect user/password combination");
+		}).catch(error => {
+			if (error.response.status == 404) {
+				alert("Incorrect user/password combination");
+			}
 		});
   }
   
@@ -39,7 +41,11 @@ export default class LoginForm extends React.Component {
 	var username = e.target[0].value;
 	var password = e.target[1].value;
 	
-	this.getUser(username, password);
+	var emptyValues = username == "" || password == "";
+	
+	emptyValues ? 
+		alert("Please fill in each section") : 
+		this.getUser(username, password);
   }
   
   render() {
