@@ -1,6 +1,6 @@
 class HTTPError extends Error {
 	constructor(response) {
-		super(`${response.status} for ${response.url}`);
+		super(`${response.status}`);
 		this.name = 'HTTPError';
 		this.response = response;
 	}

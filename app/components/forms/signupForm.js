@@ -2,6 +2,8 @@ var React = require('react');
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
+import { loadJson } from '../utilities/jsonHelpers.js';
+import { generateSalt, generateHmac } from '../utilities/validation.js';
 
 import styles from './form.css';
 
@@ -29,17 +31,22 @@ export default class SignupForm extends React.Component {
 		cache: 'default'
 	}
 	
+	var salt = generateSalt(16);
+	var passHash = generateHmac(password, salt);
+	
 	var url = "http://192.168.0.26:5000/addUser?user=" + username +
 		"&email=" + email + 
-		"&password=" + password + "";
+		"&password=" + password + 
+		"&salt=" + salt + "";
 	
-	fetch(url, fetchOptions)
-		.then(response => {
-			return response.json();
-		}).then(myJson => {
-			// TODO: clear form on successful creation
-			alert(JSON.stringify(myJson));
-		});
+	loadJson(url, fetchOptions).then(jsonResponse => {
+		alert("Created successfully");
+		// TODO: clear form on success
+	}).catch(error => {
+		if (error.response.status == 409) {
+			alert(error);
+		}
+	});
   }
 	
   clearError(e) {

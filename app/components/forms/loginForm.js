@@ -3,6 +3,7 @@ var React = require('react');
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
 import { loadJson } from '../utilities/jsonHelpers.js';
+import { generateHmac } from '../utilities/validation.js';
 
 import styles from './form.css';
 
@@ -25,8 +26,9 @@ export default class LoginForm extends React.Component {
 	var url = "http://192.168.0.26:5000/getUser?user=" + username + "";
 	
 	loadJson(url, fetchOptions).then(myJsonUser => {
-			var retPassword = myJsonUser[2];
-			password == retPassword ?
+			var retPassword = myJsonUser[1];
+			var salt = myJsonUser[2];
+			generateHmac(password, salt) == retPassword ?
 				alert("Logged In") :
 				alert("Incorrect user/password combination");
 		}).catch(error => {

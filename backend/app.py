@@ -26,15 +26,7 @@ def generateResponse(error, user, email):
 	e = e.lower()
 	if "duplicate" in e:
 		status = 409
-		message = ""
-		if "user" in e:
-			message = "Duplicate username {} not allowed".format(user)
-		if "email" in e:
-			message = "Duplicate email {} not allowed".format(email)
-	json_reponse = {
-		'response': message, 'status': status
-	}
-	return Response(json.dumps(json_reponse), status=status)
+	return Response(status=status)
 
 @app.route('/addUser', methods=['POST'])
 @cross_origin()
@@ -42,7 +34,8 @@ def addUser():
 	user = request.args.get('user')
 	email = request.args.get('email')
 	password = request.args.get('password')
-	sql = "INSERT INTO " + db_table + " (user, email, pass) VALUES ('" + user + "', '" + email + "', '" + password + "')"
+	salt = request.args.get('salt')
+	sql = "INSERT INTO " + db_table + " (user, email, pass, salt) VALUES ('" + user + "', '" + email + "', '" + password + "', '" + salt + "')"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -59,16 +52,16 @@ def addUser():
 @cross_origin()
 def getUser():
 	user = request.args.get('user')
-	sql = "SELECT * FROM " + db_table + " WHERE user='" + user + "'"
+	sql = "SELECT user, pass, salt FROM " + db_table + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
 	curs.execute(sql)
 	sqlRes = curs.fetchone()
-	status = 200
 	if sqlRes == None:
-		status = 404
-	return Response(status=status)
+		return Response(status=404)
+	else:
+		return Response(json.dumps(sqlRes), mimetype='application/json')
 	
 @app.route('/viewUsers')
 @cross_origin()
