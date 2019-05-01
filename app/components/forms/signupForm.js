@@ -2,8 +2,8 @@ var React = require('react');
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
-import { loadJson } from '../utilities/jsonHelpers.js';
-import { generateSalt, generateHmac } from '../utilities/validation.js';
+import { postJson } from '../utilities/jsonHelpers.js';
+import { generateSalt, generateActivationCode, generateHmac } from '../utilities/validation.js';
 
 import styles from './form.css';
 
@@ -23,28 +23,36 @@ export default class SignupForm extends React.Component {
   }
   
   postUser(username, email, password) {
-	var headers = new Headers()
+	var salt = generateSalt(16);
+	var passHash = generateHmac(password, salt);
+	var activationCode = generateActivationCode();
+	
+	var url = "http://192.168.0.26:5000/addUser";
+	var jsonBody = {
+		user: username,
+		email: email,
+		password: passHash,
+		salt: salt,
+		activationCode: activationCode
+	}
+	
+	var headers = {
+		"Content-Type": "application/json"
+	}
 	var fetchOptions = {
 		method: 'POST',
 		headers: headers,
 		mode: 'cors',
-		cache: 'default'
+		cache: 'default',
+		body: JSON.stringify(jsonBody)
 	}
 	
-	var salt = generateSalt(16);
-	var passHash = generateHmac(password, salt);
-	
-	var url = "http://192.168.0.26:5000/addUser?user=" + username +
-		"&email=" + email + 
-		"&password=" + password + 
-		"&salt=" + salt + "";
-	
-	loadJson(url, fetchOptions).then(jsonResponse => {
+	postJson(url, fetchOptions).then(response => {
 		alert("Created successfully");
 		// TODO: clear form on success
 	}).catch(error => {
 		if (error.response.status == 409) {
-			alert(error);
+			alert("Username already in use");
 		}
 	});
   }

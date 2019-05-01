@@ -1,13 +1,25 @@
 import { HTTPError } from './error.js';
 
-function loadJson(url, options) {
+function fetchWrapper(url, options, type) {
 	return fetch(url, options).then(response => {
 		if (response.status == 200) {
-			return response.json();
+			if (type == 'post') {
+				return response;
+			} else if (type =='get') {
+				return response.json();
+			}
 		} else {
 			throw new HTTPError(response);
 		}
 	});
 }
 
-export { loadJson };
+function postJson(url, options) {
+	return fetchWrapper(url, options, 'post');
+}
+
+function getJson(url, options) {
+	return fetchWrapper(url, options, 'get');
+}
+
+export { getJson, postJson };
