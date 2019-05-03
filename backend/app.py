@@ -1,11 +1,12 @@
-from email_server import sendMessage, returnMailApp
-
 import json
+import os
 import sys
 
 from flask import Flask, Response, request
 from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
+
+from email_server import sendMessage, returnMailApp
 
 app = Flask(__name__)
 mail = returnMailApp(app)
@@ -13,7 +14,7 @@ cors = CORS(app)
 
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Gateway15012@'
+app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['REACT_DATABASE_PASSWORD']
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 app.config['CORS_HEADERS'] = 'Content-Type'

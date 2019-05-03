@@ -1,7 +1,8 @@
-import LoginApp from './components/loginApp/loginApp.js';
-
 var React = require('react');
 var ReactDOM = require('react-dom');
+
+import LoginApp from './components/loginApp/loginApp.js';
+import NavigationBar from './components/navigation/navigationBar.js';
 
 import styles from './index.css';
 
@@ -10,7 +11,7 @@ class IndexPage extends React.Component {
 		super(props);
 		
 		this.state = {
-			showLoginApp: true,
+			showLoginApp: false,
 		}
 		
 		this.toggleLoginApp = this.toggleLoginApp.bind(this);
@@ -26,19 +27,14 @@ class IndexPage extends React.Component {
 	render() {
 		var indexPage = <React.Fragment>
 			{this.state.showLoginApp && <LoginApp onExit={this.toggleLoginApp}/>}
-			<h1 style={{margin: 0}}>This is a title</h1>
-			<ToggleLink text="Want to login?" onClick={this.toggleLoginApp} />
+			<NavigationBar loginToggle={this.toggleLoginApp}/>
+			<div className={styles.bodyContent}>
+				<h1 style={{margin: 0}}>This is a title</h1>
+			</div>
 		</React.Fragment>
 		return indexPage;
 	}
 }
 
-const ToggleLink = ({text, onClick}) => (
-	<div>
-		<h4>{text}</h4>
-		<h4 onClick={onClick}>Click Here</h4>
-	</div>
-);
-
-var containerDiv = document.getElementById('everything');
-ReactDOM.render(<IndexPage />, containerDiv);
+var contentDiv = document.getElementById('content');
+ReactDOM.render(<IndexPage />, contentDiv);

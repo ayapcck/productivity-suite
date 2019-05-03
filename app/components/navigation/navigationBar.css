@@ -1,0 +1,41 @@
+.accountOptions {
+	padding: 0;
+	margin: 0;
+}
+
+.navBarContainer {
+	width: 100%;
+	background-color: #8efbfb;
+	overflow: hidden;
+}
+
+.navOptions {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.menuElement {
+	width: 7%;
+	border-left: 2px solid black;
+	border-bottom: 2px solid black;
+	float: right;
+	line-height: 2;
+	text-align: center;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+.menuElement:hover {
+	background-color: red;
+}
+
+.accountOptions .menuElement {
+	clear: right;
+}
+
+.spacer {
+	width: 86%;
+	box-sizing: border-box;
+	float: right;
+	border-bottom: 2px solid black;
+}
