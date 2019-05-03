@@ -30,7 +30,7 @@ export default class LoginForm extends React.Component {
 			var salt = myJsonUser[2];
 			var active = myJsonUser[3];
 			if (generateHmac(password, salt) == retPassword) {
-				active == 1 ? alert("Logged In") : alert("You need to verify your email");
+				active == 1 ? this.props.onLoginSuccess(username) : alert("You need to verify your email");
 			} else {
 				alert("Incorrect user/password combination")
 			}
@@ -41,6 +41,12 @@ export default class LoginForm extends React.Component {
 		});
   }
   
+  clearForm(e) {
+	[0,1].forEach(i => {
+		e.target[i].value = "";
+	});
+  }
+  
   handleSubmit(e) {
 	e.preventDefault();
 	var username = e.target[0].value;
@@ -48,9 +54,12 @@ export default class LoginForm extends React.Component {
 	
 	var emptyValues = username == "" || password == "";
 	
-	emptyValues ? 
-		alert("Please fill in each section") : 
+	if (!emptyValues) {
+		this.clearForm(e);
 		this.getUser(username, password);
+	} else {
+		alert("Please fill in each section");
+	}
   }
   
   render() {

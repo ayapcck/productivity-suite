@@ -10,12 +10,22 @@ class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.state = {
-			showLoginApp: false,
+		var userLoggedIn;
+		if  (window.sessionStorage.getItem("username")) {
+			userLoggedIn = true;
+		} else {
+			userLoggedIn = false;
 		}
 		
+		this.state = {
+			showLoginApp: false,
+			userLoggedIn: userLoggedIn,
+		}
+		
+		this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
+		this.onLogout = this.onLogout.bind(this);
 		this.toggleLoginApp = this.toggleLoginApp.bind(this);
-	}	
+	}
   
 	// This handles whether the login app itself is visible or not
 	toggleLoginApp() {
@@ -24,10 +34,27 @@ class IndexPage extends React.Component {
 		}));
 	}
 	
+	handleLoginSuccess(user) {
+		window.sessionStorage.setItem("username", user);
+		this.setState({userLoggedIn: true});
+		this.toggleLoginApp();
+	}
+	
+	isLoggedIn() {
+		this.state.loggedInUser ? true : false;
+	}
+	
+	onLogout() {
+		window.sessionStorage.removeItem("username");
+		this.setState({userLoggedIn: false});
+	}
+	
 	render() {
+		var bannerText = this.state.userLoggedIn ? "Welcome, " + window.sessionStorage.getItem("username") : "";
 		var indexPage = <React.Fragment>
-			{this.state.showLoginApp && <LoginApp onExit={this.toggleLoginApp}/>}
-			<NavigationBar loginToggle={this.toggleLoginApp}/>
+			{this.state.showLoginApp && <LoginApp onExit={this.toggleLoginApp} onLoginSuccess={this.handleLoginSuccess} />}
+			<NavigationBar bannerText={bannerText} loginToggle={this.toggleLoginApp} 
+				userLoggedIn={this.state.userLoggedIn} onLogout={this.onLogout} />
 			<div className={styles.bodyContent}>
 				<h1 style={{margin: 0}}>This is a title</h1>
 			</div>

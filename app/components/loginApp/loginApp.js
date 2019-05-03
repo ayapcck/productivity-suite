@@ -36,7 +36,7 @@ export default class LoginApp extends React.Component {
 			content={ 
 				<React.Fragment>
 					<Icon iconClass="far fa-times-circle" onClick={this.props.onExit} />
-					{this.state.showLoginForm ? <LoginForm /> : <SignupForm />}
+					{this.state.showLoginForm ? <LoginForm onLoginSuccess={this.props.onLoginSuccess} /> : <SignupForm />}
 					{this.state.showLoginForm ? 
 						<RedirectLink text="Need an account?" onClick={this.toggleLoginForm} /> : 
 						<RedirectLink text="Already have an account?" onClick={this.toggleLoginForm} />}

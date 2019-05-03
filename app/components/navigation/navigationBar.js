@@ -10,8 +10,9 @@ export default class NavigationBar extends React.Component {
 			accountHovered: false
 		}
 		
-		this.showAccountSettings = this.showAccountSettings.bind(this);
 		this.hideAccountSettings = this.hideAccountSettings.bind(this);
+		this.showAccountSettings = this.showAccountSettings.bind(this);
+		this.loginLogoutClick = this.loginLogoutClick.bind(this);
 	}
 	
 	showAccountSettings() {
@@ -26,6 +27,15 @@ export default class NavigationBar extends React.Component {
 		var navMenuHeight = document.getElementsByName("navMenu")[0].offsetHeight;
 		document.getElementsByName("navSpacer")[0].style.height = navMenuHeight + "px";
 	}
+	
+	loginLogoutClick() {
+		if (this.props.userLoggedIn) {
+			this.hideAccountSettings();
+			this.props.onLogout();
+		} else {
+			this.props.loginToggle();
+		}
+	}
 		
 	render() {
 		var handleHoverSettings = {
@@ -36,7 +46,9 @@ export default class NavigationBar extends React.Component {
 		
 		var accountOptions = <div className={styles.accountOptions} {...handleHoverSettings}>
 			<div className={styles.menuElement} 
-				onClick={this.props.loginToggle}>Login</div>
+				onClick={this.loginLogoutClick}>
+					{this.props.userLoggedIn ? "Logout" : "Login"}
+				</div>
 			<div className={styles.menuElement}>Settings</div>
 		</div>
 		
@@ -47,7 +59,7 @@ export default class NavigationBar extends React.Component {
 					Account
 				</div>
 				<div className={styles.menuElement}>Home</div>
-				<div name="navSpacer" className={styles.spacer}></div>
+				<div name="navSpacer" className={styles.spacer}>{this.props.bannerText}</div>
 			</div>
 			{this.state.accountHovered && accountOptions}
 		</React.Fragment>
