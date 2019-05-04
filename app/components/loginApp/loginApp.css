@@ -1,0 +1,37 @@
+.hidden { visibility: hidden; }
+.visible { visibility: visible; }
+
+.opaqueBackground {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	background-color: #464646;
+	opacity: 0.5;
+	z-index: 100;
+}
+
+.container {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	display: grid;
+	grid-template-columns: 35% auto 35%;
+	grid-template-rows: 20% auto 20%;
+	z-index: 101;
+}
+
+.formText {
+	text-align: center;
+	margin: 0;
+}
+
+.redirectLink {
+	clickable: true;
+	cursor: pointer;
+}
+
+.textContainer {
+	margin: auto 0 5% 0;
+}

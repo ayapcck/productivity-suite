@@ -1,5 +1,5 @@
 .form {
-	padding: 5% 10% 5% 10%;
+	padding: 0 10%;
 }
 
 .formButton {
@@ -29,6 +29,13 @@
 	width: -webkit-fill-available;
 	box-sizing: border-box;
 	background-color: #ffffff;
+	border: 2px solid black;
+	padding: 1px 5px;
+}
+
+.invalid {
+	font-weight: bold;
+	color: red;
 }
 
 .inputLabel {
