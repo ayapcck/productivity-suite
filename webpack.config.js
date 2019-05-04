@@ -5,7 +5,11 @@ var HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
   inject: 'body'
 });
 module.exports = {
-  entry: __dirname + '/app/index.js',
+  mode: 'development',
+  entry: {
+    index: __dirname + '/app/index.js',
+    loginApp: __dirname + '/app/components/loginApp/loginApp.js'
+  },
   module: {
     rules: [
       {
@@ -30,8 +34,22 @@ module.exports = {
     ]
   },
   output: {
-    filename: 'transformed.js',
+    filename: '[name].[contenthash:8].bundle.js',
     path: __dirname + '/build'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "initial",
+        },
+      },
+    },
   },
   plugins: [HTMLWebpackPluginConfig]
 };
