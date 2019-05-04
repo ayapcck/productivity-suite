@@ -1,5 +1,7 @@
 var React = require('react');
 
+import Icon from '../icons/icon.js';
+
 import styles from './navigationBar.css';
 
 export default class NavigationBar extends React.Component {
@@ -36,6 +38,15 @@ export default class NavigationBar extends React.Component {
 			this.props.loginToggle();
 		}
 	}
+	
+	isUserLoggedIn() {
+		return this.props.username != "";
+	}
+	
+	capitalizeUsername() {
+		var user = this.props.username;
+		return user.charAt(0).toUpperCase() + user.slice(1);
+	}
 		
 	render() {
 		var handleHoverSettings = {
@@ -52,14 +63,17 @@ export default class NavigationBar extends React.Component {
 			<div className={styles.menuElement}>Settings</div>
 		</div>
 		
+		var accountOrName = this.isUserLoggedIn() ? this.capitalizeUsername() : "Account";
+		
 		var navigationBar = <React.Fragment>
 			<div name="navMenu" className={styles.navBarContainer}>
 				<div className={styles.menuElement} 
 					{...handleHoverSettings}>
-					Account
+					<Icon iconClass={this.state.accountHovered ? "fas fa-angle-up" : "fas fa-angle-down"}
+						iconText={accountOrName} iconStyles={styles.menuIcon} />
 				</div>
 				<div className={styles.menuElement}>Home</div>
-				<div name="navSpacer" className={styles.spacer}>{this.props.bannerText}</div>
+				<div name="navSpacer" className={styles.spacer}></div>
 			</div>
 			{this.state.accountHovered && accountOptions}
 		</React.Fragment>

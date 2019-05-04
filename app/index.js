@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 
 import LoginApp from './components/loginApp/loginApp.js';
 import NavigationBar from './components/navigation/navigationBar.js';
+import SchedulerApp from './components/scheduler/schedulerApp.js';
 
 import styles from './index.css';
 
@@ -50,14 +51,12 @@ class IndexPage extends React.Component {
 	}
 	
 	render() {
-		var bannerText = this.state.userLoggedIn ? "Welcome, " + window.sessionStorage.getItem("username") : "";
+		var username = this.state.userLoggedIn ? window.sessionStorage.getItem("username") : "";
 		var indexPage = <React.Fragment>
 			{this.state.showLoginApp && <LoginApp onExit={this.toggleLoginApp} onLoginSuccess={this.handleLoginSuccess} />}
-			<NavigationBar bannerText={bannerText} loginToggle={this.toggleLoginApp} 
+			<NavigationBar username={username} loginToggle={this.toggleLoginApp} 
 				userLoggedIn={this.state.userLoggedIn} onLogout={this.onLogout} />
-			<div className={styles.bodyContent}>
-				<h1 style={{margin: 0}}>This is a title</h1>
-			</div>
+			<SchedulerApp />
 		</React.Fragment>
 		return indexPage;
 	}

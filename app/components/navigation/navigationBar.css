@@ -16,17 +16,26 @@
 }
 
 .menuElement {
-	width: 7%;
+	width: 8%;
 	border-left: 2px solid black;
 	border-bottom: 2px solid black;
 	float: right;
-	line-height: 2;
+	padding: 7px 0;
 	text-align: center;
 	cursor: pointer;
 	box-sizing: border-box;
+	background-color: #b8ff9b;
+	user-select: none;
 }
 .menuElement:hover {
-	background-color: red;
+	background-color: #40bdbd;
+	color: white;
+	text-decoration: underline;
+}
+
+.menuIcon {
+	float: none;
+	padding: 0 0 0 5px;
 }
 
 .accountOptions .menuElement {
@@ -34,7 +43,7 @@
 }
 
 .spacer {
-	width: 86%;
+	width: 84%;
 	box-sizing: border-box;
 	float: right;
 	border-bottom: 2px solid black;

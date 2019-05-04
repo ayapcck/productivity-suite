@@ -91,6 +91,12 @@ export default class SignupForm extends React.Component {
 	this.setState({ invalid: invalid });
   }
   
+  clearForm(e) {
+	[0,3].forEach(i => {
+		e.target[i].value = "";
+	});
+  }
+  
   handleSubmit(e) {
 	e.preventDefault();
 	var username = e.target[0].value;
@@ -110,6 +116,7 @@ export default class SignupForm extends React.Component {
 	} else if (password != confirmPassword) {
 		alert("Passwords don't match");
 	} else {
+		this.clearForm(e);
 		this.postUser(username, email, password);
 	}
 	
