@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 
 import classnames from 'classnames';
 
+import InputBox from '../forms/inputBox.js';
 import ToDoElement from './todoElement.js';
 import styles from './schedulerApp.css';
 
@@ -51,6 +52,9 @@ export default class SchedulerApp extends React.Component {
 		
 		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
 				<div className={classnames(styles.gridElement, styles.leftColumn)}>
+					<InputBox text="Title" type="text" name="toDoTitle" />
+					<InputBox text="Time" type="time" name="toDoTime" val="00:00" />
+					<InputBox text="Content" type="area" name="toDoBody" />
 					<AddTodoButton text="Add to-do" onClick={this.addTodoElement} />
 				</div>
 				<div className={classnames(styles.gridElement, styles.middleColumn)}>

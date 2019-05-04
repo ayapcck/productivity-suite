@@ -34,6 +34,7 @@
 	grid-column: 2;
 	border-width: 0 1px;
 	overflow: auto;
+	padding: 5px;
 }
 .rightColumn {
 	grid-column: 3;
@@ -41,7 +42,14 @@
 }
 
 .addbutton {
-	height: 20%;
-	width: 50%;
+	height: 7%;
+	width: 30%;
+	margin: 0 auto;
 	border: 2px solid black;
+	user-select: none;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 25px;
 }
