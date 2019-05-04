@@ -1,6 +1,9 @@
 .accountOptions {
 	padding: 0;
 	margin: 0;
+	width: 8%;
+	position: absolute;
+	right: 0;
 }
 
 .navBarContainer {
@@ -40,6 +43,7 @@
 
 .accountOptions .menuElement {
 	clear: right;
+	width: 100%;
 }
 
 .spacer {

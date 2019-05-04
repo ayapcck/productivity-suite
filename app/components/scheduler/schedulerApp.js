@@ -18,12 +18,20 @@ export default class SchedulerApp extends React.Component {
 		this.addTodoElement = this.addTodoElement.bind(this);
 	}
 	
-	componentDidMount() {
+	updateDimensions() {
 		var headerHeight = document.getElementsByName("navMenu")[0].offsetHeight;
 		var screenHeight = document.documentElement.clientHeight;
 		var schedulerBody = document.getElementsByName("schedulerBody")[0];
 		schedulerBody.style.height = (screenHeight - headerHeight) + "px";
 		schedulerBody.style.top = headerHeight + "px";
+	}
+
+	componentDidMount() {
+		this.updateDimensions();
+		window.addEventListener("resize", this.updateDimensions.bind(this));
+	}
+	componentWillUnmount() {
+		window.removeEventListener("resize", this.updateDimensions.bind(this));
 	}
 	
 	addTodoElement() {
