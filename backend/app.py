@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
 
 from email_server import sendMessage, returnMailApp
+from scheduler_app import fetchTodoElementsFrom, insertTodoElementIn
 
 app = Flask(__name__)
 mail = returnMailApp(app)
@@ -20,7 +21,7 @@ app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 app.config['CORS_HEADERS'] = 'Content-Type'
 mysql.init_app(app)
 
-db_table = 'loginUsers'
+user_table = 'loginUsers'
 
 def generateResponse(error):
 	e = str(error[1])
@@ -44,7 +45,7 @@ def sendValidationEmail(activationCode):
 def validateUser():
 	user = request.args.get('user')
 	activationCode = request.args.get('activationCode')
-	sql = "SELECT hash, active FROM " + db_table + " WHERE user='" + user + "'"
+	sql = "SELECT hash, active FROM " + user_table + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -58,7 +59,7 @@ def validateUser():
 		print("hash: " + resHash)
 		print("active: " + str(resActive))
 		if (resActive == 0 and activationCode == resHash ):
-			sql = "UPDATE " + db_table + " SET active=1 WHERE user='" + user + "' AND hash='" + activationCode + "' AND active=0"
+			sql = "UPDATE " + user_table + " SET active=1 WHERE user='" + user + "' AND hash='" + activationCode + "' AND active=0"
 			try:
 				curs.execute(sql)
 				conn.commit()
@@ -77,7 +78,7 @@ def addUser():
 	password = responseData['password']
 	salt = responseData['salt']
 	activationCode = responseData['activationCode']
-	sql = "INSERT INTO " + db_table + " (user, email, pass, salt, hash, active) VALUES ('" + user + "', '" + email + "', '" + password + "', '" + salt + "', '" + activationCode + "', 0)"
+	sql = "INSERT INTO " + user_table + " (user, email, pass, salt, hash, active) VALUES ('" + user + "', '" + email + "', '" + password + "', '" + salt + "', '" + activationCode + "', 0)"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -96,7 +97,7 @@ def addUser():
 @cross_origin()
 def getUser():
 	user = request.args.get('user')
-	sql = "SELECT user, pass, salt, active FROM " + db_table + " WHERE user='" + user + "'"
+	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -107,19 +108,23 @@ def getUser():
 	else:
 		return Response(json.dumps(sqlRes), mimetype='application/json')
 	
-@app.route('/viewUsers')
+@app.route('/retrieveTodos')
 @cross_origin()
-def viewUsers():
-	sql = "SELECT * FROM " + db_table + ""
-	
+def retrieveTodos():
+	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
 	conn = mysql.connect()
-	curs = conn.cursor()
-	curs.execute(sql)
-	res = curs.fetchall()
-	users = []
-	for x in res:
-		users.append(x[1])
-	return Response(json.dumps(users), mimetype="application/json")
+	return fetchTodoElementsFrom('ayapcck', conn.cursor())
+
+@app.route('/addTodo')
+@cross_origin()
+def addTodo():
+	responseData = json.loads(request.data)
+	title = responseData['title']
+	content = responseData['content']
+	datetime = responseData['datetime']
+	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
+	conn = mysql.connect()
+	return insertTodoElementIn('ayapcck', conn.cursor(), title, content, datetime)
 	
 @app.route('/testMessage')
 @cross_origin()

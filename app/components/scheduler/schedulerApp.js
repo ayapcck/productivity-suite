@@ -13,8 +13,8 @@ export default class SchedulerApp extends React.Component {
 		super(props);
 		
 		this.state = {
-			numberTodo: 1,
-			elementDicts: [{title: "Testing Element", text: "Seeing how this looks"}]
+			numberTodo: 0,
+			elementDicts: []
 		}
 		
 		this.addTodoElement = this.addTodoElement.bind(this);
