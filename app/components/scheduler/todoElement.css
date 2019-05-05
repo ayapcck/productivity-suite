@@ -5,8 +5,30 @@
 	border-width: 1px;
 	box-sizing: border-box;
 	display: grid;
-	grid-template-rows: 50% 50%;
+	grid-template-rows: 35% 65%;
+	grid-template-columns: 80% 20%;
 	border-radius: 25px;
-	padding: 0 10px;
+	padding: 0 15px;
 	margin: 2.5px 0;
+}
+
+.todoPiece {
+	margin: 0;
+	padding: 5px;
+}
+
+.elementTitle{
+	grid-row: 1;
+}
+.elementText{
+	grid-row: 2;
+}
+.elementDate{
+	grid-column: 2;
+	text-align: right;
+}
+.elementTime{
+	grid-column: 2;
+	grid-row: 2;
+	text-align: right;
 }

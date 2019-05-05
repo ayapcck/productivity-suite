@@ -43,7 +43,7 @@ export default class InputBox extends React.Component {
 	render() {
 		var inputProperties = {
 			name: this.props.name,
-			value: this.props.val,
+			defaultValue: this.props.val,
 			placeholder: this.props.text,
 			onMouseEnter: this.tooltipOn,
 			onMouseMove: this.updateTooltip,

@@ -4,6 +4,7 @@ var ReactDOM = require('react-dom');
 import classnames from 'classnames';
 
 import InputBox from '../forms/inputBox.js';
+import FormButton from '../forms/button.js';
 import ToDoElement from './todoElement.js';
 import styles from './schedulerApp.css';
 
@@ -17,6 +18,7 @@ export default class SchedulerApp extends React.Component {
 		}
 		
 		this.addTodoElement = this.addTodoElement.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
 	updateDimensions() {
@@ -35,11 +37,39 @@ export default class SchedulerApp extends React.Component {
 		window.removeEventListener("resize", this.updateDimensions.bind(this));
 	}
 	
-	addTodoElement() {
+	addTodoElement(title, content, datetime) {
 		this.setState(prevState => ({
 			numberTodo: this.state.numberTodo + 1,
-			elementDicts: [...prevState.elementDicts, {title: "Testing2", text: "Does this look good"}]
+			elementDicts: [...prevState.elementDicts, {title: title, text: content, datetime: datetime}]
 		}));
+	}
+	
+	getCurrentISOTime() {
+		var timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
+		var localISOTime = (new Date(Date.now() - timezoneOffset)).toISOString().slice(0, 16);
+		return localISOTime;
+	}
+	
+	clearForm(e) {
+		e.target[0].value = "";
+		e.target[1].value = this.getCurrentISOTime();
+		e.target[2].value = "";
+	}
+	
+	handleSubmit(e) {
+		e.preventDefault();
+		var todoTitle = e.target[0].value;
+		var todoDateTime = e.target[1].value;
+		var todoContent = e.target[2].value;
+		
+		var emptyValues = todoTitle == "" || todoDateTime == "";
+		
+		if (emptyValues) {
+			alert("Please fill title section");
+		} else {
+			this.clearForm(e);
+			this.addTodoElement(todoTitle, todoContent, todoDateTime);
+		}
 	}
 	
 	render() {
@@ -47,15 +77,17 @@ export default class SchedulerApp extends React.Component {
 		
 		for (var i = 0; i < this.state.numberTodo; i++) {
 			var element = this.state.elementDicts[i];
-			todoElements.push(<ToDoElement key={i} title={element.title} text={element.text} />);
+			todoElements.push(<ToDoElement key={i} title={element.title} text={element.text} datetime={element.datetime} />);
 		}
 		
 		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
 				<div className={classnames(styles.gridElement, styles.leftColumn)}>
-					<InputBox text="Title" type="text" name="toDoTitle" />
-					<InputBox text="Time" type="time" name="toDoTime" val="00:00" />
-					<InputBox text="Content" type="area" name="toDoBody" />
-					<AddTodoButton text="Add to-do" onClick={this.addTodoElement} />
+					<form onSubmit={this.handleSubmit}>
+						<InputBox text="Title" type="text" name="toDoTitle" />
+						<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
+						<InputBox text="Content" type="area" name="toDoBody" />
+						<FormButton text="Add to-do" type="submit" />
+					</form>
 				</div>
 				<div className={classnames(styles.gridElement, styles.middleColumn)}>
 					{todoElements}
@@ -64,8 +96,4 @@ export default class SchedulerApp extends React.Component {
 			</div>
 		return schedulerApp;
 	}
-}
-
-const AddTodoButton = ({text, onClick}) => (
-	<div className={styles.addbutton} onClick={onClick}>{text}</div>
-);
+};
