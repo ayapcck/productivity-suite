@@ -10,14 +10,16 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	res = dbCur.fetchall()
 	elements = []
 	for x in res:
-		elements.append(x[1])
+		elements.append(x)
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
-def insertTodoElementIn(scheduler_table, dbCur, title, content, datetime):
+def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime):
 	sql = "INSERT INTO " + scheduler_table + " (title, content, datetime) VALUES ('" + title + "', '" + content + "', '" + datetime + "')"
-	conn = mysql.connect()
-	curs = conn.cursor()
-	curs.execute(sql)
-	conn.commit()
+	curs = dbConn.cursor()
+	try:
+		curs.execute(sql)
+		dbConn.commit()
+	except Exception as e:
+		print(str(e))
 	return Response(status=200)

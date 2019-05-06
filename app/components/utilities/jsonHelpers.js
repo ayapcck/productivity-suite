@@ -14,12 +14,29 @@ function fetchWrapper(url, options, type) {
 	});
 }
 
-function postJson(url, options) {
-	return fetchWrapper(url, options, 'post');
+function postJson(url, jsonBody) {
+	var headers = {
+		"Content-Type": "application/json"
+	}
+	var fetchOptions = {
+		method: 'POST',
+		headers: headers,
+		mode: 'cors',
+		cache: 'default',
+		body: JSON.stringify(jsonBody)
+	}
+	return fetchWrapper(url, fetchOptions, 'post');
 }
 
-function getJson(url, options) {
-	return fetchWrapper(url, options, 'get');
+function getJson(url) {
+	var headers = new Headers();
+	var fetchOptions = {
+		method: 'GET',
+		headers: headers,
+		mode: 'cors',
+		cache: 'default'
+	}
+	return fetchWrapper(url, fetchOptions, 'get');
 }
 
 export { getJson, postJson };

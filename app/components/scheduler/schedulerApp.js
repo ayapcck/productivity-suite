@@ -7,6 +7,7 @@ import InputBox from '../forms/inputBox.js';
 import FormButton from '../forms/button.js';
 import ToDoElement from './todoElement.js';
 import styles from './schedulerApp.css';
+import { postJson, getJson } from '../utilities/jsonHelpers.js';
 
 export default class SchedulerApp extends React.Component {
 	constructor(props) {
@@ -16,6 +17,8 @@ export default class SchedulerApp extends React.Component {
 			numberTodo: 0,
 			elementDicts: []
 		}
+		
+		this.updateStateFromDatabase();
 		
 		this.addTodoElement = this.addTodoElement.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -37,11 +40,51 @@ export default class SchedulerApp extends React.Component {
 		window.removeEventListener("resize", this.updateDimensions.bind(this));
 	}
 	
+	componentDidUpdate(prevProps) {
+		prevProps.username != this.props.username && this.updateStateFromDatabase();
+	}
+	
+	postTodoElement(title, content, datetime) {
+		var url = "http://192.168.0.26:5000/addTodo";
+		var jsonBody = {
+			title: title,
+			content: content,
+			datetime: datetime
+		}
+		
+		postJson(url, jsonBody).then(response => {}).catch(error => {
+			alert(error);
+		});
+	}
+	
+	updateStateFromDatabase() {
+		if (this.props.username != "") {
+			var url = "http://192.168.0.26:5000/retrieveTodos";
+			getJson(url).then(response => {
+				var numberTodos = 0;
+				var elements = [];
+				response.forEach(todoItem => {
+					numberTodos += 1;
+					elements.push({title: todoItem[0], text: todoItem[1], datetime: todoItem[2]});
+				})
+				this.setState(prevState => ({
+					numberTodo: numberTodos,
+					elementDicts: elements
+				}));
+			}).catch(error => {
+				alert(error);
+			});
+		} else {
+			this.setState({
+				numberTodo: 0,
+				elementDicts: [],
+			});
+		}
+	}
+	
 	addTodoElement(title, content, datetime) {
-		this.setState(prevState => ({
-			numberTodo: this.state.numberTodo + 1,
-			elementDicts: [...prevState.elementDicts, {title: title, text: content, datetime: datetime}]
-		}));
+		this.postTodoElement(title, content, datetime);
+		this.updateStateFromDatabase();
 	}
 	
 	getCurrentISOTime() {

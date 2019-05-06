@@ -22,7 +22,7 @@ export default class SignupForm extends React.Component {
 	this.checkValididity = this.checkValididity.bind(this);
   }
   
-  postUser(username, email, password) {
+  createUser(username, email, password) {
 	var salt = generateSalt(16);
 	var passHash = generateHmac(password, salt);
 	var activationCode = generateActivationCode();
@@ -36,20 +36,8 @@ export default class SignupForm extends React.Component {
 		activationCode: activationCode
 	}
 	
-	var headers = {
-		"Content-Type": "application/json"
-	}
-	var fetchOptions = {
-		method: 'POST',
-		headers: headers,
-		mode: 'cors',
-		cache: 'default',
-		body: JSON.stringify(jsonBody)
-	}
-	
-	postJson(url, fetchOptions).then(response => {
+	postJson(url, jsonBody).then(response => {
 		alert("Created successfully");
-		// TODO: clear form on success
 	}).catch(error => {
 		if (error.response.status == 409) {
 			alert("Username already in use");
@@ -117,7 +105,7 @@ export default class SignupForm extends React.Component {
 		alert("Passwords don't match");
 	} else {
 		this.clearForm(e);
-		this.postUser(username, email, password);
+		this.createUser(username, email, password);
 	}
 	
   }
