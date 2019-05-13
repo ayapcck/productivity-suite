@@ -7,7 +7,7 @@ import styles from './todoElement.css';
 export default class ToDoElement extends React.Component {
 	render() {
 		var dateAndTime = this.props.datetime.split('T');
-		var element = <div className={styles.todoElement}>
+		var element = <div className={styles.todoElement} onClick={() => this.props.onClick(this.props.title, this.props.datetime)}>
 			<h4 className={classnames(styles.todoPiece, styles.elementTitle)}>{this.props.title}</h4>
 			<h5 className={classnames(styles.todoPiece, styles.elementText)}>{this.props.text}</h5>
 			<h4 className={classnames(styles.todoPiece, styles.elementDate)}>{dateAndTime[0]}</h4>

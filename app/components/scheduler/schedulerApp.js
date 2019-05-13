@@ -22,6 +22,7 @@ export default class SchedulerApp extends React.Component {
 		
 		this.addTodoElement = this.addTodoElement.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.markCompleted = this.markCompleted.bind(this);
 	}
 	
 	updateDimensions() {
@@ -41,7 +42,7 @@ export default class SchedulerApp extends React.Component {
 	}
 	
 	componentDidUpdate(prevProps) {
-		prevProps.username != this.props.username && this.updateStateFromDatabase();
+		(this.state.needsUpdate || prevProps.username != this.props.username) && this.updateStateFromDatabase();
 	}
 	
 	postTodoElement(title, content, datetime) {
@@ -65,11 +66,12 @@ export default class SchedulerApp extends React.Component {
 				var elements = [];
 				response.forEach(todoItem => {
 					numberTodos += 1;
-					elements.push({title: todoItem[0], text: todoItem[1], datetime: todoItem[2]});
+					elements.push({title: todoItem[0], text: todoItem[1], datetime: todoItem[2], completed: todoItem[4]});
 				})
 				this.setState(prevState => ({
 					numberTodo: numberTodos,
-					elementDicts: elements
+					elementDicts: elements,
+					needsUpdate: false,
 				}));
 			}).catch(error => {
 				alert(error);
@@ -78,13 +80,31 @@ export default class SchedulerApp extends React.Component {
 			this.setState({
 				numberTodo: 0,
 				elementDicts: [],
+				needsUpdate: false,
 			});
 		}
 	}
 	
 	addTodoElement(title, content, datetime) {
 		this.postTodoElement(title, content, datetime);
+		this.setState({ needsUpdate: true });
 		this.updateStateFromDatabase();
+	}
+	
+	markCompleted(title, datetime) {
+		if (this.props.username != "") {
+			var url = "http://192.168.0.26:5000/markCompleted";
+			var jsonBody = {
+				title: title,
+				datetime: datetime
+			}
+			
+			postJson(url, jsonBody).then(response => {}).catch(error => {
+				alert(error);
+			});
+			this.setState({ needsUpdate: true });
+			this.updateStateFromDatabase();
+		}
 	}
 	
 	getCurrentISOTime() {
@@ -117,10 +137,15 @@ export default class SchedulerApp extends React.Component {
 	
 	render() {
 		const todoElements = [];
+		const finishedElements = [];
 		
 		for (var i = 0; i < this.state.numberTodo; i++) {
 			var element = this.state.elementDicts[i];
-			todoElements.push(<ToDoElement key={i} title={element.title} text={element.text} datetime={element.datetime} />);
+			!element.completed && 
+				todoElements.push(<ToDoElement key={i} title={element.title} text={element.text} 
+					datetime={element.datetime} onClick={this.markCompleted} />);
+			element.completed &&
+				finishedElements.push(<span className={styles.finishedItem}>{element.title}</span>);
 		}
 		
 		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
@@ -135,7 +160,12 @@ export default class SchedulerApp extends React.Component {
 				<div className={classnames(styles.gridElement, styles.middleColumn)}>
 					{todoElements}
 				</div>
-				<div className={classnames(styles.gridElement, styles.rightColumn)}></div>
+				<div className={classnames(styles.gridElement, styles.rightColumn)}>
+					<div className={styles.finishedItems}>
+						<span className={styles.finishedHeader}>Completed Tasks</span>
+						{finishedElements}
+					</div>
+				</div>
 			</div>
 		return schedulerApp;
 	}

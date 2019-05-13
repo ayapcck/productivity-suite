@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
 
 from email_server import sendMessage, returnMailApp
-from scheduler_app import fetchTodoElementsFrom, insertTodoElementIn
+from scheduler_app import fetchTodoElementsFrom, insertTodoElementIn, markTodoCompleted
 
 app = Flask(__name__)
 mail = returnMailApp(app)
@@ -126,6 +126,16 @@ def addTodo():
 	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
 	conn = mysql.connect()
 	return insertTodoElementIn('ayapcck', conn, title, content, datetime)
+	
+@app.route('/markCompleted', methods=['POST'])
+@cross_origin()
+def markCompleted():
+	responseData = json.loads(request.data)
+	title = responseData['title']
+	datetime = responseData['datetime']
+	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
+	conn = mysql.connect()
+	return markTodoCompleted('ayapcck', conn, title, datetime)
 	
 @app.route('/testMessage')
 @cross_origin()
