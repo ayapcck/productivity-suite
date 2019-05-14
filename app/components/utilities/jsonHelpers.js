@@ -14,7 +14,7 @@ function fetchWrapper(url, options, type) {
 	});
 }
 
-function postJson(url, jsonBody) {
+function postJson(url, jsonBody = null) {
 	var headers = {
 		"Content-Type": "application/json"
 	}
@@ -22,9 +22,9 @@ function postJson(url, jsonBody) {
 		method: 'POST',
 		headers: headers,
 		mode: 'cors',
-		cache: 'default',
-		body: JSON.stringify(jsonBody)
+		cache: 'default'
 	}
+	if (jsonBody) fetchOptions['body'] = JSON.stringify(jsonBody);
 	return fetchWrapper(url, fetchOptions, 'post');
 }
 

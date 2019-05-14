@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-from flask import Flask, Response, request
+from flask import Flask, Response, request, escape
 from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
 
@@ -58,9 +58,9 @@ def validateUser():
 		print("hash: " + resHash)
 		print("active: " + str(resActive))
 		if (resActive == 0 and activationCode == resHash ):
-			sql = "UPDATE " + user_table + " SET active=1 WHERE user='" + user + "' AND hash='" + activationCode + "' AND active=0"
+			sql = "UPDATE " + user_table + " SET active=1 WHERE user=%s AND hash=%s AND active=0"
 			try:
-				curs.execute(sql)
+				curs.execute(sql, (user, activationCode))
 				conn.commit()
 			except Exception as e:
 				return generateResponse(e)
@@ -78,13 +78,13 @@ def addUser():
 	password = responseData['password']
 	salt = responseData['salt']
 	activationCode = responseData['activationCode']
-	sql = "INSERT INTO " + user_table + " (user, email, pass, salt, hash, active) VALUES ('" + user + "', '" + email + "', '" + password + "', '" + salt + "', '" + activationCode + "', 0)"
+	sql = "INSERT INTO " + user_table + " (user, email, pass, salt, hash, active) VALUES (%s, %s, %s, %s, %s, 0)"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
 	response = Response(status=200)
 	try:
-		curs.execute(sql)
+		curs.execute(sql, (user, email, password, salt, activationCode))
 		conn.commit()
 	except Exception as e:
 		response = generateResponse(e)
@@ -98,11 +98,11 @@ def addUser():
 def getUser():
 	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	user = request.args.get('user')
-	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user='" + user + "'"
+	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user=%s"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
-	curs.execute(sql)
+	curs.execute(sql, user)
 	sqlRes = curs.fetchone()
 	if sqlRes == None:
 		return Response(status=404)
@@ -130,12 +130,10 @@ def addTodo():
 @app.route('/markCompleted', methods=['POST'])
 @cross_origin()
 def markCompleted():
-	responseData = json.loads(request.data)
-	title = responseData['title']
-	datetime = responseData['datetime']
 	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
+	id = request.args.get('id')
 	conn = mysql.connect()
-	return markTodoCompleted('ayapcck', conn, title, datetime)
+	return markTodoCompleted('ayapcck', conn, id)
 	
 @app.route('/testMessage')
 @cross_origin()

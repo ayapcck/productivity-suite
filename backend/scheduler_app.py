@@ -15,10 +15,10 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	
 	
 def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime):
-	sql = "INSERT INTO " + scheduler_table + " (title, content, datetime) VALUES ('" + title + "', '" + content + "', '" + datetime + "')"
+	sql = "INSERT INTO " + scheduler_table + " (title, content, datetime) VALUES (%s, %s, %s)"
 	curs = dbConn.cursor()
 	try:
-		curs.execute(sql)
+		curs.execute(sql, (title, content, datetime))
 		dbConn.commit()
 	except Exception as e:
 		print(str(e))
@@ -26,11 +26,11 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime):
 	return Response(status=200)
 
 	
-def markTodoCompleted(scheduler_table, dbConn, title, datetime):
-	sql = "UPDATE " + scheduler_table + " SET completed=1 WHERE title='" + title + "' AND datetime='" + datetime + "'"
+def markTodoCompleted(scheduler_table, dbConn, id):
+	sql = "UPDATE " + scheduler_table + " SET completed=1 WHERE id=%s"
 	curs = dbConn.cursor()
 	try:
-		curs.execute(sql)
+		curs.execute(sql, id)
 		dbConn.commit()
 	except Exception as e:
 		print(str(e))
