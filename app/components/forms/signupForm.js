@@ -22,6 +22,14 @@ export default class SignupForm extends React.Component {
 	this.checkValididity = this.checkValididity.bind(this);
   }
   
+  checkCreateUserTable(user) {
+	var url = "http://192.168.0.26:5000/createUserTable?user=" + user;
+	
+	getJson(url).then(response => {}).catch(error => {
+		alert(error);
+	});
+  }
+  
   createUser(username, email, password) {
 	var salt = generateSalt(16);
 	var passHash = generateHmac(password, salt);
@@ -105,6 +113,7 @@ export default class SignupForm extends React.Component {
 		alert("Passwords don't match");
 	} else {
 		this.clearForm(e);
+		this.checkCreateUserTable(username);
 		this.createUser(username, email, password);
 	}
 	

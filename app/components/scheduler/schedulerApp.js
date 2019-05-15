@@ -18,9 +18,9 @@ export default class SchedulerApp extends React.Component {
 			elementDicts: []
 		}
 		
-		this.updateStateFromDatabase();
+		this.updateTodosFromDB();
 		
-		this.handleSubmit = this.handleSubmit.bind(this);
+		this.addTodoClicked = this.addTodoClicked.bind(this);
 		this.markCompleted = this.markCompleted.bind(this);
 	}
 	
@@ -41,12 +41,13 @@ export default class SchedulerApp extends React.Component {
 	}
 	
 	componentDidUpdate(prevProps) {
-		prevProps.username != this.props.username && this.updateStateFromDatabase();
+		prevProps.username != this.props.username && this.updateTodosFromDB();
 	}
 	
 	postTodoElement(title, content, datetime) {
 		var url = "http://192.168.0.26:5000/addTodo";
 		var jsonBody = {
+			user: this.props.username,
 			title: title,
 			content: content,
 			datetime: datetime
@@ -54,15 +55,15 @@ export default class SchedulerApp extends React.Component {
 		
 		postJson(url, jsonBody).then(response => {			
 			this.setState({ needsUpdate: true });
-			this.updateStateFromDatabase();
+			this.updateTodosFromDB();
 		}).catch(error => {
 			alert(error);
 		});
 	}
 	
-	updateStateFromDatabase() {
+	updateTodosFromDB() {
 		if (this.props.username != "") {
-			var url = "http://192.168.0.26:5000/retrieveTodos";
+			var url = "http://192.168.0.26:5000/retrieveTodos?user=" + this.props.username;
 			getJson(url).then(response => {
 				var numberTodos = 0;
 				var elements = [];
@@ -90,11 +91,11 @@ export default class SchedulerApp extends React.Component {
 	
 	markCompleted(id) {
 		if (this.props.username != "") {
-			var url = "http://192.168.0.26:5000/markCompleted?id=" + id + "";
+			var url = "http://192.168.0.26:5000/markCompleted?user=" + this.props.username + "&id=" + id + "";
 			
 			postJson(url).then(response => {
 				this.setState({ needsUpdate: true });
-				this.updateStateFromDatabase();				
+				this.updateTodosFromDB();				
 			}).catch(error => {
 				alert(error);
 			});
@@ -113,19 +114,23 @@ export default class SchedulerApp extends React.Component {
 		e.target[2].value = "";
 	}
 	
-	handleSubmit(e) {
-		e.preventDefault();
-		var todoTitle = e.target[0].value;
-		var todoDateTime = e.target[1].value;
-		var todoContent = e.target[2].value;
-		
-		var emptyValues = todoTitle == "" || todoDateTime == "";
-		
-		if (emptyValues) {
-			alert("Please fill title section");
+	addTodoClicked(e) {
+		if (this.props.name != "") {
+			e.preventDefault();
+			var todoTitle = e.target[0].value;
+			var todoDateTime = e.target[1].value;
+			var todoContent = e.target[2].value;
+			
+			var emptyValues = todoTitle == "" || todoDateTime == "";
+			
+			if (emptyValues) {
+				alert("Please fill title section");
+			} else {
+				this.clearForm(e);
+				this.postTodoElement(todoTitle, todoContent, todoDateTime);
+			}
 		} else {
-			this.clearForm(e);
-			this.postTodoElement(todoTitle, todoContent, todoDateTime);
+			alert("You need an account to use this feature");
 		}
 	}
 	
@@ -144,7 +149,7 @@ export default class SchedulerApp extends React.Component {
 		
 		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
 				<div className={classnames(styles.gridElement, styles.leftColumn)}>
-					<form onSubmit={this.handleSubmit}>
+					<form onSubmit={this.addTodoClicked}>
 						<InputBox text="Title" type="text" name="toDoTitle" />
 						<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
 						<InputBox text="Content" type="area" name="toDoBody" />
