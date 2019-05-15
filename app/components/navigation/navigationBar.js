@@ -49,7 +49,7 @@ export default class NavigationBar extends React.Component {
 	}
 		
 	render() {
-		var handleHoverSettings = {
+		const handleHoverSettings = {
 			onMouseMove: this.showAccountSettings,
 			onMouseEnter: this.showAccountSettings,
 			onMouseLeave: this.hideAccountSettings

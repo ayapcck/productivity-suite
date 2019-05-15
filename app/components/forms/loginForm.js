@@ -14,18 +14,10 @@ export default class LoginForm extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
   
-  getUser(username, password) {
-	var headers = new Headers()
-	var fetchOptions = {
-		method: 'GET',
-		headers: headers,
-		mode: 'cors',
-		cache: 'default'
-	}
-	
+  loginUser(username, password) {
 	var url = "http://192.168.0.26:5000/getUser?user=" + username + "";
 	
-	getJson(url, fetchOptions).then(myJsonUser => {
+	getJson(url).then(myJsonUser => {
 			var retPassword = myJsonUser[1];
 			var salt = myJsonUser[2];
 			var active = myJsonUser[3];
@@ -56,7 +48,7 @@ export default class LoginForm extends React.Component {
 	
 	if (!emptyValues) {
 		this.clearForm(e);
-		this.getUser(username, password);
+		this.loginUser(username, password);
 	} else {
 		alert("Please fill in each section");
 	}

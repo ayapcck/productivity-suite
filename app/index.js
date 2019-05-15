@@ -11,16 +11,19 @@ class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		var userLoggedIn;
+		var userLoggedIn, username;
 		if  (window.sessionStorage.getItem("username")) {
 			userLoggedIn = true;
+			username = window.sessionStorage.getItem("username");
 		} else {
 			userLoggedIn = false;
+			username = "";
 		}
 		
 		this.state = {
 			showLoginApp: false,
 			userLoggedIn: userLoggedIn,
+			username: username,
 		}
 		
 		this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
@@ -37,7 +40,7 @@ class IndexPage extends React.Component {
 	
 	handleLoginSuccess(user) {
 		window.sessionStorage.setItem("username", user);
-		this.setState({userLoggedIn: true});
+		this.setState({userLoggedIn: true, username: user});
 		this.toggleLoginApp();
 	}
 	
@@ -47,16 +50,15 @@ class IndexPage extends React.Component {
 	
 	onLogout() {
 		window.sessionStorage.removeItem("username");
-		this.setState({userLoggedIn: false});
+		this.setState({userLoggedIn: false, username: ""});
 	}
 	
 	render() {
-		var username = this.state.userLoggedIn ? window.sessionStorage.getItem("username") : "";
 		var indexPage = <React.Fragment>
 			{this.state.showLoginApp && <LoginApp onExit={this.toggleLoginApp} onLoginSuccess={this.handleLoginSuccess} />}
-			<NavigationBar username={username} loginToggle={this.toggleLoginApp} 
+			<NavigationBar username={this.state.username} loginToggle={this.toggleLoginApp} 
 				userLoggedIn={this.state.userLoggedIn} onLogout={this.onLogout} />
-			<SchedulerApp />
+			<SchedulerApp username={this.state.username}/>
 		</React.Fragment>
 		return indexPage;
 	}

@@ -2,13 +2,15 @@ import json
 import os
 import sys
 
-from flask import Flask, Response, request
+from flask import Flask, Response, request, escape
 from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
 
 from email_server import sendMessage, returnMailApp
+from scheduler_app import scheduler
 
 app = Flask(__name__)
+app.register_blueprint(scheduler)
 mail = returnMailApp(app)
 cors = CORS(app)
 
@@ -16,12 +18,17 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['REACT_DATABASE_PASSWORD']
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 app.config['CORS_HEADERS'] = 'Content-Type'
 mysql.init_app(app)
 
-db_table = 'loginUsers'
+user_table = 'loginUsers'
 
+
+def getMySQLForScheduler():
+	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
+	return mysql
+
+	
 def generateResponse(error):
 	e = str(error[1])
 	status = 400
@@ -31,6 +38,7 @@ def generateResponse(error):
 	if "duplicate" in e:
 		status = 409
 	return Response(status=status)
+	
 	
 def sendValidationEmail(activationCode):
 	messageBody = "<p>Please verify you account by clicking the below link. If it does not appear as a link, please copy and paste into your browser</p>" + \
@@ -44,7 +52,7 @@ def sendValidationEmail(activationCode):
 def validateUser():
 	user = request.args.get('user')
 	activationCode = request.args.get('activationCode')
-	sql = "SELECT hash, active FROM " + db_table + " WHERE user='" + user + "'"
+	sql = "SELECT hash, active FROM " + user_table + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -58,9 +66,9 @@ def validateUser():
 		print("hash: " + resHash)
 		print("active: " + str(resActive))
 		if (resActive == 0 and activationCode == resHash ):
-			sql = "UPDATE " + db_table + " SET active=1 WHERE user='" + user + "' AND hash='" + activationCode + "' AND active=0"
+			sql = "UPDATE " + user_table + " SET active=1 WHERE user=%s AND activation=%s AND active=0"
 			try:
-				curs.execute(sql)
+				curs.execute(sql, (user, activationCode))
 				conn.commit()
 			except Exception as e:
 				return generateResponse(e)
@@ -68,22 +76,24 @@ def validateUser():
 		else:
 			return "Either your activation code is stale, or your email is already verified"
 	
+	
 @app.route('/addUser', methods=['POST'])
 @cross_origin()
 def addUser():
+	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	responseData = json.loads(request.data)
 	user = responseData['user']
 	email = responseData['email']
 	password = responseData['password']
 	salt = responseData['salt']
 	activationCode = responseData['activationCode']
-	sql = "INSERT INTO " + db_table + " (user, email, pass, salt, hash, active) VALUES ('" + user + "', '" + email + "', '" + password + "', '" + salt + "', '" + activationCode + "', 0)"
+	sql = "INSERT INTO " + user_table + " (user, email, pass, salt, activation, active) VALUES (%s, %s, %s, %s, %s, 0)"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
 	response = Response(status=200)
 	try:
-		curs.execute(sql)
+		curs.execute(sql, (user, email, password, salt, activationCode))
 		conn.commit()
 	except Exception as e:
 		response = generateResponse(e)
@@ -92,34 +102,23 @@ def addUser():
 	sendValidationEmail(activationCode)
 	return response
 	
+	
 @app.route('/getUser', methods=['GET'])
 @cross_origin()
 def getUser():
+	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	user = request.args.get('user')
-	sql = "SELECT user, pass, salt, active FROM " + db_table + " WHERE user='" + user + "'"
+	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user=%s"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
-	curs.execute(sql)
+	curs.execute(sql, user)
 	sqlRes = curs.fetchone()
 	if sqlRes == None:
 		return Response(status=404)
 	else:
 		return Response(json.dumps(sqlRes), mimetype='application/json')
 	
-@app.route('/viewUsers')
-@cross_origin()
-def viewUsers():
-	sql = "SELECT * FROM " + db_table + ""
-	
-	conn = mysql.connect()
-	curs = conn.cursor()
-	curs.execute(sql)
-	res = curs.fetchall()
-	users = []
-	for x in res:
-		users.append(x[1])
-	return Response(json.dumps(users), mimetype="application/json")
 	
 @app.route('/testMessage')
 @cross_origin()
