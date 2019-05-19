@@ -22,6 +22,7 @@ export default class SchedulerApp extends React.Component {
 		
 		this.addTodoClicked = this.addTodoClicked.bind(this);
 		this.markCompleted = this.markCompleted.bind(this);
+		this.clearCompleted = this.clearCompleted.bind(this);
 	}
 	
 	updateDimensions() {
@@ -102,6 +103,19 @@ export default class SchedulerApp extends React.Component {
 		}
 	}
 	
+	clearCompleted() {
+		if (this.props.username != "") {
+			var url = "http://192.168.0.26:5000/clearCompleted?user=" + this.props.username;
+			
+			postJson(url).then(response => {
+				this.setState({ needsUpdate: true });
+				this.updateTodosFromDB();
+			}).catch(error => {
+				alert(error);
+			});
+		}
+	}
+	
 	getCurrentISOTime() {
 		var timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
 		var localISOTime = (new Date(Date.now() - timezoneOffset)).toISOString().slice(0, 16);
@@ -163,6 +177,7 @@ export default class SchedulerApp extends React.Component {
 					<span className={styles.finishedHeader}>Completed Tasks</span>
 					<div className={styles.finishedItems}>
 						{finishedElements}
+						<FormButton text="Clear" type="button" containerClass={styles.pushDown} onClick={this.clearCompleted} />
 					</div>
 				</div>
 			</div>

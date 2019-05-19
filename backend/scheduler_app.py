@@ -41,6 +41,14 @@ def markCompleted():
 	return markTodoCompleted(user, conn, id)
 
 	
+@scheduler.route('/clearCompleted', methods=['POST'])
+@cross_origin()
+def clearCompleted():
+	user = request.args.get('user')
+	conn = getMySQL().connect()
+	return clearCompletedTodos(user, conn)
+	
+	
 @scheduler.route('/createUserTable')
 @cross_origin()
 def createUserTable():
@@ -89,6 +97,16 @@ def markTodoCompleted(scheduler_table, dbConn, id):
 		curs.execute(sql, id)
 		dbConn.commit()
 	except Exception as e:
-		print(str(e))
+		return Response(status=400)
+	return Response(status=200)
+
+	
+def clearCompletedTodos(scheduler_table, dbConn):
+	sql = "DELETE FROM " + scheduler_table + " WHERE completed=1"
+	curs = dbConn.cursor()
+	try:
+		curs.execute(sql)
+		dbConn.commit()
+	except Exception as e:
 		return Response(status=400)
 	return Response(status=200)
