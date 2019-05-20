@@ -58,7 +58,7 @@ export default class NavigationBar extends React.Component {
 		var accountOptions = <div className={styles.accountOptions} {...handleHoverSettings}>
 			<div className={styles.menuElement} 
 				onClick={this.loginLogoutClick}>
-					{this.props.userLoggedIn ? "Logout" : "Login"}
+					{this.props.userLoggedIn ? "Logout" : "Login/Create"}
 				</div>
 			<div className={styles.menuElement}>Settings</div>
 		</div>

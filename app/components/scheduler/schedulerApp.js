@@ -17,9 +17,7 @@ export default class SchedulerApp extends React.Component {
 			numberTodo: 0,
 			elementDicts: []
 		}
-		
-		this.updateTodosFromDB();
-		
+				
 		this.addTodoClicked = this.addTodoClicked.bind(this);
 		this.markCompleted = this.markCompleted.bind(this);
 		this.clearCompleted = this.clearCompleted.bind(this);
@@ -35,6 +33,7 @@ export default class SchedulerApp extends React.Component {
 
 	componentDidMount() {
 		this.updateDimensions();
+		this.updateTodosFromDB();
 		window.addEventListener("resize", this.updateDimensions.bind(this));
 	}
 	componentWillUnmount() {
@@ -129,7 +128,7 @@ export default class SchedulerApp extends React.Component {
 	}
 	
 	addTodoClicked(e) {
-		if (this.props.name != "") {
+		if (this.props.username != "") {
 			e.preventDefault();
 			var todoTitle = e.target[0].value;
 			var todoDateTime = e.target[1].value;
@@ -144,6 +143,7 @@ export default class SchedulerApp extends React.Component {
 				this.postTodoElement(todoTitle, todoContent, todoDateTime);
 			}
 		} else {
+			e.preventDefault();
 			alert("You need an account to use this feature");
 		}
 	}

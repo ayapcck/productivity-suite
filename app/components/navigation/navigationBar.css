@@ -4,6 +4,7 @@
 	width: 8%;
 	position: absolute;
 	right: 0;
+	z-index: 10;
 }
 
 .navBarContainer {

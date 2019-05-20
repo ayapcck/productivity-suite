@@ -7,6 +7,7 @@ import LoginForm from '../forms/loginForm.js';
 import SignupForm from '../forms/signupForm.js';
 
 import styles from './loginApp.css';
+import centeredBoxStyles from '../centerPanel/centerPanel.css';
 
 export default class LoginApp extends React.Component {
   constructor(props) {
@@ -17,8 +18,22 @@ export default class LoginApp extends React.Component {
 		showLoginForm: true,
 	}
 	
+	//this.closeOnEsc = this.closeOnEsc.bind(this);
+	this.handleCloseFromClickOutside = this.handleCloseFromClickOutside.bind(this);
 	this.toggleLoginForm = this.toggleLoginForm.bind(this);
   }
+  
+  /* componentDidMount() {
+	document.addEventListener("keydown", this.closeOnEsc, false);
+  }
+  
+  componentWillUnmount() {
+	document.removeEventListener("keydown", this.closeOnEsc, false);
+  }
+  
+  closeOnEsc(e) {
+	e.keyCode === 27 && this.props.onExit();
+  } */
   
   // This alternates between showing login form and signup form
   toggleLoginForm() {
@@ -27,11 +42,20 @@ export default class LoginApp extends React.Component {
 	}));
   }
   
+  handleCloseFromClickOutside(e) {
+	let loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox);
+	let containerRect = loginContainer[0].getBoundingClientRect();
+	let clickX = e.clientX;
+	let clickY = e.clientY;
+	let clickInsideContainer = clickX > containerRect.left && clickX < containerRect.right &&
+								clickY > containerRect.top && clickY < containerRect.bottom;
+	!clickInsideContainer && this.props.onExit();
+  }
+  
   render() {
-	var visbility = this.state.showLoginApp ? styles.visible : styles.hidden;
 	var loginApp = <React.Fragment>
-	<div className={classnames(styles.opaqueBackground, visbility)}></div>
-	<div className={classnames(styles.container, visbility)}>
+	<div className={classnames(styles.opaqueBackground)}></div>
+	<div className={classnames(styles.container)} onClick={this.handleCloseFromClickOutside}>
 		<CenterPanel 
 			content={ 
 				<React.Fragment>
