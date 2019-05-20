@@ -163,11 +163,11 @@ export default class SchedulerApp extends React.Component {
 		
 		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
 				<div className={classnames(styles.gridElement, styles.leftColumn)}>
-					<form onSubmit={this.addTodoClicked}>
+					<form id="addTodoForm" onSubmit={this.addTodoClicked}>
 						<InputBox text="Title" type="text" name="toDoTitle" />
 						<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
 						<InputBox text="Content" type="area" name="toDoBody" />
-						<FormButton text="Add to-do" type="submit" />
+						<FormButton text="Add to-do" type="submit" name="addTodoFormSubmit" />
 					</form>
 				</div>
 				<div className={classnames(styles.gridElement, styles.middleColumn)}>
