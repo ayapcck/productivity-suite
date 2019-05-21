@@ -23,18 +23,6 @@ export default class LoginApp extends React.Component {
 	this.toggleLoginForm = this.toggleLoginForm.bind(this);
   }
   
-  /* componentDidMount() {
-	document.addEventListener("keydown", this.closeOnEsc, false);
-  }
-  
-  componentWillUnmount() {
-	document.removeEventListener("keydown", this.closeOnEsc, false);
-  }
-  
-  closeOnEsc(e) {
-	e.keyCode === 27 && this.props.onExit();
-  } */
-  
   // This alternates between showing login form and signup form
   toggleLoginForm() {
 	this.setState(state => ({
@@ -48,13 +36,15 @@ export default class LoginApp extends React.Component {
   }
   
   handleCloseFromClickOutside(e) {
-	let loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox);
-	let containerRect = loginContainer[0].getBoundingClientRect();
 	let clickX = e.clientX;
 	let clickY = e.clientY;
-	let clickInsideContainer = clickX > containerRect.left && clickX < containerRect.right &&
-								clickY > containerRect.top && clickY < containerRect.bottom;
-	clickX !== 0 && clickY !== 0 && !clickInsideContainer && this.handleCloseForm();
+	if (clickX !== 0 && clickY !== 0) {
+		let loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox);
+		let containerRect = loginContainer[0].getBoundingClientRect();
+		let clickInsideContainer = clickX > containerRect.left && clickX < containerRect.right &&
+									clickY > containerRect.top && clickY < containerRect.bottom;
+		!clickInsideContainer && this.handleCloseForm();
+	}
   }
   
   render() {
