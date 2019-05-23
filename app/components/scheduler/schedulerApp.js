@@ -16,8 +16,7 @@ export default class SchedulerApp extends React.Component {
 		this.state = {
 			numberTodo: 0,
 			elementDicts: {},
-			orderObj: {},
-			orderUpdated: true
+			orderObj: {}
 		}
 				
 		this.addTodoClicked = this.addTodoClicked.bind(this);
@@ -80,12 +79,13 @@ export default class SchedulerApp extends React.Component {
 					elements[newElement['id']] = newElement;
 					orderObj[newElement['order']] = newElement['id'];
 				})
+				console.log("elements at retrieveTodos: " + JSON.stringify(elements));
+				console.log("order at retrieveTodos: " + JSON.stringify(orderObj));
 				this.setState(prevState => ({
 					numberTodo: numberTodos,
 					elementDicts: elements,
 					orderObj: orderObj,
-					needsUpdate: false,
-					orderUpdated: true
+					needsUpdate: false
 				}));
 			}).catch(error => {
 				alert(error);
@@ -95,8 +95,7 @@ export default class SchedulerApp extends React.Component {
 				numberTodo: 0,
 				elementDicts: {},
 				orderObj: {},
-				needsUpdate: false,
-				orderUpdated: true,
+				needsUpdate: false
 			});
 		}
 	}
@@ -161,21 +160,24 @@ export default class SchedulerApp extends React.Component {
 	}
 	
 	updateOrder(todoIds) {
+		console.log("starting updateOrder in schedulerApp");
 		let elementsToBeUpdated = this.state.elementDicts;
 		let orderObj = [];
 		let stateOrderObj = {};
 		for (let i in todoIds) {
-			let id = todoIds[i].split('_')[1];
+			let id = parseInt(todoIds[i].split('_')[1]);
 			let order = parseInt(i) + 1;
 			elementsToBeUpdated[id]['order'] = order;
 			orderObj.push([id, order]);
 			stateOrderObj[order] = id;
 		}
-		this.setState({elementDicts: elementsToBeUpdated, orderObj: stateOrderObj});
+		console.log("going into postOrderChange in schedulerApp");
 		this.postOrderChange(orderObj);
+		console.log("done updateOrder in schedulerApp");
 	}
 	
 	postOrderChange(orderObj) {
+		console.log("starting postOrderChange in schedulerApp");
 		if (this.props.username != "") {
 			var url = "http://192.168.0.26:5000/changeOrder";			
 			var jsonBody = {
@@ -183,10 +185,9 @@ export default class SchedulerApp extends React.Component {
 				orderObj: orderObj,
 			}
 			
-			postJson(url, jsonBody).then(response => {
-				//this.setState({ needsUpdate: true });
-				//this.updateTodosFromDB();
-				this.setState({orderUpdated: true});
+			console.log("return postJson promise");
+			return postJson(url, jsonBody).then(() => {
+				this.updateTodosFromDB();
 			}).catch(error => {
 				alert(error);
 			});
@@ -212,7 +213,7 @@ export default class SchedulerApp extends React.Component {
 					</form>
 				</div>
 				<TodoColumn classes={classnames(styles.gridElement, styles.middleColumn)} elementDicts={this.state.elementDicts} 
-					updateOrder={this.updateOrder} order={this.state.orderObj} orderUpdated={this.state.orderUpdated} />
+					updateOrder={this.updateOrder} order={this.state.orderObj} />
 				<div className={classnames(styles.gridElement, styles.rightColumn)}>
 					<span className={styles.finishedHeader}>Completed Tasks</span>
 					<div className={styles.finishedItems}>

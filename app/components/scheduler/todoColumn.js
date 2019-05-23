@@ -10,10 +10,6 @@ export default class TodoColumn extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.state = {
-			orderUpdated: true
-		}
-		
 		this.allowDrop = this.allowDrop.bind(this);
 		this.drop = this.drop.bind(this);
 		this.startDrag = this.startDrag.bind(this);
@@ -29,32 +25,34 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	drop(ev) {
-		console.log("about to drop element");
-		if (this.props.orderUpdated) {
-			let draggedElementData = ev.dataTransfer.getData("idText");
-			ev.dataTransfer.clearData("idText");
-			let draggedElementNode = document.getElementById(draggedElementData);
-			let nextSpacer = draggedElementNode.nextSibling;
-			
-			let dropLocationNode = ev.target;
-			let todoContainerNode = document.getElementById("todoContainer");
-			
-			todoContainerNode.insertBefore(draggedElementNode, dropLocationNode);
-			todoContainerNode.insertBefore(nextSpacer, draggedElementNode);
-			this.updateOrder();
-		}
-		ev.preventDefault();
-	}
-	
-	updateOrder() {
-		console.log("starting update order function");
+		console.log("starting drop method in todoColumn");
+		
+		let eventX = ev.clientX;
+		let eventY = ev.clientY;
+		
+		let targetNode = ev.target;
+		let prevSibNode = targetNode.previousSibling;
+		let previousTodoId = prevSibNode == null ? null : prevSibNode.id;
+		let draggedTodoId = ev.dataTransfer.getData("idText");
+		
 		let todos = document.getElementsByClassName(todoStyles.todoElement);
 		let todoIds = [];
+		previousTodoId == null && todoIds.push(draggedTodoId);
 		for (let i = 0; i < todos.length; i++) {
-			todoIds.push(todos[i].id);
+			let id = todos[i].id;
+			if (previousTodoId != null && id === previousTodoId) {
+				todoIds.push(id);
+				todoIds.push(draggedTodoId);
+			} else {
+				id !== draggedTodoId && todoIds.push(id);
+			}
 		}
-		this.setState({orderUpdated: false});
+		
+		ev.dataTransfer.clearData("idText");
+		ev.preventDefault();
+		console.log("passing off to props.updateOrder with todo ids: " + JSON.stringify(todoIds));
 		this.props.updateOrder(todoIds);
+		console.log("back from props.updateOrder");
 	}
 	
 	render() {
@@ -62,6 +60,8 @@ export default class TodoColumn extends React.Component {
 		let todoLength = this.props.elementDicts.length;
 		
 		todosAndSpacers.push(<Spacer key={"spacer_0"} id={"spacer_0"} onDragOver={this.allowDrop} onDrop={this.drop} />);
+		console.log("elements at this point: " + JSON.stringify(this.props.elementDicts));
+		console.log("order at this point: " + JSON.stringify(this.props.order));
 		for (let i in this.props.order) {
 			let elementId = this.props.order[i];
 			var element = this.props.elementDicts[elementId];
