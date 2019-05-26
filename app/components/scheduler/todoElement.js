@@ -18,11 +18,12 @@ export default class ToDoElement extends React.Component {
 		var time = this.formatTime(dateAndTime[1]);
 		var dragSettings = {
 			draggable: this.props.draggable,
-			onDragStart: this.props.onDragStart
+			onDragStart: this.props.onDragStart,
+			onDragEnd: this.props.onDragEnd,
 		}
 		
 		var element = <div id={this.props.id} className={classnames(styles.todoElement)} {...dragSettings} /*onClick={() => this.props.onClick(this.props.id)}*/>
-			<h4 className={classnames(styles.todoPiece, styles.elementTitle)}>{this.props.title + " " + this.props.id}</h4>
+			<h4 className={classnames(styles.todoPiece, styles.elementTitle)}>{this.props.title}</h4>
 			<h5 className={classnames(styles.todoPiece, styles.elementText)}>{this.props.text}</h5>
 			<h4 className={classnames(styles.todoPiece, styles.elementDate)}>{date}</h4>
 			<h4 className={classnames(styles.todoPiece, styles.elementTime)}>{time}</h4>

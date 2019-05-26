@@ -6,12 +6,22 @@ import ToDoElement from './todoElement.js';
 import styles from './todoColumn.css';
 import todoStyles from './todoElement.css';
 
+var Logger = require('../utilities/logger');
+
 export default class TodoColumn extends React.Component {
 	constructor(props) {
 		super(props);
 		
+		this.state = {
+			draggedTodoId: null,
+		}
+		
+		this.addDraggedTodoClass = this.addDraggedTodoClass.bind(this);
+		this.addDropClass = this.addDropClass.bind(this);
 		this.allowDrop = this.allowDrop.bind(this);
 		this.drop = this.drop.bind(this);
+		this.removeDraggedTodoClass = this.removeDraggedTodoClass.bind(this);
+		this.removeDropClass = this.removeDropClass.bind(this);
 		this.startDrag = this.startDrag.bind(this);
 	}
 	
@@ -19,13 +29,41 @@ export default class TodoColumn extends React.Component {
 		ev.preventDefault();
 	}
 	
+	addDropClass(ev) {
+		let dropTargetNode = ev.target;
+		dropTargetNode.classList.add(styles.dropLocationHovered);
+	}
+	
+	addDraggedTodoClass(draggedTodoId) {
+		let draggedTodoNode = document.getElementById(draggedTodoId);
+		draggedTodoNode.classList.add(styles.hideTodo);
+	}
+	
+	removeDropClass(ev) {
+		let dropTargetNode = ev.target;
+		dropTargetNode.classList.remove(styles.dropLocationHovered);
+	}
+	
+	removeDraggedTodoClass(draggedTodoId=null) {
+		draggedTodoId = draggedTodoId !== null && this.state.draggedTodoId;
+		let draggedTodoNode = document.getElementById(draggedTodoId);
+		try {
+			draggedTodoNode.classList.remove(styles.hideTodo);
+		} catch (e) {};
+	}
+	
 	startDrag(ev) {
-		console.log("starting drag event");
-		ev.dataTransfer.setData("idText", ev.target.id);
+		Logger.setCallerInfo("todoColumn", "startDrag");
+		Logger.log("starting drag event");
+		let draggedTodoId = ev.target.id;
+		ev.dataTransfer.setData("idText", draggedTodoId);
+		this.setState({draggedTodoId: draggedTodoId});
+		this.addDraggedTodoClass(draggedTodoId);
 	}
 	
 	drop(ev) {
-		console.log("starting drop method in todoColumn");
+		Logger.setCallerInfo("todoColumn", "drop");
+		Logger.log("starting");
 		
 		let eventX = ev.clientX;
 		let eventY = ev.clientY;
@@ -48,40 +86,60 @@ export default class TodoColumn extends React.Component {
 			}
 		}
 		
-		ev.dataTransfer.clearData("idText");
 		ev.preventDefault();
-		console.log("passing off to props.updateOrder with todo ids: " + JSON.stringify(todoIds));
+		Logger.log("passing off to props.updateOrder with todo ids: " + JSON.stringify(todoIds));
 		this.props.updateOrder(todoIds);
-		console.log("back from props.updateOrder");
+		this.removeDropClass(ev);
+		this.removeDraggedTodoClass(draggedTodoId);
+		this.setState({draggedTodoId: null});
+		Logger.log("back from props.updateOrder");
+		Logger.log("done");
 	}
 	
 	render() {
-		const todosAndSpacers = [];
+		Logger.setCallerInfo("todoColumn", "render");
+		const todosAndDropLocations = [];
 		let todoLength = this.props.elementDicts.length;
 		
-		todosAndSpacers.push(<Spacer key={"spacer_0"} id={"spacer_0"} onDragOver={this.allowDrop} onDrop={this.drop} />);
-		console.log("elements at this point: " + JSON.stringify(this.props.elementDicts));
-		console.log("order at this point: " + JSON.stringify(this.props.order));
+		const dropTargetProps = {
+			onDragEnter: this.addDropClass,
+			onDragOver: this.allowDrop,
+			onDragLeave: this.removeDropClass,
+			onDrop: this.drop,
+		};
+		
+		todosAndDropLocations.push(<DropLocation key={"DropLocation_0"} id={"DropLocation_0"} {...dropTargetProps} />);
+		Logger.log("order at this point: " + JSON.stringify(this.props.order));
 		for (let i in this.props.order) {
 			let elementId = this.props.order[i];
 			var element = this.props.elementDicts[elementId];
 			if (!element.completed) {
-				console.log("creating todo_" + element.id + " element");
-				todosAndSpacers.push(<ToDoElement key={i} id={"todo_" + element.id + ""} title={element.title} text={element.text} 
-					datetime={element.datetime} draggable="true" onDragStart={this.startDrag} /*onClick={this.markCompleted}*/ />);
-				let id = "spacer_" + i + "";
+				Logger.log("creating todo_" + element.id + " element");
+				let todoProps = {
+					key: i,
+					id: "todo_" + element.id + "",
+					title: element.title,
+					text: element.text,
+					datetime: element.datetime,
+					draggable: "true",
+					onDragStart: this.startDrag,
+					/* onClick: this.markCompleted */ 
+				};
+				todosAndDropLocations.push(<ToDoElement {...todoProps} onDragEnd={this.removeDraggedTodoClass} />);
+				let id = "DropLocation_" + i + "";
 				(i !== todoLength - 1) && 
-					todosAndSpacers.push(<Spacer key={id} id={id} onDragOver={this.allowDrop} onDrop={this.drop} />);
+					todosAndDropLocations.push(<DropLocation key={id} id={id} {...dropTargetProps} />);
 			}
 		}
 		
 		var todoColumn = <div id="todoContainer" className={classnames(this.props.classes)}>
-			{todosAndSpacers}
+			{todosAndDropLocations}
 		</div>;
 		return todoColumn;
 	}
 }
 
-const Spacer = ({id, onDragOver, onDrop}) => (
-	<div key={id} id={id} className={styles.spacer} onDragOver={onDragOver} onDrop={onDrop}></div>
+const DropLocation = (props) => (
+	<div key={props.id} id={props.id} className={styles.dropLocation} onDragOver={props.onDragOver} onDrop={props.onDrop}
+		onDragEnter={props.onDragEnter} onDragLeave={props.onDragLeave}></div>
 );

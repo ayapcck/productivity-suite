@@ -1,3 +1,11 @@
-.spacer {
+.dropLocation {
 	height: 15px;
+}
+
+.dropLocationHovered {
+	height: calc(100% / 7);
+}
+
+.hideTodo {
+	opacity: 0.2;
 }
