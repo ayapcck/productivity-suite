@@ -21,6 +21,7 @@ export default class TodoColumn extends React.Component {
 		this.allowDrop = this.allowDrop.bind(this);
 		this.drop = this.drop.bind(this);
 		this.removeDraggedTodoClass = this.removeDraggedTodoClass.bind(this);
+		this.removeDraggedTodoClassWrapper = this.removeDraggedTodoClassWrapper.bind(this);
 		this.removeDropClass = this.removeDropClass.bind(this);
 		this.startDrag = this.startDrag.bind(this);
 	}
@@ -62,9 +63,18 @@ export default class TodoColumn extends React.Component {
 		dropTargetNode.classList.remove(styles.dropLocationHovered);
 	}
 	
+	removeDraggedTodoClassWrapper(ev) {
+		let dropEffect = ev.dataTransfer.dropEffect;
+		if (dropEffect === "none") {
+			this.removeDraggedTodoClass();
+		}
+	}
+	
 	removeDraggedTodoClass(draggedTodoId=null) {
 		this.log("removing class", "removeDraggedTodoClass");
-		draggedTodoId = draggedTodoId !== null && this.state.draggedTodoId;
+		if (draggedTodoId === null) {
+			draggedTodoId = this.state.draggedTodoId;
+		}
 		let draggedTodoNode = document.getElementById(draggedTodoId);
 		try {
 			draggedTodoNode.classList.remove(styles.hideTodo);
@@ -158,6 +168,7 @@ export default class TodoColumn extends React.Component {
 					datetime: element.datetime,
 					draggable: "true",
 					onDragStart: this.startDrag,
+					onDragEnd: this.removeDraggedTodoClassWrapper,
 					/* onClick: this.markCompleted */ 
 				};
 				todosAndDropLocations.push(<ToDoElement {...todoProps} />);
