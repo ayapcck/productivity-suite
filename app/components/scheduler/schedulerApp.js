@@ -27,6 +27,10 @@ export default class SchedulerApp extends React.Component {
 		this.updateOrder = this.updateOrder.bind(this);
 	}
 	
+	log(message, functionName) {
+		Logger.log(message, "schedulerApp", functionName);
+	}
+	
 	updateDimensions() {
 		var headerHeight = document.getElementsByName("navMenu")[0].offsetHeight;
 		var screenHeight = document.documentElement.clientHeight;
@@ -67,7 +71,6 @@ export default class SchedulerApp extends React.Component {
 	
 	updateTodosFromDB() {
 		if (this.props.username != "") {
-			Logger.setCallerInfo("schedulerApp", "updateTodosFromDB");
 			var url = "http://192.168.0.26:5000/retrieveTodos?user=" + this.props.username;
 			getJson(url).then(response => {
 				var numberTodos = 0;
@@ -82,7 +85,7 @@ export default class SchedulerApp extends React.Component {
 					elements[newElement['id']] = newElement;
 					orderObj[newElement['order']] = newElement['id'];
 				})
-				Logger.log("order at this point: " + JSON.stringify(orderObj));
+				this.log("order at this point: " + JSON.stringify(orderObj), "updateTodosFromDB");
 				this.setState(prevState => ({
 					numberTodo: numberTodos,
 					elementDicts: elements,
@@ -162,8 +165,7 @@ export default class SchedulerApp extends React.Component {
 	}
 	
 	updateOrder(todoIds) {
-		Logger.setCallerInfo("schedulerApp", "updateOrder");
-		Logger.log("starting");
+		this.log("starting", "updateOrder");
 		let elementsToBeUpdated = this.state.elementDicts;
 		let orderObj = [];
 		let stateOrderObj = {};
@@ -174,15 +176,14 @@ export default class SchedulerApp extends React.Component {
 			orderObj.push([id, order]);
 			stateOrderObj[order] = id;
 		}
-		Logger.log("going into postOrderChange");
+		this.log("going into postOrderChange", "updateOrder");
 		this.postOrderChange(orderObj);
-		Logger.log("back from postOrderChange");
-		Logger.log("done");
+		this.log("back from postOrderChange", "updateOrder");
+		this.log("done", "updateOrder");
 	}
 	
 	postOrderChange(orderObj) {
-		Logger.setCallerInfo("schedulerApp", "postOrderChange");
-		Logger.log("starting");
+		this.log("starting", "postOrderChange");
 		if (this.props.username != "") {
 			var url = "http://192.168.0.26:5000/changeOrder";			
 			var jsonBody = {
@@ -190,14 +191,14 @@ export default class SchedulerApp extends React.Component {
 				orderObj: orderObj,
 			}
 			
-			Logger.log("return postJson promise");
+			this.log("return postJson promise", "postOrderChange");
 			return postJson(url, jsonBody).then(() => {
 				this.updateTodosFromDB();
 			}).catch(error => {
 				alert(error);
 			});
 		}
-		Logger.log("done");
+		this.log("done", "postOrderChange");
 	}
 	
 	render() {

@@ -5,8 +5,6 @@ class Logger {
 		if (this.logLevels.includes(logLevel)) {
 			this.logLevel = logLevel;
 			this.logs = [];
-			this.callerFile = "";
-			this.callerFunction = "";
 		} else {
 			throw new Exception("Log level cannot be interpreted");
 		}
@@ -16,20 +14,17 @@ class Logger {
 		return this.logs.length;
 	}
 	
-	setCallerInfo(filename, funcName) {
-		this.callerFunction = funcName;
-		this.callerFile = filename;
-	}
-	
-	log(message) {
+	log(message, callerFile, callerFunction) {
 		if (this.logLevel == "DEBUG") {
 			let something = arguments;
 			let timestamp = new Date().toISOString();
+			let date = timestamp.split('T')[0];
+			let time = timestamp.split('T')[1];
 			this.logs.push({ message, timestamp });
-			console.log(timestamp + ": " + this.callerFile + " " + this.callerFunction + ": " + message);
+			console.log(date + " " + time + ": " + callerFile + " " + callerFunction + ": " + message);
 		}
 	}
 	
 }
 
-module.exports = new Logger("DEBUG");
+module.exports = new Logger("OFF");

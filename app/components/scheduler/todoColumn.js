@@ -25,6 +25,10 @@ export default class TodoColumn extends React.Component {
 		this.startDrag = this.startDrag.bind(this);
 	}
 	
+	log(message, functionName) {
+		Logger.log(message, "todoColumn", functionName);
+	}
+	
 	allowDrop(ev) {
 		ev.preventDefault();
 	}
@@ -53,8 +57,7 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	startDrag(ev) {
-		Logger.setCallerInfo("todoColumn", "startDrag");
-		Logger.log("starting drag event");
+		this.log("starting drag event", "startDrag");
 		let draggedTodoId = ev.target.id;
 		ev.dataTransfer.setData("idText", draggedTodoId);
 		this.setState({draggedTodoId: draggedTodoId});
@@ -62,8 +65,7 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	drop(ev) {
-		Logger.setCallerInfo("todoColumn", "drop");
-		Logger.log("starting");
+		this.log("starting", "drop");
 		
 		let eventX = ev.clientX;
 		let eventY = ev.clientY;
@@ -87,17 +89,16 @@ export default class TodoColumn extends React.Component {
 		}
 		
 		ev.preventDefault();
-		Logger.log("passing off to props.updateOrder with todo ids: " + JSON.stringify(todoIds));
+		this.log("passing off to props.updateOrder with todo ids: " + JSON.stringify(todoIds), "drop");
 		this.props.updateOrder(todoIds);
 		this.removeDropClass(ev);
 		this.removeDraggedTodoClass(draggedTodoId);
 		this.setState({draggedTodoId: null});
-		Logger.log("back from props.updateOrder");
-		Logger.log("done");
+		this.log("back from props.updateOrder", "drop");
+		this.log("done", "drop");
 	}
 	
 	render() {
-		Logger.setCallerInfo("todoColumn", "render");
 		const todosAndDropLocations = [];
 		let todoLength = this.props.elementDicts.length;
 		
@@ -109,12 +110,12 @@ export default class TodoColumn extends React.Component {
 		};
 		
 		todosAndDropLocations.push(<DropLocation key={"DropLocation_0"} id={"DropLocation_0"} {...dropTargetProps} />);
-		Logger.log("order at this point: " + JSON.stringify(this.props.order));
+		this.log("order at this point: " + JSON.stringify(this.props.order), "render");
 		for (let i in this.props.order) {
 			let elementId = this.props.order[i];
 			var element = this.props.elementDicts[elementId];
 			if (!element.completed) {
-				Logger.log("creating todo_" + element.id + " element");
+				this.log("creating todo_" + element.id + " element", "render");
 				let todoProps = {
 					key: i,
 					id: "todo_" + element.id + "",
