@@ -40,6 +40,30 @@ def markCompleted():
 	conn = getMySQL().connect()
 	return markTodoCompleted(user, conn, id)
 
+
+@scheduler.route('/changeOrder', methods=['POST'])	
+@cross_origin()
+def changeOrder():
+	responseData = json.loads(request.data)
+	user = responseData['user']
+	orderObj = responseData['orderObj']
+	conn = getMySQL().connect()
+	for pair in orderObj:
+		try: 
+			changeOrderFor(user, pair, conn)
+		except Exception as e:
+			print(str(e))
+			return Response(status=400)
+	return Response(status=200)
+	
+	
+@scheduler.route('/clearCompleted', methods=['POST'])
+@cross_origin()
+def clearCompleted():
+	user = request.args.get('user')
+	conn = getMySQL().connect()
+	return clearCompletedTodos(user, conn)
+	
 	
 @scheduler.route('/createUserTable')
 @cross_origin()
@@ -57,6 +81,20 @@ def createUserTable():
 	curs = conn.cursor()
 	curs.execute(sql)
 	return Response(status=200)
+	
+	
+def changeOrderFor(scheduler_table, orderPair, dbConn):
+	id = orderPair[0]
+	order = orderPair[1]
+	
+	sql = "UPDATE {} SET ord={} WHERE id={}".format(scheduler_table, order, id)
+	
+	curs = dbConn.cursor()
+	try: 
+		curs.execute(sql)
+		dbConn.commit()
+	except Exception as e:
+		raise e
 	
 
 def fetchTodoElementsFrom(scheduler_table, dbCur):
@@ -77,18 +115,27 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime):
 		curs.execute(sql, (title, content, datetime))
 		dbConn.commit()
 	except Exception as e:
-		print(str(e))
 		return Response(status=400)
 	return Response(status=200)
 
 	
 def markTodoCompleted(scheduler_table, dbConn, id):
-	sql = "UPDATE " + scheduler_table + " SET completed=1 WHERE id=%s"
+	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=NULL WHERE id=%s"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, id)
 		dbConn.commit()
 	except Exception as e:
-		print(str(e))
+		return Response(status=400)
+	return Response(status=200)
+
+	
+def clearCompletedTodos(scheduler_table, dbConn):
+	sql = "DELETE FROM " + scheduler_table + " WHERE completed=1"
+	curs = dbConn.cursor()
+	try:
+		curs.execute(sql)
+		dbConn.commit()
+	except Exception as e:
 		return Response(status=400)
 	return Response(status=200)

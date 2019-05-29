@@ -62,8 +62,15 @@
 	text-align: center;
 	border-style: solid;
 	border-width: 0 0 2px 0;
+	position: relative;
 	overflow: auto;
 	overflow-x: hidden;
+}
+
+.pushDown {
+	position: absolute;
+	bottom: 0;
+	width: -webkit-fill-available
 }
 
 .addbutton {

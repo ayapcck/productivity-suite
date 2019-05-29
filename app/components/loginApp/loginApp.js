@@ -7,16 +7,19 @@ import LoginForm from '../forms/loginForm.js';
 import SignupForm from '../forms/signupForm.js';
 
 import styles from './loginApp.css';
+import centeredBoxStyles from '../centerPanel/centerPanel.css';
 
 export default class LoginApp extends React.Component {
   constructor(props) {
 	super(props);
 	
 	this.state = {
-		showLoginApp: true,
-		showLoginForm: true,
+		showLoginForm: true
 	}
 	
+	//this.closeOnEsc = this.closeOnEsc.bind(this);
+	this.handleCloseForm = this.handleCloseForm.bind(this);
+	this.handleCloseFromClickOutside = this.handleCloseFromClickOutside.bind(this);
 	this.toggleLoginForm = this.toggleLoginForm.bind(this);
   }
   
@@ -27,16 +30,35 @@ export default class LoginApp extends React.Component {
 	}));
   }
   
+  handleCloseForm() {
+	this.setState({showLoginForm: true});
+	this.props.onExit();
+  }
+  
+  handleCloseFromClickOutside(e) {
+	let clickX = e.clientX;
+	let clickY = e.clientY;
+	if (clickX !== 0 && clickY !== 0) {
+		let loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox);
+		let containerRect = loginContainer[0].getBoundingClientRect();
+		let clickInsideContainer = clickX > containerRect.left && clickX < containerRect.right &&
+									clickY > containerRect.top && clickY < containerRect.bottom;
+		!clickInsideContainer && this.handleCloseForm();
+	}
+  }
+  
   render() {
-	var visbility = this.state.showLoginApp ? styles.visible : styles.hidden;
+	var visibility = this.props.showLoginApp ? styles.visible : styles.hidden;
 	var loginApp = <React.Fragment>
-	<div className={classnames(styles.opaqueBackground, visbility)}></div>
-	<div className={classnames(styles.container, visbility)}>
+	<div className={classnames(styles.opaqueBackground, visibility)}></div>
+	<div className={classnames(styles.container, visibility)} onClick={this.handleCloseFromClickOutside}>
 		<CenterPanel 
 			content={ 
 				<React.Fragment>
-					<Icon iconClass="far fa-times-circle" onClick={this.props.onExit} />
-					{this.state.showLoginForm ? <LoginForm onLoginSuccess={this.props.onLoginSuccess} /> : <SignupForm />}
+					<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
+					{this.state.showLoginForm ? 
+						<LoginForm onLoginSuccess={this.props.onLoginSuccess} handleExit={this.handleCloseForm} /> : 
+						<SignupForm handleExit={this.handleCloseForm} />}
 					{this.state.showLoginForm ? 
 						<RedirectLink text="Need an account?" onClick={this.toggleLoginForm} /> : 
 						<RedirectLink text="Already have an account?" onClick={this.toggleLoginForm} />}
