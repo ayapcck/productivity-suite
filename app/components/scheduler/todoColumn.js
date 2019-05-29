@@ -124,10 +124,11 @@ export default class TodoColumn extends React.Component {
 		this.log("done", "drop");
 	}
 	
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps) {
 		this.log("Next Props: " + JSON.stringify(nextProps.order), "shouldComponentUpdate");
 		this.log("Current Props: " + JSON.stringify(this.props.order), "shouldComponentUpdate");
-		if (Object.entries(this.props.order).length === 0) {
+		let emptyButNotBoth = Object.entries(this.props.order).length === 0 && this.props.order !== nextProps;
+		if (emptyButNotBoth) {
 			this.log("component should update", "shouldComponentUpdate");
 			return true;
 		}
@@ -169,7 +170,7 @@ export default class TodoColumn extends React.Component {
 					draggable: "true",
 					onDragStart: this.startDrag,
 					onDragEnd: this.removeDraggedTodoClassWrapper,
-					/* onClick: this.markCompleted */ 
+					onClick: this.props.markTodoCompleted,
 				};
 				todosAndDropLocations.push(<ToDoElement {...todoProps} />);
 				let id = "DropLocation_" + i + "";

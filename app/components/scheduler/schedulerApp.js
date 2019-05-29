@@ -76,16 +76,22 @@ export default class SchedulerApp extends React.Component {
 				var numberTodos = 0;
 				var elements = {};
 				var orderObj = {};
+				
 				response.forEach(todoItem => {
-					numberTodos += 1;
+					let completed = todoItem[4];
 					let newElement = {
 						title: todoItem[0], text: todoItem[1], datetime: todoItem[2], 
 						id: todoItem[3], completed: todoItem[4], order: todoItem[5]
 					}
 					elements[newElement['id']] = newElement;
-					orderObj[newElement['order']] = newElement['id'];
-				})
-				this.log("order at this point: " + JSON.stringify(orderObj), "updateTodosFromDB");
+					if (completed == 0) {
+						orderObj[newElement['order']] = newElement['id'];
+					}
+					numberTodos += 1;
+				});
+				
+				this.handleOrderAfterUpdate(orderObj);
+				
 				this.setState(prevState => ({
 					numberTodo: numberTodos,
 					elementDicts: elements,
@@ -107,14 +113,18 @@ export default class SchedulerApp extends React.Component {
 	
 	markCompleted(id) {
 		if (this.props.username != "") {
+			this.log("starting", "markCompleted");
 			var url = "http://192.168.0.26:5000/markCompleted?user=" + this.props.username + "&id=" + id + "";
 			
+			this.log("POST todo id: " + id + " as completed", "markCompleted");
 			postJson(url).then(response => {
 				this.setState({ needsUpdate: true });
-				this.updateTodosFromDB();				
+				this.log("passing off to updateTodosFromDB, inside post.then()", "markCompleted");
+				this.updateTodosFromDB();
 			}).catch(error => {
 				alert(error);
 			});
+			this.log("finished", "markCompleted");
 		}
 	}
 	
@@ -144,6 +154,7 @@ export default class SchedulerApp extends React.Component {
 	}
 	
 	addTodoClicked(e) {
+		this.log("starting", "addTodoClicked");
 		if (this.props.username != "") {
 			e.preventDefault();
 			var todoTitle = e.target[0].value;
@@ -156,12 +167,47 @@ export default class SchedulerApp extends React.Component {
 				alert("Please fill title section");
 			} else {
 				this.clearForm(e);
+				this.log("submit conditions acceptible, passing off to postTodoElement", "addTodoClicked");
 				this.postTodoElement(todoTitle, todoContent, todoDateTime);
 			}
 		} else {
 			e.preventDefault();
 			alert("You need an account to use this feature");
 		}
+		this.log("done", "addTodoClicked");
+	}
+	
+	handleOrderAfterUpdate(orderObj) {
+		this.log("starting", "handleOrderAfterUpdate");
+		
+		this.log("this.state.orderObj before setState: " + JSON.stringify(this.state.orderObj), "updateTodosFromDB");
+		this.log("orderObj before setState: " + JSON.stringify(orderObj), "updateTodosFromDB");
+		
+		let stateOrderKeys = Object.keys(this.state.orderObj);
+		let orderObjKeys = Object.keys(orderObj);
+		let firstTodoInList = (orderObjKeys.length == 1) && (orderObjKeys[0] == "null");
+		let notEmptyButDifferentSize = (stateOrderKeys.length != 0) && (orderObjKeys.length != stateOrderKeys.length);
+		
+		if (firstTodoInList) {
+			this.updateOrder(["todo_" + Object.values(orderObj)[0]]);
+		}
+		else {
+			if (notEmptyButDifferentSize) {
+				this.log("order size was different, passing off to updateOrderAfterUpdateTodos", "updateTodosFromDB");
+				this.updateOrderAfterUpdateTodos(orderObj);
+			}
+		}
+		
+		this.log("done", "handleOrderAfterUpdate");
+	}
+	
+	// this allows usage of this.updateOrder to run after updateTodosFromDB
+	updateOrderAfterUpdateTodos(orderObj) {
+		let todoIds = [];
+		for (const val of Object.values(orderObj)) {
+			todoIds.push("todo_" + val);
+		}
+		this.updateOrder(todoIds);
 	}
 	
 	updateOrder(todoIds) {
@@ -172,7 +218,6 @@ export default class SchedulerApp extends React.Component {
 		for (let i in todoIds) {
 			let id = parseInt(todoIds[i].split('_')[1]);
 			let order = parseInt(i) + 1;
-			elementsToBeUpdated[id]['order'] = order;
 			orderObj.push([id, order]);
 			stateOrderObj[order] = id;
 		}
@@ -220,7 +265,7 @@ export default class SchedulerApp extends React.Component {
 					</form>
 				</div>
 				<TodoColumn classes={classnames(styles.gridElement, styles.middleColumn)} elementDicts={this.state.elementDicts} 
-					updateOrder={this.updateOrder} order={this.state.orderObj} />
+					updateOrder={this.updateOrder} order={this.state.orderObj} markTodoCompleted={this.markCompleted} />
 				<div className={classnames(styles.gridElement, styles.rightColumn)}>
 					<span className={styles.finishedHeader}>Completed Tasks</span>
 					<div className={styles.finishedItems}>
