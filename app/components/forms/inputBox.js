@@ -3,7 +3,7 @@ var React = require('react');
 import Tooltip from '../tooltip/tooltip.js'
 
 import classnames from 'classnames';
-import styles from './form.css';
+import styles from './form.less';
 
 export default class InputBox extends React.Component {
 	constructor(props) {

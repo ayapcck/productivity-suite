@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import InputBox from '../forms/inputBox.js';
 import FormButton from '../forms/button.js';
 import TodoColumn from './todoColumn.js';
-import styles from './schedulerApp.css';
+import styles from './schedulerApp.less';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 
 var Logger = require('../utilities/logger');
@@ -30,22 +30,9 @@ export default class SchedulerApp extends React.Component {
 	log(message, functionName) {
 		Logger.log(message, "schedulerApp", functionName);
 	}
-	
-	updateDimensions() {
-		var headerHeight = document.getElementsByName("navMenu")[0].offsetHeight;
-		var screenHeight = document.documentElement.clientHeight;
-		var schedulerBody = document.getElementsByName("schedulerBody")[0];
-		schedulerBody.style.height = (screenHeight - headerHeight) + "px";
-		schedulerBody.style.top = headerHeight + "px";
-	}
 
 	componentDidMount() {
-		this.updateDimensions();
 		this.updateTodosFromDB();
-		window.addEventListener("resize", this.updateDimensions.bind(this));
-	}
-	componentWillUnmount() {
-		window.removeEventListener("resize", this.updateDimensions.bind(this));
 	}
 	
 	componentDidUpdate(prevProps) {
@@ -257,19 +244,23 @@ export default class SchedulerApp extends React.Component {
 		
 		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
 				<div className={classnames(styles.gridElement, styles.leftColumn)}>
-					<form id="addTodoForm" onSubmit={this.addTodoClicked}>
-						<InputBox text="Title" type="text" name="toDoTitle" />
-						<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
-						<InputBox text="Content" type="area" name="toDoBody" />
-						<FormButton text="Add to-do" type="submit" name="addTodoFormSubmit" />
-					</form>
+					<div className={styles.addTodoContainer}>
+						<form id="addTodoForm" onSubmit={this.addTodoClicked}>
+							<InputBox text="Title" type="text" name="toDoTitle" />
+							<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
+							<InputBox text="Content" type="area" name="toDoBody" />
+							<FormButton text="Add to-do" type="submit" name="addTodoFormSubmit" />
+						</form>
+					</div>
 				</div>
 				<TodoColumn classes={classnames(styles.gridElement, styles.middleColumn)} elementDicts={this.state.elementDicts} 
 					updateOrder={this.updateOrder} order={this.state.orderObj} markTodoCompleted={this.markCompleted} />
 				<div className={classnames(styles.gridElement, styles.rightColumn)}>
-					<span className={styles.finishedHeader}>Completed Tasks</span>
-					<div className={styles.finishedItems}>
-						{finishedElements}
+					<div className={styles.completedTasksContainer}>
+						<span className={styles.finishedHeader}>Completed Tasks</span>
+						<div className={styles.finishedItems}>
+							{finishedElements}
+						</div>
 						<FormButton text="Clear" type="button" containerClass={styles.pushDown} onClick={this.clearCompleted} />
 					</div>
 				</div>

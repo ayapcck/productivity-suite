@@ -2,7 +2,7 @@ var React = require('react');
 
 import Icon from '../icons/icon.js';
 
-import styles from './navigationBar.css';
+import styles from './navigationBar.less';
 
 export default class NavigationBar extends React.Component {
 	constructor(props) {

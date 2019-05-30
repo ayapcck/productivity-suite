@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 import ToDoElement from './todoElement.js';
 import styles from './todoColumn.css';
+import lessStyles from './todoColumn.less';
 import todoStyles from './todoElement.css';
 
 var Logger = require('../utilities/logger');
@@ -179,7 +180,7 @@ export default class TodoColumn extends React.Component {
 			}
 		}
 		
-		var todoColumn = <div id="todoContainer" className={classnames(this.props.classes)}>
+		var todoColumn = <div id="todoContainer" className={classnames(this.props.classes, lessStyles.backgroundColor)}>
 			{todosAndDropLocations}
 		</div>;
 		return todoColumn;

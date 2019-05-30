@@ -2,7 +2,7 @@ var React = require('react');
 
 import classnames from 'classnames';
 
-import styles from './todoElement.css';
+import styles from './todoElement.less';
 
 export default class ToDoElement extends React.Component {
 	formatTime(time) {

@@ -1,0 +1,113 @@
+@utilities: "../utilities";
+
+@import "@{utilities}/colors.less";
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.addTodoContainer {
+	grid-row: 2;
+}
+
+.completedTasksContainer {
+	grid-row: 2;
+	display: grid;
+	grid-template-rows: 15% 70% 15%;
+}
+
+.schedulerContent {
+	background-color: @backgroundColor;
+	display: grid;
+	grid-template-columns: 25% 50% 25%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+.gridElement {
+	box-sizing: border-box;
+	border-style: solid;
+	border-color: @accentColor;
+}
+
+.leftColumn {
+	grid-column: 1;
+	border-width: 0 1px 0 0;
+	display: grid;
+	grid-template-rows: 25% 50% 25%;
+}
+.middleColumn {
+	grid-column: 2;
+	border-width: 0 1px;
+	overflow: auto;
+	padding: 5px;
+}
+.rightColumn {
+	grid-column: 3;
+	border-width: 0 0 0 1px;
+	display: grid;
+	grid-template-rows: 25% 50% 25%;
+}
+
+.finishedHeader {
+	border-color: @accentColor;
+	border-style: solid;
+	border-width: 2px 0;
+	display: block;
+	color: @textColor;
+	grid-row: 1;
+	padding: 5px 0;
+	text-align: center;
+}
+
+.finishedItem {
+	width: 100%;
+	display: block;
+	height: 10%;
+	line-height: 1.5;
+}
+
+.finishedItems {
+	border-color: @accentColor;
+	border-style: solid;
+	border-width: 0 0 2px 0;
+	grid-row: 2;
+	overflow: auto;
+	overflow-x: hidden;
+	position: relative;
+	text-align: center;
+	width: 100%;
+}
+
+.pushDown {
+	width: -webkit-fill-available;
+	grid-row: 3;
+}
+
+.addbutton {
+	height: 7%;
+	width: 30%;
+	margin: 0 auto;
+	border: 2px solid @accentColor;
+	user-select: none;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 25px;
+}

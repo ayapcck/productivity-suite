@@ -27,4 +27,4 @@ class Logger {
 	
 }
 
-module.exports = new Logger("DEBUG");
+module.exports = new Logger("OFF");
