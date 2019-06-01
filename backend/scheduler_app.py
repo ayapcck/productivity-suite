@@ -75,12 +75,13 @@ def createUserTable():
 			"datetime VARCHAR(255), "
 			"id INT NOT NULL AUTO_INCREMENT, "
 			"completed BOOLEAN DEFAULT false, "
+			"ord INT, "
 			"PRIMARY KEY (id))").format(user)
 			
 	conn = getMySQL().connect()
 	curs = conn.cursor()
 	curs.execute(sql)
-	return Response(status=200)
+	return Response(json.dumps([]), status=200)
 	
 	
 def changeOrderFor(scheduler_table, orderPair, dbConn):

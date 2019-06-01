@@ -25,11 +25,6 @@ export default class NavigationBar extends React.Component {
 		this.setState({accountHovered: false});
 	}
 	
-	componentDidMount() {
-		var navMenuHeight = document.getElementsByName("navMenu")[0].offsetHeight;
-		document.getElementsByName("navSpacer")[0].style.height = navMenuHeight + "px";
-	}
-	
 	loginLogoutClick() {
 		if (this.props.userLoggedIn) {
 			this.hideAccountSettings();

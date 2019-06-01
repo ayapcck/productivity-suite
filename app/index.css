@@ -3,6 +3,13 @@ body, html {
 	margin: 0;
 }
 
+#content {
+	height: 100%;
+	display: grid;
+	grid-template-rows: 6% 94%;
+	position: relative;
+}
+
 .loginContainer {
 	height: 100%;
 	width: 100%;

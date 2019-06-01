@@ -2,10 +2,12 @@ var React = require('react');
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
-import { postJson } from '../utilities/jsonHelpers.js';
+import { postJson, getJson } from '../utilities/jsonHelpers.js';
 import { generateSalt, generateActivationCode, generateHmac } from '../utilities/validation.js';
 
 import styles from './form.less';
+
+var Logger = require('../utilities/logger');
 
 export default class SignupForm extends React.Component {
   constructor(props) {
@@ -21,6 +23,10 @@ export default class SignupForm extends React.Component {
 	this.clearError = this.clearError.bind(this);
 	this.checkValididity = this.checkValididity.bind(this);
   }
+	
+  log(message, functionName) {
+      Logger.log(message, "schedulerApp", functionName);
+  }
   
   checkCreateUserTable(user) {
 	var url = "http://192.168.0.26:5000/createUserTable?user=" + user;
@@ -31,6 +37,7 @@ export default class SignupForm extends React.Component {
   }
   
   createUser(username, email, password) {
+	this.log("starting", "createUser");
 	var salt = generateSalt(16);
 	var passHash = generateHmac(password, salt);
 	var activationCode = generateActivationCode();
@@ -44,13 +51,15 @@ export default class SignupForm extends React.Component {
 		activationCode: activationCode
 	}
 	
+	this.log("POST user information", "createUser");
 	postJson(url, jsonBody).then(response => {
-		alert("Created successfully");
+		alert("Created successfully, please check your email");
 	}).catch(error => {
 		if (error.response.status == 409) {
 			alert("Username already in use");
 		}
 	});
+	this.log("done", "createUser");
   }
 	
   clearError(e) {
@@ -61,6 +70,7 @@ export default class SignupForm extends React.Component {
   }
 	
   checkValididity(e) {
+	this.log("starting", "checkValididity");
     var inputValue = e.target.value;
 	var inputName =  e.target.name;
 	var invalid = inputValue == "";
@@ -85,15 +95,17 @@ export default class SignupForm extends React.Component {
 	}
 	
 	this.setState({ invalid: invalid });
+	this.log("done", "checkValididity");
   }
   
   clearForm(e) {
-	[0,3].forEach(i => {
+	[0,1,2,3].forEach(i => {
 		e.target[i].value = "";
 	});
   }
   
   handleSubmit(e) {
+	this.log("starting", "handleSubmit");
 	e.preventDefault();
 	var username = e.target[0].value;
 	var email = e.target[1].value;
@@ -116,7 +128,7 @@ export default class SignupForm extends React.Component {
 		this.checkCreateUserTable(username);
 		this.createUser(username, email, password);
 	}
-	
+	this.log("done", "handleSubmit");
   }
   
   render() {

@@ -1,6 +1,6 @@
 var React = require('react');
 
-import styles from './icon.css';
+import styles from './icon.less';
 
 import classnames from 'classnames';
 
