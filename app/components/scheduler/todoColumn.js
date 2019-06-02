@@ -3,9 +3,8 @@ var React = require('react');
 import classnames from 'classnames';
 
 import ToDoElement from './todoElement.js';
-import styles from './todoColumn.css';
-import lessStyles from './todoColumn.less';
-import todoStyles from './todoElement.css';
+import styles from './todoColumn.less';
+import todoStyles from './todoElement.less';
 
 var Logger = require('../utilities/logger');
 
@@ -38,7 +37,6 @@ export default class TodoColumn extends React.Component {
 		let nextSpacerId = draggedTodoNode.nextSibling.id;
 		return dropTargetId == nextSpacerId || dropTargetId == prevSpacerId
 	}
-	
 	
 	allowDrop(ev) {
 		if (!this.previousOrNextSpacer(ev.target.id)) {
@@ -180,7 +178,7 @@ export default class TodoColumn extends React.Component {
 			}
 		}
 		
-		var todoColumn = <div id="todoContainer" className={classnames(this.props.classes, lessStyles.backgroundColor)}>
+		var todoColumn = <div id="todoContainer" className={classnames(this.props.classes)}>
 			{todosAndDropLocations}
 		</div>;
 		return todoColumn;

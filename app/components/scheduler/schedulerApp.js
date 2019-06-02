@@ -7,6 +7,7 @@ import InputBox from '../forms/inputBox.js';
 import FormButton from '../forms/button.js';
 import TodoColumn from './todoColumn.js';
 import styles from './schedulerApp.less';
+import utilities from '../utilities/utilities.less';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 
 var Logger = require('../utilities/logger');
@@ -16,13 +17,15 @@ export default class SchedulerApp extends React.Component {
 		super(props);
 		
 		this.state = {
-			numberTodo: 0,
 			elementDicts: {},
-			orderObj: {}
+			numberTodo: 0,
+			orderObj: {},
+			todoTimeEnabled: false
 		}
 				
 		this.addTodoClicked = this.addTodoClicked.bind(this);
 		this.clearCompleted = this.clearCompleted.bind(this);
+		this.handleTimeChange = this.handleTimeChange.bind(this);
 		this.markCompleted = this.markCompleted.bind(this);
 		this.updateOrder = this.updateOrder.bind(this);
 	}
@@ -232,6 +235,11 @@ export default class SchedulerApp extends React.Component {
 		}
 		this.log("done", "postOrderChange");
 	}
+
+	handleTimeChange(ev) {
+		let checked = ev.target.checked;
+		this.setState({ todoTimeEnabled: checked });
+	}
 	
 	render() {
 		const finishedElements = [];
@@ -247,7 +255,18 @@ export default class SchedulerApp extends React.Component {
 					<div className={styles.addTodoContainer}>
 						<form id="addTodoForm" onSubmit={this.addTodoClicked}>
 							<InputBox text="Title" type="text" name="toDoTitle" />
-							<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
+							<div className={styles.checkboxContainer}>
+								<label>
+									Time enabled: 
+									<input type="checkbox" value="time" onChange={this.handleTimeChange}/>
+								</label>
+								<label>
+									High priority: 
+									<input type="checkbox" value="priority" />
+								</label>
+							</div>
+							<InputBox text="Date" type="datetime-local" name="toDoDate" 
+								val={this.getCurrentISOTime()} disabled={!this.state.todoTimeEnabled} />
 							<InputBox text="Content" type="area" name="toDoBody" />
 							<FormButton text="Add to-do" type="submit" name="addTodoFormSubmit" />
 						</form>

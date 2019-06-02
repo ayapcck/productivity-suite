@@ -121,7 +121,7 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime):
 
 	
 def markTodoCompleted(scheduler_table, dbConn, id):
-	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=NULL WHERE id=%s"
+	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=0 WHERE id=%s"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, id)

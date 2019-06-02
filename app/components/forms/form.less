@@ -14,7 +14,6 @@
 	border-radius: 15px;
 	margin: 5px auto;
 	padding: 5px 2.5px;
-	text-align: center;
 	cursor: pointer;
 	box-sizing: border-box;
 }
@@ -26,7 +25,7 @@
 }
 .formButton:focus {
 	outline: 0;
-	box-shadow: 0 0 2pt 1pt red;
+	box-shadow: 0 0 2pt 1pt @inputFocusColor;
 }
 
 .formTitle {
@@ -44,10 +43,14 @@
 	border: 2px solid @accentColor;
 	padding: 2px 5px;
 }
+.inputBox:focus {
+	outline: 0;
+	box-shadow: 0 0 2pt 1pt @inputFocusColor;
+}
 
 .invalid {
 	font-weight: bold;
-	color: red;
+	color: @invalidFormInputColor;
 }
 
 .inputLabel {
@@ -63,4 +66,12 @@ input[type=datetime-local]::-webkit-clear-button {
 }
 input[type=datetime-local]::-webkit-inner-spin-button {
 	display: none;
+}
+input::-webkit-datetime-edit-day-field:focus,
+input::-webkit-datetime-edit-month-field:focus,
+input::-webkit-datetime-edit-year-field:focus,
+input::-webkit-datetime-edit-minute-field:focus,
+input::-webkit-datetime-edit-hour-field:focus,
+input::-webkit-datetime-edit-ampm-field:focus {
+    background-color: @datetimeSelectionColor;
 }

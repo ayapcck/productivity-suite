@@ -18,22 +18,42 @@
   background: #555; 
 }
 
+.addbutton {
+	height: 7%;
+	width: 30%;
+	margin: 0 auto;
+	border: 2px solid @accentColor;
+	user-select: none;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 25px;
+}
+
 .addTodoContainer {
-	grid-row: 2;
+	margin: 10px;
+}
+
+.checkboxContainer {
+	display: flex;
+	justify-content: center;
+	color: @textColor;
+}
+.checkboxContainer label {
+	margin: 0 10px;
 }
 
 .completedTasksContainer {
-	grid-row: 2;
+	border-color: @accentColor;
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 2px;
 	display: grid;
 	grid-template-rows: 15% 70% 15%;
-}
-
-.schedulerContent {
-	background-color: @backgroundColor;
-	display: grid;
-	grid-template-columns: 25% 50% 25%;
-	height: 100%;
-	width: 100%;
+	margin: 10px auto;
+	user-select: none;
+	width: 90%;
 }
 
 .gridElement {
@@ -46,7 +66,7 @@
 	grid-column: 1;
 	border-width: 0 1px 0 0;
 	display: grid;
-	grid-template-rows: 25% 50% 25%;
+	grid-template-rows: 50% 50%;
 }
 .middleColumn {
 	grid-column: 2;
@@ -58,18 +78,20 @@
 	grid-column: 3;
 	border-width: 0 0 0 1px;
 	display: grid;
-	grid-template-rows: 25% 50% 25%;
+	grid-template-rows: 50% 50%;
 }
 
 .finishedHeader {
 	border-color: @accentColor;
 	border-style: solid;
-	border-width: 2px 0;
+	border-width: 0 0 2px 0;
 	display: block;
 	color: @textColor;
 	grid-row: 1;
 	padding: 5px 0;
-	text-align: center;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .finishedItem {
@@ -77,15 +99,18 @@
 	display: block;
 	height: 10%;
 	line-height: 1.5;
+	padding: 5px;
 }
 
 .finishedItems {
 	border-color: @accentColor;
 	border-style: solid;
 	border-width: 0 0 2px 0;
+	color: @textColor;
 	grid-row: 2;
 	overflow: auto;
 	overflow-x: hidden;
+	padding: 5px 0;
 	position: relative;
 	text-align: center;
 	width: 100%;
@@ -94,17 +119,13 @@
 .pushDown {
 	width: -webkit-fill-available;
 	grid-row: 3;
+	display: flex;
 }
 
-.addbutton {
-	height: 7%;
-	width: 30%;
-	margin: 0 auto;
-	border: 2px solid @accentColor;
-	user-select: none;
-	display: flex;
-	text-align: center;
-	justify-content: center;
-	flex-direction: column;
-	border-radius: 25px;
+.schedulerContent {
+	background-color: @backgroundColor;
+	display: grid;
+	grid-template-columns: 25% 50% 25%;
+	height: 100%;
+	width: 100%;
 }
