@@ -13,10 +13,13 @@ export default class ToDoElement extends React.Component {
 	}
 	
 	render() {
-		var dateAndTime = this.props.datetime.split('T');
-		var date = dateAndTime[0];
-		var time = this.formatTime(dateAndTime[1]);
-		var dragSettings = {
+		let date, time = "";
+		if (this.props.datetime != "T") {
+			let dateAndTime = this.props.datetime.split('T');
+			date = dateAndTime[0];
+			time = this.formatTime(dateAndTime[1]);
+		}
+		let dragSettings = {
 			draggable: this.props.draggable,
 			onDragStart: this.props.onDragStart,
 			onDragEnd: this.props.onDragEnd,
@@ -24,7 +27,8 @@ export default class ToDoElement extends React.Component {
 		
 		// todo element id is of form 'todo_1'
 		let elementId = this.props.id.split('_')[1];
-		var element = <div id={this.props.id} className={classnames(styles.todoElement)} {...dragSettings} onClick={() => this.props.onClick(elementId)}>
+		let classes = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
+		let element = <div id={this.props.id} className={classes} {...dragSettings} onClick={() => this.props.onClick(elementId)}>
 			<h4 className={classnames(styles.todoPiece, styles.elementTitle)}>{this.props.title}</h4>
 			<h5 className={classnames(styles.todoPiece, styles.elementText)}>{this.props.text}</h5>
 			<h4 className={classnames(styles.todoPiece, styles.elementDate)}>{date}</h4>

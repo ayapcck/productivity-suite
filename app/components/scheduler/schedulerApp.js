@@ -42,13 +42,14 @@ export default class SchedulerApp extends React.Component {
 		prevProps.username != this.props.username && this.updateTodosFromDB();
 	}
 	
-	postTodoElement(title, content, datetime) {
+	postTodoElement(title, content, datetime, priority) {
 		var url = "http://192.168.0.26:5000/addTodo";
 		var jsonBody = {
 			user: this.props.username,
 			title: title,
 			content: content,
-			datetime: datetime
+			datetime: datetime,
+			priority: priority
 		}
 		
 		postJson(url, jsonBody).then(response => {			
@@ -71,7 +72,8 @@ export default class SchedulerApp extends React.Component {
 					let completed = todoItem[4];
 					let newElement = {
 						title: todoItem[0], text: todoItem[1], datetime: todoItem[2], 
-						id: todoItem[3], completed: todoItem[4], order: todoItem[5]
+						id: todoItem[3], completed: todoItem[4], order: todoItem[5], 
+						priority: todoItem[6]
 					}
 					elements[newElement['id']] = newElement;
 					if (completed == 0) {
@@ -139,26 +141,32 @@ export default class SchedulerApp extends React.Component {
 	
 	clearForm(e) {
 		e.target[0].value = "";
-		e.target[1].value = this.getCurrentISOTime();
-		e.target[2].value = "";
+		e.target[1].checked = false;
+		e.target[2].checked = false;
+		e.target[3].value = this.getCurrentISOTime();
+		e.target[4].value = "";
+
+		this.setState({ todoTimeEnabled: false });
 	}
 	
 	addTodoClicked(e) {
 		this.log("starting", "addTodoClicked");
 		if (this.props.username != "") {
 			e.preventDefault();
-			var todoTitle = e.target[0].value;
-			var todoDateTime = e.target[1].value;
-			var todoContent = e.target[2].value;
+			let todoTitle = e.target[0].value;
+			let timeEnabled = e.target[1].checked;
+			let todoPriority = e.target[2].checked ? 1 : 0;
+			let todoDateTime = timeEnabled ? e.target[3].value : "T";
+			let todoContent = e.target[4].value;
 			
-			var emptyValues = todoTitle == "" || todoDateTime == "";
+			let emptyValues = todoTitle == "";
 			
 			if (emptyValues) {
 				alert("Please fill title section");
 			} else {
 				this.clearForm(e);
 				this.log("submit conditions acceptible, passing off to postTodoElement", "addTodoClicked");
-				this.postTodoElement(todoTitle, todoContent, todoDateTime);
+				this.postTodoElement(todoTitle, todoContent, todoDateTime, todoPriority);
 			}
 		} else {
 			e.preventDefault();
@@ -266,7 +274,8 @@ export default class SchedulerApp extends React.Component {
 								</label>
 							</div>
 							<InputBox text="Date" type="datetime-local" name="toDoDate" 
-								val={this.getCurrentISOTime()} disabled={!this.state.todoTimeEnabled} />
+								val={this.getCurrentISOTime()} disabled={!this.state.todoTimeEnabled} 
+								disabledTooltipText="Disabled" />
 							<InputBox text="Content" type="area" name="toDoBody" />
 							<FormButton text="Add to-do" type="submit" name="addTodoFormSubmit" />
 						</form>

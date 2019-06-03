@@ -170,6 +170,7 @@ export default class TodoColumn extends React.Component {
 					onDragStart: this.startDrag,
 					onDragEnd: this.removeDraggedTodoClassWrapper,
 					onClick: this.props.markTodoCompleted,
+					priority: element.priority,
 				};
 				todosAndDropLocations.push(<ToDoElement {...todoProps} />);
 				let id = "DropLocation_" + i + "";

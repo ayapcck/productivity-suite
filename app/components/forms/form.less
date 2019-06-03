@@ -35,13 +35,17 @@
 }
 
 .inputBox {
-	line-height: 2;
-	width: -webkit-fill-available;
-	border-radius: 10px;
-	box-sizing: border-box;
 	background-color: @textColor;
 	border: 2px solid @accentColor;
+	border-radius: 10px;
+	box-sizing: border-box;
+	line-height: 2;
 	padding: 2px 5px;
+	resize: none;
+	width: -webkit-fill-available;
+}
+.inputBox:disabled {
+	color: @inputDisabledColor;
 }
 .inputBox:focus {
 	outline: 0;
@@ -61,10 +65,20 @@
 	padding: 5px;
 }
 
+input[disabled] {
+	pointer-events: none;
+}
+
 input[type=datetime-local]::-webkit-clear-button {
 	display: none;
 }
 input[type=datetime-local]::-webkit-inner-spin-button {
+	display: none;
+}
+input[type=datetime-local]::-webkit-calendar-picker-indicator {
+	opacity: 100;
+}
+input[type=datetime-local]:disabled::-webkit-calendar-picker-indicator {
 	display: none;
 }
 input::-webkit-datetime-edit-day-field:focus,

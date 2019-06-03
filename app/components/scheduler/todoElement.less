@@ -2,6 +2,27 @@
 
 @import "@{utilities}/colors.less";
 
+.elementTitle{
+	grid-row: 1;
+}
+.elementText{
+	grid-row: 2;
+}
+.elementDate{
+	grid-column: 2;
+	text-align: right;
+}
+.elementTime{
+	grid-column: 2;
+	grid-row: 2;
+	text-align: right;
+}
+
+.priority {
+	color: @priorityTodoColor!important;
+	border-color: @priorityTodoColor!important;
+}
+
 .todoElement {
 	height: calc(100% / 7);
 	color: @textColor;
@@ -22,20 +43,4 @@
 .todoPiece {
 	margin: 0;
 	padding: 5px;
-}
-
-.elementTitle{
-	grid-row: 1;
-}
-.elementText{
-	grid-row: 2;
-}
-.elementDate{
-	grid-column: 2;
-	text-align: right;
-}
-.elementTime{
-	grid-column: 2;
-	grid-row: 2;
-	text-align: right;
 }
