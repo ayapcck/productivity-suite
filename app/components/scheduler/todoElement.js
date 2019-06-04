@@ -2,42 +2,86 @@ var React = require('react');
 
 import classnames from 'classnames';
 
+import Icon from '../icons/icon.js';
+
 import styles from './todoElement.less';
 
 export default class ToDoElement extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			showIcons: false
+		}
+
+		this.showHoverIcons = this.showHoverIcons.bind(this);
+		this.hideHoverIcons = this.hideHoverIcons.bind(this);
+	}
+
 	formatTime(time) {
 		let hour = parseInt(time.split(':')[0]);
 		let minutes = time.split(':')[1];
-		if (hour > 12) return hour - 12 + ":" + minutes + " PM";
-		return time + " AM";
+		if (hour > 12) return hour - 12 + ':' + minutes + ' PM';
+		return time + ' AM';
+	}
+
+	showHoverIcons() {
+		this.setState({ showIcons: true });
+	}
+
+	hideHoverIcons() {
+		this.setState({ showIcons: false });
 	}
 	
 	render() {
-		let date, time = "";
-		if (this.props.datetime != "T") {
+		let date = '';
+		let time = '';
+		if (this.props.datetime != 'T') {
 			let dateAndTime = this.props.datetime.split('T');
 			date = dateAndTime[0];
 			time = this.formatTime(dateAndTime[1]);
-		}
-		let dragSettings = {
+		};
+		const dragSettings = {
 			draggable: this.props.draggable,
 			onDragStart: this.props.onDragStart,
-			onDragEnd: this.props.onDragEnd,
-		}
+			onDragEnd: this.props.onDragEnd
+		};
+		const hoverSettings = {
+			onMouseEnter: this.showHoverIcons,
+			onMouseMove: this.showHoverIcons,
+			onMouseLeave: this.hideHoverIcons
+		};
 		
 		// todo element id is of form 'todo_1'
 		let elementId = this.props.id.split('_')[1];
-		let classes = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
-		let element = <div id={this.props.id} className={classes} {...dragSettings} onClick={() => this.props.onClick(elementId)}>
-			<h4 className={classnames(styles.todoPiece, styles.elementTitle)}>{this.props.title}</h4>
-			<h5 className={classnames(styles.todoPiece, styles.elementText)}>{this.props.text}</h5>
-			<h4 className={classnames(styles.todoPiece, styles.elementDate)}>{date}</h4>
-			<h4 className={classnames(styles.todoPiece, styles.elementTime)}>{time}</h4>
-		</div>
-		return element
+		let elementClasses = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
+		let element = <div id={this.props.id} className={elementClasses} {...dragSettings}
+			{...hoverSettings} onClick={() => this.props.onClick(elementId)}>
+			{this.state.showIcons && <React.Fragment>
+			<Icon iconClass="far fa-check-circle" 
+				wrapperStyles={classnames(styles.elementDone, styles.todoIconWrapper)} 
+				iconStyles={styles.todoIcon} />
+			<Icon iconClass="far fa-edit" 
+				wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
+				iconStyles={styles.todoIcon} />
+			</React.Fragment>}
+			<TodoTextPiece content={this.props.title} extraClass={styles.elementTitle} size="big" />
+			<TodoTextPiece content={this.props.text} extraClass={styles.elementText} size="small" />
+			<TodoTextPiece content={date} extraClass={styles.elementDate} size="big" />
+			<TodoTextPiece content={time} extraClass={styles.elementTime} size="big" />
+		</div>;
+		return element;
 	}
 }
 
+const TodoTextPiece = ({ content, extraClass, size }) => {
+	let classes = classnames(styles.todoPiece, extraClass);
+	let retElement = size === "big" ? 
+		<h4 className={classes}>{content}</h4> : 
+		<h5 className={classes}>{content}</h5>;
+	return retElement;
+}
+
 ToDoElement.defaultProps = {
-	datetime: " T "
+	datetime: ' T '
 }

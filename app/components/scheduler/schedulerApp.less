@@ -2,6 +2,8 @@
 
 @import "@{utilities}/colors.less";
 
+@completedTaskRadius: 15px;
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -46,7 +48,7 @@
 
 .completedTasksContainer {
 	border-color: @accentColor;
-	border-radius: 15px;
+	border-radius: @completedTaskRadius;
 	border-style: solid;
 	border-width: 2px;
 	display: grid;
@@ -82,16 +84,18 @@
 }
 
 .finishedHeader {
+	@rad: @completedTaskRadius;
+	align-items: center;
+	background-color: @lightPurple;
 	border-color: @accentColor;
 	border-style: solid;
+	border-radius: @rad @rad 0 0;
 	border-width: 0 0 2px 0;
-	display: block;
-	color: @textColor;
-	grid-row: 1;
-	padding: 5px 0;
+	color: @darkTextColor;
 	display: inline-flex;
-	align-items: center;
+	grid-row: 1;
 	justify-content: center;
+	padding: 5px 0;
 }
 
 .finishedItem {
@@ -103,9 +107,6 @@
 }
 
 .finishedItems {
-	border-color: @accentColor;
-	border-style: solid;
-	border-width: 0 0 2px 0;
 	color: @textColor;
 	grid-row: 2;
 	overflow: auto;

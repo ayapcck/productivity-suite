@@ -6,9 +6,10 @@ import classnames from 'classnames';
 
 export default class FormButton extends React.Component {
 	render() {
-		var iconClass = this.props.iconClass;
-		var iconStyles = this.props.iconStyles || styles.icon;
-		var icon = <div className={styles.iconWrapper}>
+		let iconClass = this.props.iconClass;
+		let iconStyles = this.props.iconStyles || styles.icon;
+		let wrapperStyles = this.props.wrapperStyles || styles.iconWrapper;
+		let icon = <div className={wrapperStyles}>
 			{this.props.iconText}
 			<i className={classnames(iconStyles, iconClass)} onClick={this.props.onClick}></i>
 		</div>
