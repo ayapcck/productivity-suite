@@ -173,7 +173,7 @@ export default class TodoColumn extends React.Component {
 					priority: element.priority,
 				};
 				todosAndDropLocations.push(<ToDoElement {...todoProps} />);
-				let id = "DropLocation_" + i + "";
+				let id = "DropLocation_" + i+1 + "";
 				(i !== todoLength - 1) && 
 					todosAndDropLocations.push(<DropLocation key={id} id={id} {...dropTargetProps} />);
 			}

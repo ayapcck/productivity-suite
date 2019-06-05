@@ -56,11 +56,11 @@ export default class ToDoElement extends React.Component {
 		let elementId = this.props.id.split('_')[1];
 		let elementClasses = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
 		let element = <div id={this.props.id} className={elementClasses} {...dragSettings}
-			{...hoverSettings} onClick={() => this.props.onClick(elementId)}>
+			{...hoverSettings}>
 			{this.state.showIcons && <React.Fragment>
 			<Icon iconClass="far fa-check-circle" 
 				wrapperStyles={classnames(styles.elementDone, styles.todoIconWrapper)} 
-				iconStyles={styles.todoIcon} />
+				iconStyles={styles.todoIcon} onClick={() => this.props.onClick(elementId)}  />
 			<Icon iconClass="far fa-edit" 
 				wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
 				iconStyles={styles.todoIcon} />
