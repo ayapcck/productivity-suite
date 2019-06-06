@@ -11,7 +11,7 @@ export default class ToDoElement extends React.Component {
 		super(props);
 
 		this.state = {
-			showIcons: false
+			hovered: false
 		}
 
 		this.showHoverIcons = this.showHoverIcons.bind(this);
@@ -26,11 +26,11 @@ export default class ToDoElement extends React.Component {
 	}
 
 	showHoverIcons() {
-		this.setState({ showIcons: true });
+		this.setState({ hovered: true });
 	}
 
 	hideHoverIcons() {
-		this.setState({ showIcons: false });
+		this.setState({ hovered: false });
 	}
 	
 	render() {
@@ -57,13 +57,13 @@ export default class ToDoElement extends React.Component {
 		let elementClasses = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
 		let element = <div id={this.props.id} className={elementClasses} {...dragSettings}
 			{...hoverSettings}>
-			{this.state.showIcons && <React.Fragment>
+			{this.state.hovered && <React.Fragment>
 			<Icon iconClass="far fa-check-circle" 
 				wrapperStyles={classnames(styles.elementDone, styles.todoIconWrapper)} 
-				iconStyles={styles.todoIcon} onClick={() => this.props.onClick(elementId)}  />
+				iconStyles={styles.todoIcon} onClick={() => this.props.onTodoCompleted(elementId)} />
 			<Icon iconClass="far fa-edit" 
 				wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
-				iconStyles={styles.todoIcon} />
+				iconStyles={styles.todoIcon} onClick={() => this.props.onEditClicked(elementId)} />
 			</React.Fragment>}
 			<TodoTextPiece content={this.props.title} extraClass={styles.elementTitle} size="big" />
 			<TodoTextPiece content={this.props.text} extraClass={styles.elementText} size="small" />

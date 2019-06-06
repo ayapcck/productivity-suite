@@ -4,6 +4,8 @@ var ReactDOM = require('react-dom');
 import classnames from 'classnames';
 
 import FormButton from '../forms/button.js';
+import FormPopup from '../formPopup/formPopup.js'
+import Icon from "../icons/icon.js";
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
 import styles from './schedulerApp.less';
@@ -17,15 +19,19 @@ export default class SchedulerApp extends React.Component {
 		super(props);
 		
 		this.state = {
+			editingTodoId: null,
 			elementDicts: {},
 			numberTodo: 0,
 			orderObj: {},
+			showEditTodoPopup: false,
 			todoTimeEnabled: false
 		}
 		
 		this.clearCompleted = this.clearCompleted.bind(this);
+		this.hideEditTodoForm = this.hideEditTodoForm.bind(this);
 		this.markCompleted = this.markCompleted.bind(this);
 		this.postTodoElement = this.postTodoElement.bind(this);
+		this.showEditTodoForm = this.showEditTodoForm.bind(this);
 		this.updateOrder = this.updateOrder.bind(this);
 	}
 	
@@ -200,6 +206,17 @@ export default class SchedulerApp extends React.Component {
 		}
 		this.log("done", "postOrderChange");
 	}
+
+	hideEditTodoForm() {
+		this.setState({ showEditTodoPopup: false });
+	}
+
+	showEditTodoForm(elementId) {
+		this.setState({ 
+			editingTodoId: elementId,
+			showEditTodoPopup: true 
+		});
+	}
 	
 	render() {
 		let finishedElements = [];
@@ -215,12 +232,28 @@ export default class SchedulerApp extends React.Component {
 			userLoggedIn: this.props.username != ""
 		};
 
+		let todoColumnProps = {
+			classes: classnames(styles.gridElement, styles.middleColumn),
+			onEditClicked: this.showEditTodoForm,
+			elementDicts: this.state.elementDicts,
+			markTodoCompleted: this.markCompleted,
+			order: this.state.orderObj,
+			updateOrder: this.updateOrder
+		}
+
 		let schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
+			{this.state.showEditTodoPopup && <FormPopup handleCloseForm={this.hideEditTodoForm} 
+				content={
+					<React.Fragment>
+						<Icon iconClass="far fa-times-circle" onClick={this.hideEditTodoForm} />
+						<TodoForm userLoggedIn={this.props.userLoggedIn != ""} 
+							postTodoElement={this.postTodoElement} />
+					</React.Fragment>
+				} />}
 			<div className={classnames(styles.gridElement, styles.leftColumn)}>
 				<TodoForm {...todoFormProps} />
 			</div>
-			<TodoColumn classes={classnames(styles.gridElement, styles.middleColumn)} elementDicts={this.state.elementDicts} 
-				updateOrder={this.updateOrder} order={this.state.orderObj} markTodoCompleted={this.markCompleted} />
+			<TodoColumn {...todoColumnProps} />
 			<div className={classnames(styles.gridElement, styles.rightColumn)}>
 				<div className={styles.completedTasksContainer}>
 					<span className={styles.finishedHeader}>Completed Tasks</span>
@@ -234,3 +267,10 @@ export default class SchedulerApp extends React.Component {
 		return schedulerApp;
 	}
 };
+
+const editTodoPopup = ({ }) => {
+	return <React.Fragment>
+		<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
+		<TodoForm userLoggedIn={this.props.userLoggedIn} postTodoElement={this.props.postTodoElement} />
+	</React.Fragment>;
+}
