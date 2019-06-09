@@ -2,7 +2,7 @@ var React = require('react');
 
 import Icon from '../icons/icon.js';
 
-import styles from './navigationBar.css';
+import styles from './navigationBar.less';
 
 export default class NavigationBar extends React.Component {
 	constructor(props) {
@@ -23,11 +23,6 @@ export default class NavigationBar extends React.Component {
 	
 	hideAccountSettings() {
 		this.setState({accountHovered: false});
-	}
-	
-	componentDidMount() {
-		var navMenuHeight = document.getElementsByName("navMenu")[0].offsetHeight;
-		document.getElementsByName("navSpacer")[0].style.height = navMenuHeight + "px";
 	}
 	
 	loginLogoutClick() {

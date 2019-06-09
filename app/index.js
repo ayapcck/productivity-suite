@@ -55,7 +55,7 @@ class IndexPage extends React.Component {
 	
 	render() {
 		var indexPage = <React.Fragment>
-			<LoginApp onExit={this.toggleLoginApp} onLoginSuccess={this.handleLoginSuccess} showLoginApp={this.state.showLoginApp} />
+		{this.state.showLoginApp && <LoginApp onExit={this.toggleLoginApp} onLoginSuccess={this.handleLoginSuccess} showLoginApp={this.state.showLoginApp} />}
 			<NavigationBar username={this.state.username} loginToggle={this.toggleLoginApp} 
 				userLoggedIn={this.state.userLoggedIn} onLogout={this.onLogout} />
 			<SchedulerApp username={this.state.username}/>

@@ -1,6 +1,6 @@
 var React = require('react');
 
-import styles from './centerPanel.css';
+import styles from './centerPanel.less';
 
 export default class CenterPanel extends React.Component {
   render() {

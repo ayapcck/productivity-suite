@@ -3,8 +3,8 @@ var React = require('react');
 import classnames from 'classnames';
 
 import ToDoElement from './todoElement.js';
-import styles from './todoColumn.css';
-import todoStyles from './todoElement.css';
+import styles from './todoColumn.less';
+import todoStyles from './todoElement.less';
 
 var Logger = require('../utilities/logger');
 
@@ -37,7 +37,6 @@ export default class TodoColumn extends React.Component {
 		let nextSpacerId = draggedTodoNode.nextSibling.id;
 		return dropTargetId == nextSpacerId || dropTargetId == prevSpacerId
 	}
-	
 	
 	allowDrop(ev) {
 		if (!this.previousOrNextSpacer(ev.target.id)) {
@@ -132,13 +131,18 @@ export default class TodoColumn extends React.Component {
 			this.log("component should update", "shouldComponentUpdate");
 			return true;
 		}
-		for (let i  in this.props.order) {
-			if (nextProps.order[i] !== this.props.order[i]) {
-				this.log("component should update", "shouldComponentUpdate");
-				this.removeDraggedTodoClass(this.state.draggedTodoId);
-				return true;
-			}
+		if (nextProps.order !== this.props.order || nextProps.elementDicts !== this.props.elementDicts) {
+			this.log("component should update", "shouldComponentUpdate");
+		 		this.removeDraggedTodoClass(this.state.draggedTodoId);
+		 		return true;
 		}
+		// for (let i  in this.props.order) {
+		// 	if (nextProps.order[i] !== this.props.order[i]) {
+		// 		this.log("component should update", "shouldComponentUpdate");
+		// 		this.removeDraggedTodoClass(this.state.draggedTodoId);
+		// 		return true;
+		// 	}
+		// }
 		this.log("component should not update", "shouldComponentUpdate");
 		return false;
 	}
@@ -170,10 +174,12 @@ export default class TodoColumn extends React.Component {
 					draggable: "true",
 					onDragStart: this.startDrag,
 					onDragEnd: this.removeDraggedTodoClassWrapper,
-					onClick: this.props.markTodoCompleted,
+					onTodoCompleted: this.props.markTodoCompleted,
+					onEditClicked: this.props.onEditClicked,
+					priority: element.priority
 				};
 				todosAndDropLocations.push(<ToDoElement {...todoProps} />);
-				let id = "DropLocation_" + i + "";
+				let id = "DropLocation_" + i+1 + "";
 				(i !== todoLength - 1) && 
 					todosAndDropLocations.push(<DropLocation key={id} id={id} {...dropTargetProps} />);
 			}

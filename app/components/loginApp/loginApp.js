@@ -6,8 +6,8 @@ import Icon from '../icons/icon.js';
 import LoginForm from '../forms/loginForm.js';
 import SignupForm from '../forms/signupForm.js';
 
-import styles from './loginApp.css';
-import centeredBoxStyles from '../centerPanel/centerPanel.css';
+import styles from './loginApp.less';
+import centeredBoxStyles from '../centerPanel/centerPanel.less';
 
 export default class LoginApp extends React.Component {
   constructor(props) {
@@ -51,7 +51,7 @@ export default class LoginApp extends React.Component {
 	var visibility = this.props.showLoginApp ? styles.visible : styles.hidden;
 	var loginApp = <React.Fragment>
 	<div className={classnames(styles.opaqueBackground, visibility)}></div>
-	<div className={classnames(styles.container, visibility)} onClick={this.handleCloseFromClickOutside}>
+	<div className={classnames(styles.container, visibility)} onMouseDown={this.handleCloseFromClickOutside}>
 		<CenterPanel 
 			content={ 
 				<React.Fragment>

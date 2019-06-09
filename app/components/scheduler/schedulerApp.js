@@ -3,10 +3,13 @@ var ReactDOM = require('react-dom');
 
 import classnames from 'classnames';
 
-import InputBox from '../forms/inputBox.js';
 import FormButton from '../forms/button.js';
+import FormPopup from '../formPopup/formPopup.js'
+import Icon from "../icons/icon.js";
 import TodoColumn from './todoColumn.js';
-import styles from './schedulerApp.css';
+import TodoForm from './todoForm.js';
+import styles from './schedulerApp.less';
+import utilities from '../utilities/utilities.less';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 
 var Logger = require('../utilities/logger');
@@ -16,53 +19,66 @@ export default class SchedulerApp extends React.Component {
 		super(props);
 		
 		this.state = {
-			numberTodo: 0,
+			editingTodoProps: null,
 			elementDicts: {},
-			orderObj: {}
+			numberTodo: 0,
+			orderObj: {},
+			showEditTodoPopup: false,
+			todoTimeEnabled: false
 		}
-				
-		this.addTodoClicked = this.addTodoClicked.bind(this);
+		
 		this.clearCompleted = this.clearCompleted.bind(this);
+		this.hideEditTodoForm = this.hideEditTodoForm.bind(this);
 		this.markCompleted = this.markCompleted.bind(this);
+		this.postTodoElement = this.postTodoElement.bind(this);
+		this.showEditTodoForm = this.showEditTodoForm.bind(this);
 		this.updateOrder = this.updateOrder.bind(this);
+		this.updateTodoElement = this.updateTodoElement.bind(this);
 	}
 	
 	log(message, functionName) {
 		Logger.log(message, "schedulerApp", functionName);
 	}
-	
-	updateDimensions() {
-		var headerHeight = document.getElementsByName("navMenu")[0].offsetHeight;
-		var screenHeight = document.documentElement.clientHeight;
-		var schedulerBody = document.getElementsByName("schedulerBody")[0];
-		schedulerBody.style.height = (screenHeight - headerHeight) + "px";
-		schedulerBody.style.top = headerHeight + "px";
-	}
 
 	componentDidMount() {
-		this.updateDimensions();
 		this.updateTodosFromDB();
-		window.addEventListener("resize", this.updateDimensions.bind(this));
-	}
-	componentWillUnmount() {
-		window.removeEventListener("resize", this.updateDimensions.bind(this));
 	}
 	
 	componentDidUpdate(prevProps) {
 		prevProps.username != this.props.username && this.updateTodosFromDB();
 	}
 	
-	postTodoElement(title, content, datetime) {
+	postTodoElement(title, content, datetime, priority) {
 		var url = "http://192.168.0.26:5000/addTodo";
 		var jsonBody = {
 			user: this.props.username,
 			title: title,
 			content: content,
-			datetime: datetime
+			datetime: datetime,
+			priority: priority
 		}
 		
 		postJson(url, jsonBody).then(response => {			
 			this.setState({ needsUpdate: true });
+			this.updateTodosFromDB();
+		}).catch(error => {
+			alert(error);
+		});
+	}
+
+	updateTodoElement(title, content, datetime, priority) {
+		let url = "http://192.168.0.26:5000/updateTodo";
+		let jsonBody = {
+			user: this.props.username,
+			title: title,
+			content: content,
+			datetime: datetime,
+			priority: priority,
+			id: this.state.editingTodoProps.id
+		}
+
+		postJson(url, jsonBody).then(response => {
+			this.setState({ needsUpdate: true, showEditTodoPopup: false });
 			this.updateTodosFromDB();
 		}).catch(error => {
 			alert(error);
@@ -81,7 +97,8 @@ export default class SchedulerApp extends React.Component {
 					let completed = todoItem[4];
 					let newElement = {
 						title: todoItem[0], text: todoItem[1], datetime: todoItem[2], 
-						id: todoItem[3], completed: todoItem[4], order: todoItem[5]
+						id: todoItem[3], completed: todoItem[4], order: todoItem[5], 
+						priority: todoItem[6]
 					}
 					elements[newElement['id']] = newElement;
 					if (completed == 0) {
@@ -139,42 +156,6 @@ export default class SchedulerApp extends React.Component {
 				alert(error);
 			});
 		}
-	}
-	
-	getCurrentISOTime() {
-		var timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
-		var localISOTime = (new Date(Date.now() - timezoneOffset)).toISOString().slice(0, 16);
-		return localISOTime;
-	}
-	
-	clearForm(e) {
-		e.target[0].value = "";
-		e.target[1].value = this.getCurrentISOTime();
-		e.target[2].value = "";
-	}
-	
-	addTodoClicked(e) {
-		this.log("starting", "addTodoClicked");
-		if (this.props.username != "") {
-			e.preventDefault();
-			var todoTitle = e.target[0].value;
-			var todoDateTime = e.target[1].value;
-			var todoContent = e.target[2].value;
-			
-			var emptyValues = todoTitle == "" || todoDateTime == "";
-			
-			if (emptyValues) {
-				alert("Please fill title section");
-			} else {
-				this.clearForm(e);
-				this.log("submit conditions acceptible, passing off to postTodoElement", "addTodoClicked");
-				this.postTodoElement(todoTitle, todoContent, todoDateTime);
-			}
-		} else {
-			e.preventDefault();
-			alert("You need an account to use this feature");
-		}
-		this.log("done", "addTodoClicked");
 	}
 	
 	handleOrderAfterUpdate(orderObj) {
@@ -245,9 +226,20 @@ export default class SchedulerApp extends React.Component {
 		}
 		this.log("done", "postOrderChange");
 	}
+
+	hideEditTodoForm() {
+		this.setState({ showEditTodoPopup: false });
+	}
+
+	showEditTodoForm(elementProps) {
+		this.setState({ 
+			editingTodoProps: elementProps,
+			showEditTodoPopup: true 
+		});
+	}
 	
 	render() {
-		const finishedElements = [];
+		let finishedElements = [];
 		
 		for (let i in this.state.elementDicts) {
 			let element = this.state.elementDicts[i];
@@ -255,25 +247,51 @@ export default class SchedulerApp extends React.Component {
 				finishedElements.push(<span key={i} className={styles.finishedItem}>{element.title}</span>);
 		}
 		
-		var schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
-				<div className={classnames(styles.gridElement, styles.leftColumn)}>
-					<form id="addTodoForm" onSubmit={this.addTodoClicked}>
-						<InputBox text="Title" type="text" name="toDoTitle" />
-						<InputBox text="Date" type="datetime-local" name="toDoDate" val={this.getCurrentISOTime()} />
-						<InputBox text="Content" type="area" name="toDoBody" />
-						<FormButton text="Add to-do" type="submit" name="addTodoFormSubmit" />
-					</form>
-				</div>
-				<TodoColumn classes={classnames(styles.gridElement, styles.middleColumn)} elementDicts={this.state.elementDicts} 
-					updateOrder={this.updateOrder} order={this.state.orderObj} markTodoCompleted={this.markCompleted} />
-				<div className={classnames(styles.gridElement, styles.rightColumn)}>
+		let todoFormProps = {
+			userLoggedIn: this.props.username != ""
+		};
+
+		let todoColumnProps = {
+			classes: classnames(styles.gridElement, styles.middleColumn),
+			onEditClicked: this.showEditTodoForm,
+			elementDicts: this.state.elementDicts,
+			markTodoCompleted: this.markCompleted,
+			order: this.state.orderObj,
+			updateOrder: this.updateOrder
+		}
+
+		let schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
+			{this.state.showEditTodoPopup && <FormPopup handleCloseForm={this.hideEditTodoForm} 
+				content={
+					<React.Fragment>
+						<Icon iconClass="far fa-times-circle" onClick={this.hideEditTodoForm} />
+						<TodoForm {...todoFormProps} headerText="Edit Todo" 
+							handleAfterSubmit={this.updateTodoElement} displayAsPopup={true} 
+							prePopulatedContent={this.state.editingTodoProps} />
+					</React.Fragment>
+				} />}
+			<div className={classnames(styles.gridElement, styles.leftColumn)}>
+				<TodoForm {...todoFormProps} headerText="Add Todo" 
+					handleAfterSubmit={this.postTodoElement} />
+			</div>
+			<TodoColumn {...todoColumnProps} />
+			<div className={classnames(styles.gridElement, styles.rightColumn)}>
+				<div className={styles.completedTasksContainer}>
 					<span className={styles.finishedHeader}>Completed Tasks</span>
 					<div className={styles.finishedItems}>
 						{finishedElements}
-						<FormButton text="Clear" type="button" containerClass={styles.pushDown} onClick={this.clearCompleted} />
 					</div>
+					<FormButton text="Clear" type="button" containerClass={styles.pushDown} onClick={this.clearCompleted} />
 				</div>
 			</div>
+		</div>
 		return schedulerApp;
 	}
 };
+
+const editTodoPopup = ({ }) => {
+	return <React.Fragment>
+		<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
+		<TodoForm userLoggedIn={this.props.userLoggedIn} postTodoElement={this.props.postTodoElement} />
+	</React.Fragment>;
+}

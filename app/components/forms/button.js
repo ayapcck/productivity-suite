@@ -1,6 +1,6 @@
 var React = require('react');
 
-import styles from './form.css';
+import styles from './form.less';
 
 import classnames from 'classnames';
 

@@ -28,8 +28,23 @@ def addTodo():
 	title = responseData['title']
 	content = responseData['content']
 	datetime = responseData['datetime']
+	priority = responseData['priority']
 	conn = getMySQL().connect()
-	return insertTodoElementIn(user, conn, title, content, datetime)
+	return insertTodoElementIn(user, conn, title, content, datetime, priority)
+
+
+@scheduler.route('/updateTodo', methods=['POST'])
+@cross_origin()
+def updateTodo():
+	responseData = json.loads(request.data)
+	user = responseData['user']
+	title = responseData['title']
+	content = responseData['content']
+	datetime = responseData['datetime']
+	priority = responseData['priority']
+	id = responseData['id']
+	conn = getMySQL().connect()
+	return updateTodoElementIn(user, conn, title, content, datetime, priority, id)
 	
 	
 @scheduler.route('/markCompleted', methods=['POST'])
@@ -75,12 +90,13 @@ def createUserTable():
 			"datetime VARCHAR(255), "
 			"id INT NOT NULL AUTO_INCREMENT, "
 			"completed BOOLEAN DEFAULT false, "
+			"ord INT, "
 			"PRIMARY KEY (id))").format(user)
 			
 	conn = getMySQL().connect()
 	curs = conn.cursor()
 	curs.execute(sql)
-	return Response(status=200)
+	return Response(json.dumps([]), status=200)
 	
 	
 def changeOrderFor(scheduler_table, orderPair, dbConn):
@@ -108,24 +124,41 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
-def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime):
-	sql = "INSERT INTO " + scheduler_table + " (title, content, datetime) VALUES (%s, %s, %s)"
+def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority):
+	sql = "INSERT INTO " + scheduler_table + \
+		" (title, content, datetime, priority) VALUES (%s, %s, %s, {})".format(priority)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, (title, content, datetime))
 		dbConn.commit()
-	except Exception as e:
+	except Exception:
 		return Response(status=400)
 	return Response(status=200)
 
+
+def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, id):
+	sql = str("UPDATE {} "
+			"SET title='{}',"
+			" content='{}',"
+			" datetime='{}',"
+			" priority={}"
+			" WHERE id={}").format(scheduler_table, title, content, datetime, priority, id)
+	curs = dbConn.cursor()
+	try:
+		curs.execute(sql)
+		dbConn.commit()
+	except Exception as e:
+		print(e)
+		return Response(status=400)
+	return Response(status=200)
 	
 def markTodoCompleted(scheduler_table, dbConn, id):
-	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=NULL WHERE id=%s"
+	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=0 WHERE id=%s"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, id)
 		dbConn.commit()
-	except Exception as e:
+	except Exception:
 		return Response(status=400)
 	return Response(status=200)
 
@@ -136,6 +169,6 @@ def clearCompletedTodos(scheduler_table, dbConn):
 	try:
 		curs.execute(sql)
 		dbConn.commit()
-	except Exception as e:
+	except Exception:
 		return Response(status=400)
 	return Response(status=200)

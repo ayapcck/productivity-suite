@@ -5,7 +5,7 @@ import FormButton from './button.js';
 import { getJson } from '../utilities/jsonHelpers.js';
 import { generateHmac } from '../utilities/validation.js';
 
-import styles from './form.css';
+import styles from './form.less';
 
 export default class LoginForm extends React.Component {
 	constructor(props) {

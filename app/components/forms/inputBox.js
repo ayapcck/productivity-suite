@@ -3,7 +3,7 @@ var React = require('react');
 import Tooltip from '../tooltip/tooltip.js'
 
 import classnames from 'classnames';
-import styles from './form.css';
+import styles from './form.less';
 
 export default class InputBox extends React.Component {
 	constructor(props) {
@@ -39,35 +39,49 @@ export default class InputBox extends React.Component {
 	tooltipOff() {
 		this.setState({ showTooltip: false });
 	}
-	
+
 	render() {
-		var inputProperties = {
-			name: this.props.name,
-			defaultValue: this.props.val,
-			placeholder: this.props.text,
+		let mouseProperties = {
 			onMouseEnter: this.tooltipOn,
 			onMouseMove: this.updateTooltip,
 			onMouseLeave: this.tooltipOff,
+		};	
+		let properties = {
+			name: this.props.name,
+			defaultValue: this.props.val,
+			disabled: this.props.disabled,
+			placeholder: this.props.text,
 			onBlur: this.props.onBlur,
-			onFocus: this.props.onFocus
-		}
-		var inputBoxProperties = {
+			onFocus: this.props.onFocus,
+		};		
+		let inputBoxProperties = {
 			type: this.props.type,
 			className: classnames(styles.inputBox, this.props.invalid && styles.invalid),
-		}
-		var inputAreaProperties = {
+		};
+		let inputAreaProperties = {
 			className: styles.inputBox,
 			rows: 4,
-		} 
-		var returnBox = <div className={styles.inputContainer}>
-			{ this.props.tooltipText != "" && this.state.showTooltip && 
-			<Tooltip top={this.state.boxY} left={this.state.mouseX} 
-				name={this.props.name + "Tooltip"} tooltipText={this.props.tooltipText} /> }
-			{this.props.type == "area" ? 
-				<textarea {...inputProperties} {...inputAreaProperties}></textarea> :
-				<input {...inputProperties} {...inputBoxProperties} />}
+		};
+
+		let areaProps = Object.assign({}, mouseProperties, properties, inputAreaProperties);
+		let boxProps = Object.assign({}, mouseProperties, properties, inputBoxProperties);
+		let showTooltip = this.state.showTooltip && 
+			((this.props.disabled && this.props.disabledTooltipText != "") || 
+			this.props.tooltipText != "");
+		let tooltipText = this.props.disabled ? this.props.disabledTooltipText : this.props.tooltipText;
+		
+		let inputElemenet = this.props.type == "area" ? 
+			<textarea {...areaProps}></textarea> :
+			<input {...boxProps} />
+		let disabledInput = <div {...mouseProperties}>
+			{inputElemenet}
 		</div>
-		return returnBox;
+		let returnElement = <div className={styles.inputContainer}>
+			{ showTooltip && <Tooltip top={this.state.boxY} left={this.state.mouseX} 
+				name={this.props.name + "Tooltip"} tooltipText={tooltipText} /> }
+			{this.props.disabled ? disabledInput : inputElemenet}
+		</div>
+		return returnElement;
 	}
 }
 

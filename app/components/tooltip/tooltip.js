@@ -1,6 +1,6 @@
 var React = require('react');
 
-import styles from './tooltip.css';
+import styles from './tooltip.less';
 import classnames from 'classnames';
 
 export default class Tooltip extends React.Component {	
