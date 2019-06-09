@@ -55,6 +55,13 @@ export default class ToDoElement extends React.Component {
 		// todo element id is of form 'todo_1'
 		let elementId = this.props.id.split('_')[1];
 		let elementClasses = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
+		let onEditProps = {
+			title: this.props.title,
+			content: this.props.text,
+			datetime: this.props.datetime,
+			priority: this.props.priority,
+			id: elementId
+		};
 		let element = <div id={this.props.id} className={elementClasses} {...dragSettings}
 			{...hoverSettings}>
 			{this.state.hovered && <React.Fragment>
@@ -63,7 +70,7 @@ export default class ToDoElement extends React.Component {
 				iconStyles={styles.todoIcon} onClick={() => this.props.onTodoCompleted(elementId)} />
 			<Icon iconClass="far fa-edit" 
 				wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
-				iconStyles={styles.todoIcon} onClick={() => this.props.onEditClicked(elementId)} />
+				iconStyles={styles.todoIcon} onClick={() => this.props.onEditClicked(onEditProps)} />
 			</React.Fragment>}
 			<TodoTextPiece content={this.props.title} extraClass={styles.elementTitle} size="big" />
 			<TodoTextPiece content={this.props.text} extraClass={styles.elementText} size="small" />

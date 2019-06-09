@@ -131,13 +131,18 @@ export default class TodoColumn extends React.Component {
 			this.log("component should update", "shouldComponentUpdate");
 			return true;
 		}
-		for (let i  in this.props.order) {
-			if (nextProps.order[i] !== this.props.order[i]) {
-				this.log("component should update", "shouldComponentUpdate");
-				this.removeDraggedTodoClass(this.state.draggedTodoId);
-				return true;
-			}
+		if (nextProps.order !== this.props.order || nextProps.elementDicts !== this.props.elementDicts) {
+			this.log("component should update", "shouldComponentUpdate");
+		 		this.removeDraggedTodoClass(this.state.draggedTodoId);
+		 		return true;
 		}
+		// for (let i  in this.props.order) {
+		// 	if (nextProps.order[i] !== this.props.order[i]) {
+		// 		this.log("component should update", "shouldComponentUpdate");
+		// 		this.removeDraggedTodoClass(this.state.draggedTodoId);
+		// 		return true;
+		// 	}
+		// }
 		this.log("component should not update", "shouldComponentUpdate");
 		return false;
 	}

@@ -2,8 +2,25 @@
 
 @import "@{utilities}/colors.less";
 
+@borderRadius: 15px;
+
 .addTodoContainer {
-	margin: 10px;
+	display: grid;
+	grid-template-rows: 10% 90%;
+	margin: 10px auto;
+	user-select: none;
+	width: 90%;
+}
+.addTodoContainerBorder {
+	border-color: @accentColor;
+	border-radius: @borderRadius;
+	border-style: solid;
+	border-width: 2px;
+}
+
+.addTodoForm {
+	display: grid;
+	grid-template-rows: 85% 15%;
 }
 
 .checkboxContainer {
@@ -13,4 +30,37 @@
 }
 .checkboxContainer label {
 	margin: 0 10px;
+}
+
+.formInputs {
+	grid-row: 1;
+	margin: auto 0;
+}
+
+.pushDown {
+	align-items: center;
+	display: flex;
+	grid-row: 2;
+	width: -webkit-fill-available;
+}
+
+.spanHeader {
+	@rad: @borderRadius;
+	align-items: center;
+	background-color: @lightPurple;
+	border-color: @accentColor;
+	border-style: solid;
+	border-radius: @rad @rad 0 0;
+	border-width: 0 0 2px 0;
+	color: @darkTextColor;
+	display: inline-flex;
+	grid-row: 1;
+	justify-content: center;
+	padding: 5px 0;
+}
+
+.textHeader {
+	text-align: center;
+	margin: 0;
+	padding: 0 0 10px 0;
 }

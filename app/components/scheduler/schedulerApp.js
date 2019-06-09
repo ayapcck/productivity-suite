@@ -19,7 +19,7 @@ export default class SchedulerApp extends React.Component {
 		super(props);
 		
 		this.state = {
-			editingTodoId: null,
+			editingTodoProps: null,
 			elementDicts: {},
 			numberTodo: 0,
 			orderObj: {},
@@ -33,6 +33,7 @@ export default class SchedulerApp extends React.Component {
 		this.postTodoElement = this.postTodoElement.bind(this);
 		this.showEditTodoForm = this.showEditTodoForm.bind(this);
 		this.updateOrder = this.updateOrder.bind(this);
+		this.updateTodoElement = this.updateTodoElement.bind(this);
 	}
 	
 	log(message, functionName) {
@@ -59,6 +60,25 @@ export default class SchedulerApp extends React.Component {
 		
 		postJson(url, jsonBody).then(response => {			
 			this.setState({ needsUpdate: true });
+			this.updateTodosFromDB();
+		}).catch(error => {
+			alert(error);
+		});
+	}
+
+	updateTodoElement(title, content, datetime, priority) {
+		let url = "http://192.168.0.26:5000/updateTodo";
+		let jsonBody = {
+			user: this.props.username,
+			title: title,
+			content: content,
+			datetime: datetime,
+			priority: priority,
+			id: this.state.editingTodoProps.id
+		}
+
+		postJson(url, jsonBody).then(response => {
+			this.setState({ needsUpdate: true, showEditTodoPopup: false });
 			this.updateTodosFromDB();
 		}).catch(error => {
 			alert(error);
@@ -211,9 +231,9 @@ export default class SchedulerApp extends React.Component {
 		this.setState({ showEditTodoPopup: false });
 	}
 
-	showEditTodoForm(elementId) {
+	showEditTodoForm(elementProps) {
 		this.setState({ 
-			editingTodoId: elementId,
+			editingTodoProps: elementProps,
 			showEditTodoPopup: true 
 		});
 	}
@@ -228,7 +248,6 @@ export default class SchedulerApp extends React.Component {
 		}
 		
 		let todoFormProps = {
-			postTodoElement: this.postTodoElement,
 			userLoggedIn: this.props.username != ""
 		};
 
@@ -246,12 +265,14 @@ export default class SchedulerApp extends React.Component {
 				content={
 					<React.Fragment>
 						<Icon iconClass="far fa-times-circle" onClick={this.hideEditTodoForm} />
-						<TodoForm userLoggedIn={this.props.userLoggedIn != ""} 
-							postTodoElement={this.postTodoElement} />
+						<TodoForm {...todoFormProps} headerText="Edit Todo" 
+							handleAfterSubmit={this.updateTodoElement} displayAsPopup={true} 
+							prePopulatedContent={this.state.editingTodoProps} />
 					</React.Fragment>
 				} />}
 			<div className={classnames(styles.gridElement, styles.leftColumn)}>
-				<TodoForm {...todoFormProps} />
+				<TodoForm {...todoFormProps} headerText="Add Todo" 
+					handleAfterSubmit={this.postTodoElement} />
 			</div>
 			<TodoColumn {...todoColumnProps} />
 			<div className={classnames(styles.gridElement, styles.rightColumn)}>

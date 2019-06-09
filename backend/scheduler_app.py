@@ -31,6 +31,20 @@ def addTodo():
 	priority = responseData['priority']
 	conn = getMySQL().connect()
 	return insertTodoElementIn(user, conn, title, content, datetime, priority)
+
+
+@scheduler.route('/updateTodo', methods=['POST'])
+@cross_origin()
+def updateTodo():
+	responseData = json.loads(request.data)
+	user = responseData['user']
+	title = responseData['title']
+	content = responseData['content']
+	datetime = responseData['datetime']
+	priority = responseData['priority']
+	id = responseData['id']
+	conn = getMySQL().connect()
+	return updateTodoElementIn(user, conn, title, content, datetime, priority, id)
 	
 	
 @scheduler.route('/markCompleted', methods=['POST'])
@@ -117,12 +131,26 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 	try:
 		curs.execute(sql, (title, content, datetime))
 		dbConn.commit()
-	except Exception as e:
-		print("priority: {}".format(priority))
-		print(e)
+	except Exception:
 		return Response(status=400)
 	return Response(status=200)
 
+
+def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, id):
+	sql = str("UPDATE {} "
+			"SET title='{}',"
+			" content='{}',"
+			" datetime='{}',"
+			" priority={}"
+			" WHERE id={}").format(scheduler_table, title, content, datetime, priority, id)
+	curs = dbConn.cursor()
+	try:
+		curs.execute(sql)
+		dbConn.commit()
+	except Exception as e:
+		print(e)
+		return Response(status=400)
+	return Response(status=200)
 	
 def markTodoCompleted(scheduler_table, dbConn, id):
 	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=0 WHERE id=%s"

@@ -32,7 +32,6 @@ def getMySQLForScheduler():
 def generateResponse(error):
 	e = str(error[1])
 	status = 400
-	message = e
 	print(e)
 	e = e.lower()
 	if "duplicate" in e:
@@ -40,11 +39,11 @@ def generateResponse(error):
 	return Response(status=status)
 	
 	
-def sendValidationEmail(activationCode):
+def sendValidationEmail(user, email, activationCode):
 	messageBody = "<p>Please verify you account by clicking the below link. If it does not appear as a link, please copy and paste into your browser</p>" + \
 	"<p><a href='http://192.168.0.26:5000/validateUser?user=" + user + "&activationCode=" + activationCode + "'>Validate Email Address</a></p>"
 	messageSubject = "Please verify your account"
-	sendMessage(mail, messageSubject, messageBody, "email.servser.host@gmail.com")
+	sendMessage(mail, messageSubject, messageBody, email)
 
 
 @app.route('/validateUser', methods=['GET'])
@@ -91,16 +90,13 @@ def addUser():
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
-	response = Response(status=200)
 	try:
 		curs.execute(sql, (user, email, password, salt, activationCode))
 		conn.commit()
 	except Exception as e:
-		response = generateResponse(e)
-	finally: 
-		return response
-	sendValidationEmail(activationCode)
-	return response
+		return generateResponse(e)
+	sendValidationEmail(user, email, activationCode)
+	return Response(status=200)
 	
 	
 @app.route('/getUser', methods=['GET'])
@@ -123,7 +119,7 @@ def getUser():
 @app.route('/testMessage')
 @cross_origin()
 def testEmail():
-	sendValidationEmail("testing_activation_code")
+	sendValidationEmail("test", "", "testing_activation_code")
 	return Response(status=200)
 
 	
