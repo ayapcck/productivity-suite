@@ -6,6 +6,31 @@ import Icon from '../icons/icon.js';
 
 import styles from './todoElement.less';
 
+const formatDay = (day) => {
+	let retVal = day[0] === '0' ? day.slice(1) : day; 
+	let lastDigit = day[day.length - 1];
+	if (lastDigit === '1') {
+		return retVal + 'st';
+	} else if (lastDigit === '2') {
+		return retVal + 'nd';
+	} else if (lastDigit === '3') {
+		return retVal + 'rd';
+	} else {
+		return retVal + 'th';
+	}
+};
+const formatDate = (date) => {
+	let dateObj = new Date(date);
+	let datePieces = dateObj.toDateString().split(' ');
+	return datePieces[0] + ', ' + datePieces[1] + ' ' + formatDay(datePieces[2]) + ', ' + datePieces[3];
+};
+const formatTime = (time) => {
+	let hour = parseInt(time.split(':')[0]);
+	let minutes = time.split(':')[1];
+	if (hour > 12) return hour - 12 + ':' + minutes + ' PM';
+	return time + ' AM';
+};
+
 export default class ToDoElement extends React.Component {
 	constructor(props) {
 		super(props);
@@ -16,13 +41,6 @@ export default class ToDoElement extends React.Component {
 
 		this.showHoverIcons = this.showHoverIcons.bind(this);
 		this.hideHoverIcons = this.hideHoverIcons.bind(this);
-	}
-
-	formatTime(time) {
-		let hour = parseInt(time.split(':')[0]);
-		let minutes = time.split(':')[1];
-		if (hour > 12) return hour - 12 + ':' + minutes + ' PM';
-		return time + ' AM';
 	}
 
 	showHoverIcons() {
@@ -38,8 +56,8 @@ export default class ToDoElement extends React.Component {
 		let time = '';
 		if (this.props.datetime != 'T') {
 			let dateAndTime = this.props.datetime.split('T');
-			date = dateAndTime[0];
-			time = this.formatTime(dateAndTime[1]);
+			date = formatDate(dateAndTime[0]);
+			time = formatTime(dateAndTime[1]);
 		};
 		const dragSettings = {
 			draggable: this.props.draggable,
