@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import FormButton from '../forms/button.js';
 import FormPopup from '../formPopup/formPopup.js'
 import Icon from "../icons/icon.js";
+import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
 import styles from './schedulerApp.less';
@@ -14,13 +15,24 @@ import { postJson, getJson } from '../utilities/jsonHelpers.js';
 
 var Logger = require('../utilities/logger');
 
+const tabHeaders = ['Today', 'Tomorrow', 'Soon'];
+const initialElementDicts = () => {
+	let elements = {};
+	tabHeaders.map(value => {
+		elements[value] = {};
+	});
+	elements['Completed'] = {};
+	return elements
+};
+
 export default class SchedulerApp extends React.Component {
 	constructor(props) {
 		super(props);
 		
 		this.state = {
+			activeTab: tabHeaders[0],
 			editingTodoProps: null,
-			elementDicts: {},
+			elementDicts: initialElementDicts(),
 			numberTodo: 0,
 			orderObj: {},
 			showEditTodoPopup: false,
@@ -32,6 +44,7 @@ export default class SchedulerApp extends React.Component {
 		this.markCompleted = this.markCompleted.bind(this);
 		this.postTodoElement = this.postTodoElement.bind(this);
 		this.showEditTodoForm = this.showEditTodoForm.bind(this);
+		this.showTabHeaderContent = this.showTabHeaderContent.bind(this);
 		this.updateOrder = this.updateOrder.bind(this);
 		this.updateTodoElement = this.updateTodoElement.bind(this);
 	}
@@ -55,7 +68,8 @@ export default class SchedulerApp extends React.Component {
 			title: title,
 			content: content,
 			datetime: datetime,
-			priority: priority
+			priority: priority,
+			tab: this.state.activeTab
 		}
 		
 		postJson(url, jsonBody).then(response => {			
@@ -87,21 +101,22 @@ export default class SchedulerApp extends React.Component {
 	
 	updateTodosFromDB() {
 		if (this.props.username != "") {
-			var url = "http://192.168.0.26:5000/retrieveTodos?user=" + this.props.username;
+			var url = "http://192.168.0.26:5000/retrieveTodos?user=" + 
+				this.props.username + "&tab=" + this.state.activeTab;
 			getJson(url).then(response => {
 				var numberTodos = 0;
-				var elements = {};
+				var elements = initialElementDicts();
 				var orderObj = {};
 				
 				response.forEach(todoItem => {
-					let completed = todoItem[4];
+					let tabName = todoItem[6];
 					let newElement = {
 						title: todoItem[0], text: todoItem[1], datetime: todoItem[2], 
-						id: todoItem[3], completed: todoItem[4], order: todoItem[5], 
-						priority: todoItem[6]
+						id: todoItem[3], order: todoItem[4], priority: todoItem[5],
+						tabName: todoItem[6]
 					}
-					elements[newElement['id']] = newElement;
-					if (completed == 0) {
+					elements[tabName][newElement['id']] = newElement;
+					if (tabName === this.state.activeTab) {
 						orderObj[newElement['order']] = newElement['id'];
 					}
 					numberTodos += 1;
@@ -121,7 +136,7 @@ export default class SchedulerApp extends React.Component {
 		} else {
 			this.setState({
 				numberTodo: 0,
-				elementDicts: {},
+				elementDicts: initialElementDicts(),
 				orderObj: {},
 				needsUpdate: false
 			});
@@ -157,6 +172,20 @@ export default class SchedulerApp extends React.Component {
 			});
 		}
 	}
+
+	updateOrderAfterHeaderSwitch(tabName) {
+		let orderObj = {};
+		let todos = this.state.elementDicts[tabName];
+		Object.entries(todos).forEach(entry => {
+			if (entry) {
+				let todo = entry[1];
+				let id = todo && todo.id;
+				let order = todo && todo.order;
+				orderObj[order] = id;
+			}
+		});
+		this.setState({ orderObj: orderObj });
+	}
 	
 	handleOrderAfterUpdate(orderObj) {
 		this.log("starting", "handleOrderAfterUpdate");
@@ -173,7 +202,7 @@ export default class SchedulerApp extends React.Component {
 			this.updateOrder(["todo_" + Object.values(orderObj)[0]]);
 		}
 		else {
-			if (notEmptyButDifferentSize) {
+			if (notEmptyButDifferentSize && orderObjKeys !== stateOrderKeys) {
 				this.log("order size was different, passing off to updateOrderAfterUpdateTodos", "updateTodosFromDB");
 				this.updateOrderAfterUpdateTodos(orderObj);
 			}
@@ -237,14 +266,20 @@ export default class SchedulerApp extends React.Component {
 			showEditTodoPopup: true 
 		});
 	}
+
+	showTabHeaderContent(tabName) {
+		this.log("setting active tab to " + tabName, "showTabHeaderContent");
+		this.setState({ activeTab: tabName });
+		this.updateOrderAfterHeaderSwitch(tabName);
+		this.log("done", "showTabHeaderContent");
+	}
 	
 	render() {
 		let finishedElements = [];
 		
-		for (let i in this.state.elementDicts) {
-			let element = this.state.elementDicts[i];
-			element.completed &&
-				finishedElements.push(<span key={i} className={styles.finishedItem}>{element.title}</span>);
+		for (let i in this.state.elementDicts.Completed) {
+			let element = this.state.elementDicts.Completed[i];
+			finishedElements.push(<span key={i} className={styles.finishedItem}>{element.title}</span>);
 		}
 		
 		let todoFormProps = {
@@ -252,10 +287,11 @@ export default class SchedulerApp extends React.Component {
 		};
 
 		let todoColumnProps = {
-			classes: classnames(styles.gridElement, styles.middleColumn),
-			onEditClicked: this.showEditTodoForm,
-			elementDicts: this.state.elementDicts,
+			activeTab: this.state.activeTab,
+			classes: styles.todoColumn,
+			elementDicts: this.state.elementDicts[this.state.activeTab],
 			markTodoCompleted: this.markCompleted,
+			onEditClicked: this.showEditTodoForm,
 			order: this.state.orderObj,
 			updateOrder: this.updateOrder
 		}
@@ -274,7 +310,10 @@ export default class SchedulerApp extends React.Component {
 				<TodoForm {...todoFormProps} headerText="Add Todo" 
 					handleAfterSubmit={this.postTodoElement} />
 			</div>
-			<TodoColumn {...todoColumnProps} />
+			<div className={classnames(styles.gridElement, styles.middleColumn)} >
+				<TabBar tabHeaders={tabHeaders} showTabHeaderContent={this.showTabHeaderContent} />
+				<TodoColumn {...todoColumnProps} />
+			</div>
 			<div className={classnames(styles.gridElement, styles.rightColumn)}>
 				<div className={styles.completedTasksContainer}>
 					<span className={styles.finishedHeader}>Completed Tasks</span>

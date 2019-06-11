@@ -29,8 +29,9 @@ def addTodo():
 	content = responseData['content']
 	datetime = responseData['datetime']
 	priority = responseData['priority']
+	tab = responseData['tab']
 	conn = getMySQL().connect()
-	return insertTodoElementIn(user, conn, title, content, datetime, priority)
+	return insertTodoElementIn(user, conn, title, content, datetime, priority, tab)
 
 
 @scheduler.route('/updateTodo', methods=['POST'])
@@ -89,8 +90,9 @@ def createUserTable():
 			"content VARCHAR(255), "
 			"datetime VARCHAR(255), "
 			"id INT NOT NULL AUTO_INCREMENT, "
-			"completed BOOLEAN DEFAULT false, "
 			"ord INT, "
+			"priority BOOLEAN, "
+			"tab VARCHAR(255), "
 			"PRIMARY KEY (id))").format(user)
 			
 	conn = getMySQL().connect()
@@ -124,12 +126,12 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
-def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority):
+def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, tab):
 	sql = "INSERT INTO " + scheduler_table + \
-		" (title, content, datetime, priority) VALUES (%s, %s, %s, {})".format(priority)
+		" (title, content, datetime, priority, tab) VALUES (%s, %s, %s, {}, %s)".format(priority)
 	curs = dbConn.cursor()
 	try:
-		curs.execute(sql, (title, content, datetime))
+		curs.execute(sql, (title, content, datetime, tab))
 		dbConn.commit()
 	except Exception:
 		return Response(status=400)
@@ -153,7 +155,7 @@ def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 	return Response(status=200)
 	
 def markTodoCompleted(scheduler_table, dbConn, id):
-	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=0 WHERE id=%s"
+	sql = "UPDATE " + scheduler_table + " SET tab='Completed', ord=0 WHERE id=%s"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, id)
@@ -164,7 +166,7 @@ def markTodoCompleted(scheduler_table, dbConn, id):
 
 	
 def clearCompletedTodos(scheduler_table, dbConn):
-	sql = "DELETE FROM " + scheduler_table + " WHERE completed=1"
+	sql = "DELETE FROM " + scheduler_table + " WHERE tab='Completed'"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql)
