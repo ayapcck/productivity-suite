@@ -6,21 +6,22 @@ import Icon from '../icons/icon.js';
 
 import styles from './todoElement.less';
 
+const timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
 const formatDay = (day) => {
 	let retVal = day[0] === '0' ? day.slice(1) : day; 
 	let lastDigit = day[day.length - 1];
-	if (lastDigit === '1') {
+	if (lastDigit === '1' && day !== '11') {
 		return retVal + 'st';
-	} else if (lastDigit === '2') {
+	} else if (lastDigit === '2' && day !== '12') {
 		return retVal + 'nd';
-	} else if (lastDigit === '3') {
+	} else if (lastDigit === '3' && day !== '13') {
 		return retVal + 'rd';
 	} else {
 		return retVal + 'th';
 	}
 };
 const formatDate = (date) => {
-	let dateObj = new Date(date);
+	let dateObj = new Date(new Date(date) + timezoneOffset);
 	let datePieces = dateObj.toDateString().split(' ');
 	return datePieces[0] + ', ' + datePieces[1] + ' ' + formatDay(datePieces[2]) + ', ' + datePieces[3];
 };
@@ -56,7 +57,7 @@ export default class ToDoElement extends React.Component {
 		let time = '';
 		if (this.props.datetime != 'T') {
 			let dateAndTime = this.props.datetime.split('T');
-			date = formatDate(dateAndTime[0]);
+			date = formatDate(dateAndTime);
 			time = formatTime(dateAndTime[1]);
 		};
 		const dragSettings = {

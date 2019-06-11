@@ -15,14 +15,32 @@ import { postJson, getJson } from '../utilities/jsonHelpers.js';
 
 var Logger = require('../utilities/logger');
 
-const tabHeaders = ['Today', 'Tomorrow', 'Soon'];
+const addComma = (str) => {
+	let retVal = str.split(' ');
+	return retVal[0] + ', ' + retVal[1] + ' ' + retVal[2];
+}
+const oneDay = 86400000;
+const timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
+const currentTimeString = () => (new Date(Date.now() - timezoneOffset)).toDateString().slice(0, 10);
+const tomorrowTimeString = () => (new Date(Date.now() - timezoneOffset + oneDay)).toDateString().slice(0, 10);
+const tabHeaders = [{
+	name: 'Today',
+	getValue: () => addComma(currentTimeString())
+}, {
+	name: 'Tomorrow',
+	getValue: () => addComma(tomorrowTimeString())
+}, {
+	name: 'Soon',
+	getValue: () => ""
+}];
 const initialElementDicts = () => {
 	let elements = {};
 	tabHeaders.map(value => {
-		elements[value] = {};
+		let tabName = value.name;
+		elements[tabName] = {};
 	});
 	elements['Completed'] = {};
-	return elements
+	return elements;
 };
 
 export default class SchedulerApp extends React.Component {
@@ -30,7 +48,7 @@ export default class SchedulerApp extends React.Component {
 		super(props);
 		
 		this.state = {
-			activeTab: tabHeaders[0],
+			activeTab: tabHeaders[0].name,
 			editingTodoProps: null,
 			elementDicts: initialElementDicts(),
 			numberTodo: 0,
