@@ -23,7 +23,7 @@ const formatDay = (day) => {
 const formatDate = (date) => {
 	let dateObj = new Date(new Date(date) + timezoneOffset);
 	let datePieces = dateObj.toDateString().split(' ');
-	return datePieces[0] + ', ' + datePieces[1] + ' ' + formatDay(datePieces[2]) + ', ' + datePieces[3];
+	return datePieces[0] + ', ' + datePieces[1] + ' ' + formatDay(datePieces[2]);
 };
 const formatTime = (time) => {
 	let hour = parseInt(time.split(':')[0]);

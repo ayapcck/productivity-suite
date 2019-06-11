@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 
 from flask import Response, request, Blueprint
@@ -121,8 +122,13 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	dbCur.execute(sql)
 	res = dbCur.fetchall()
 	elements = []
-	for x in res:
-		elements.append(x)
+	for todo in res:
+		newTab = handleTodoMoveTabs(scheduler_table, todo)
+		tab = todo[6]
+		if (newTab != ''):
+			tab = newTab
+		element = [todo[0], todo[1], todo[2], todo[3], todo[4], todo[5], tab]
+		elements.append(element)
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
@@ -174,3 +180,37 @@ def clearCompletedTodos(scheduler_table, dbConn):
 	except Exception:
 		return Response(status=400)
 	return Response(status=200)
+
+def handleTodoMoveTabs(user, todo):
+	todoDate = todo[2]
+	todoTab = todo[6]
+	if (todoDate == 'T' or todoTab == 'Completed' or todoTab == 'Today'):
+		return ''
+	todoDate = todoDate.split('T')[0]
+	nowDate = str(datetime.now()).split(' ')[0]
+	todoDatePieces = todoDate.split('-')
+	nowDatePieces = nowDate.split('-')
+	todoMonth = todoDatePieces[1]
+	nowMonth = nowDatePieces[1]
+	if (todoMonth == nowMonth):
+		todoDay = int(todoDatePieces[2])
+		nowDay = int(nowDatePieces[2])
+		tomorrowDay = nowDay + 1
+		todoId = todo[3]
+		if (todoTab == 'Soon' and todoDay == tomorrowDay):
+			return setTodoTabFor(user, todoId, 'Tomorrow')
+		if ((todoTab == 'Soon' or todoTab == 'Tomorrow') and todoDay == nowDay):
+			return setTodoTabFor(user, todoId, 'Today')
+	return ''
+
+def setTodoTabFor(user, todoId, tabName):
+	sql = "UPDATE {} SET tab='{}' WHERE id={}".format(user, tabName, int(todoId))
+	conn = getMySQL().connect()
+	curs = conn.cursor()
+	try:
+		curs.execute(sql)
+		conn.commit()
+	except Exception as e:
+		print(e)
+		return Response(status=400)
+	return tabName
