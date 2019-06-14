@@ -184,7 +184,7 @@ def clearCompletedTodos(scheduler_table, dbConn):
 def handleTodoMoveTabs(user, todo):
 	todoDate = todo[2]
 	todoTab = todo[6]
-	if (todoDate == 'T' or todoTab == 'Completed' or todoTab == 'Today'):
+	if (todoDate == 'T' or todoTab == 'Completed'):
 		return ''
 	todoDate = todoDate.split('T')[0]
 	nowDate = str(datetime.now()).split(' ')[0]
@@ -197,10 +197,13 @@ def handleTodoMoveTabs(user, todo):
 		nowDay = int(nowDatePieces[2])
 		tomorrowDay = nowDay + 1
 		todoId = todo[3]
-		if (todoTab == 'Soon' and todoDay == tomorrowDay):
-			return setTodoTabFor(user, todoId, 'Tomorrow')
-		if ((todoTab == 'Soon' or todoTab == 'Tomorrow') and todoDay == nowDay):
+		if (todoDay == nowDay):
 			return setTodoTabFor(user, todoId, 'Today')
+		if (todoDay == tomorrowDay):
+			return setTodoTabFor(user, todoId, 'Tomorrow')
+		if (todoDay > tomorrowDay):
+			return setTodoTabFor(user, todoId, 'Soon')
+		
 	return ''
 
 def setTodoTabFor(user, todoId, tabName):

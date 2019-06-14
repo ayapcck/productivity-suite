@@ -123,9 +123,19 @@ export default class TodoColumn extends React.Component {
 		this.log('done', 'drop');
 	}
 	
+	logElements(elements) {
+		let retVal = [];
+		Object.keys(elements).map((value) => {
+			retVal.push("ord: " + elements[value].order + " id: " + elements[value].id);
+		});
+		return retVal;
+	}
+
 	shouldComponentUpdate(nextProps, nextState) {
-		this.log('Next Props: ' + JSON.stringify(nextProps.order), 'shouldComponentUpdate');
-		this.log('Current Props: ' + JSON.stringify(this.props.order), 'shouldComponentUpdate');
+		this.log('Next props order: ' + JSON.stringify(nextProps.order), 'shouldComponentUpdate');
+		this.log('Current props order: ' + JSON.stringify(this.props.order), 'shouldComponentUpdate');
+		this.log('Next props elements: ' + JSON.stringify(this.logElements(nextProps.elementDicts)), 'shouldComponentUpdate');
+		this.log('Current props elements: ' + JSON.stringify(this.logElements(this.props.elementDicts)), 'shouldComponentUpdate');
 		let emptyButNotBoth = Object.entries(this.props.order).length === 0 && this.props.order !== nextProps;
 		if (emptyButNotBoth) {
 			this.log('component should update', 'shouldComponentUpdate');
@@ -134,8 +144,8 @@ export default class TodoColumn extends React.Component {
 		if (nextProps.order !== this.props.order || 
 				nextProps.elementDicts !== this.props.elementDicts) {
 			this.log('component should update', 'shouldComponentUpdate');
-		 		this.removeDraggedTodoClass(this.state.draggedTodoId);
-		 		return true;
+		 	this.removeDraggedTodoClass(this.state.draggedTodoId);
+		 	return true;
 		}
 		this.log('component should not update', 'shouldComponentUpdate');
 		return false;
@@ -161,6 +171,7 @@ export default class TodoColumn extends React.Component {
 				this.log('creating todo_' + element.id + ' element', 'render');
 				let todoProps = {
 					key: i,
+					activeTab: this.props.activeTab,
 					id: 'todo_' + element.id + '',
 					title: element.title,
 					text: element.text,
