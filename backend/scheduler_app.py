@@ -145,15 +145,15 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 
 
 def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, id):
-	sql = str("UPDATE {} "
-			"SET title='{}',"
-			" content='{}',"
+	sql = str("UPDATE " + scheduler_table + " "
+			"SET title=%s,"
+			" content=%s,"
 			" datetime='{}',"
 			" priority={}"
-			" WHERE id={}").format(scheduler_table, title, content, datetime, priority, id)
+			" WHERE id={}").format(datetime, priority, id)
 	curs = dbConn.cursor()
 	try:
-		curs.execute(sql)
+		curs.execute(sql, (title, content))
 		dbConn.commit()
 	except Exception as e:
 		print(e)

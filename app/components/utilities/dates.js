@@ -37,10 +37,13 @@ const formatDate = (date) => {
 };
 
 const formatTime = (time) => {
-	let hour = parseInt(time.split(':')[0]);
-	let minutes = time.split(':')[1];
-	if (hour > 12) return hour - 12 + ':' + minutes + ' PM';
-	return time + ' AM';
+	if (time != '') {
+		let hour = parseInt(time.split(':')[0]);
+		let minutes = time.split(':')[1];
+		if (hour > 12) return hour - 12 + ':' + minutes + ' PM';
+		return time + ' AM';
+	} 
+	return '';
 };
 
 export { currentTimeString, tomorrowTimeString, formatDay, formatDate, formatTime };

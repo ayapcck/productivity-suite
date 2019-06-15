@@ -24,15 +24,25 @@
 }
 
 .checkboxContainer {
+	display: grid;
+	grid-template-columns: 50% 50%;
+	color: @textColor;
+}
+.checkboxContainer label {
 	display: flex;
 	justify-content: center;
-	color: @textColor;
 }
 .checkboxContainer label, .checkboxContainer input {
 	cursor: pointer;
 }
-.checkboxContainer label {
-	margin: 0 10px;
+
+.dateTimeContainer {
+	display: grid;
+	grid-template-columns: 50% 50%;
+}
+
+.dateTimeContainer input {
+	text-align: center;
 }
 
 .formInputs {
