@@ -5,7 +5,7 @@ import classnames from 'classnames';
 
 import FormButton from '../forms/button.js';
 import FormPopup from '../formPopup/formPopup.js'
-import Icon from "../icons/icon.js";
+import Icon from '../icons/icon.js';
 import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
@@ -24,7 +24,7 @@ const tabHeaders = [{
 	getValue: () => tomorrowTimeString()
 }, {
 	name: 'Soon',
-	getValue: () => ""
+	getValue: () => ''
 }];
 const initialElementDicts = () => {
 	let elements = {};
@@ -61,7 +61,7 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	log(message, functionName) {
-		Logger.log(message, "schedulerApp", functionName);
+		Logger.log(message, 'schedulerApp', functionName);
 	}
 
 	componentDidMount() {
@@ -73,7 +73,7 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	postTodoElement(title, content, datetime, priority) {
-		var url = "http://192.168.0.26:5000/addTodo";
+		var url = 'http://192.168.0.26:5000/addTodo';
 		var jsonBody = {
 			user: this.props.username,
 			title: title,
@@ -92,7 +92,7 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	updateTodoElement(title, content, datetime, priority) {
-		let url = "http://192.168.0.26:5000/updateTodo";
+		let url = 'http://192.168.0.26:5000/updateTodo';
 		let jsonBody = {
 			user: this.props.username,
 			title: title,
@@ -111,10 +111,10 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	updateTodosFromDB() {
-		if (this.props.username != "") {
-			this.log("starting", "updateTodosFromDB");
-			var url = "http://192.168.0.26:5000/retrieveTodos?user=" +
-				this.props.username + "&tab=" + this.state.activeTab;
+		if (this.props.username && this.props.username !== '') {
+			this.log('starting', 'updateTodosFromDB');
+			var url = 'http://192.168.0.26:5000/retrieveTodos?user=' +
+				this.props.username + '&tab=' + this.state.activeTab;
 			getJson(url).then(response => {
 				var numberTodos = 0;
 				var elements = initialElementDicts();
@@ -140,7 +140,7 @@ export default class SchedulerApp extends React.Component {
 					orderObj: orderObj,
 					needsUpdate: false
 				}));
-				this.log("done", "updateTodosFromDB");
+				this.log('done', 'updateTodosFromDB');
 			}).catch(error => {
 				alert(error);
 			});
@@ -155,25 +155,25 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	markCompleted(id) {
-		if (this.props.username != "") {
-			this.log("starting", "markCompleted");
-			var url = "http://192.168.0.26:5000/markCompleted?user=" + this.props.username + "&id=" + id + "";
+		if (this.props.username != '') {
+			this.log('starting', 'markCompleted');
+			var url = 'http://192.168.0.26:5000/markCompleted?user=' + this.props.username + '&id=' + id + '';
 
-			this.log("POST todo id: " + id + " as completed", "markCompleted");
+			this.log('POST todo id: ' + id + ' as completed', 'markCompleted');
 			postJson(url).then(response => {
 				this.setState({ needsUpdate: true });
-				this.log("passing off to updateTodosFromDB, inside post.then()", "markCompleted");
+				this.log('passing off to updateTodosFromDB, inside post.then()', 'markCompleted');
 				this.updateTodosFromDB();
 			}).catch(error => {
 				alert(error);
 			});
-			this.log("finished", "markCompleted");
+			this.log('finished', 'markCompleted');
 		}
 	}
 
 	clearCompleted() {
-		if (this.props.username != "") {
-			var url = "http://192.168.0.26:5000/clearCompleted?user=" + this.props.username;
+		if (this.props.username != '') {
+			var url = 'http://192.168.0.26:5000/clearCompleted?user=' + this.props.username;
 
 			postJson(url).then(response => {
 				this.setState({ needsUpdate: true });
@@ -217,45 +217,45 @@ export default class SchedulerApp extends React.Component {
 
 	updateOrderAfterHeaderSwitch(tabName) {
 		let orderObj = this.handleOrderWithCollisions(tabName, this.state.elementDicts);
-		this.log("orderObj: " + JSON.stringify(orderObj), "updateOrderAfterHeaderSwitch");
+		this.log('orderObj: ' + JSON.stringify(orderObj), 'updateOrderAfterHeaderSwitch');
 		this.setState({ orderObj: orderObj });
 	}
 
 	handleOrderAfterUpdate(orderObj) {
-		this.log("starting", "handleOrderAfterUpdate");
+		this.log('starting', 'handleOrderAfterUpdate');
 
 		let compareOrdObj = JSON.stringify(orderObj);
 		let compareStateOrdObj = JSON.stringify(this.state.orderObj);
-		this.log("this.state.orderObj before setState: " + compareStateOrdObj, "handleOrderAfterUpdate");
-		this.log("orderObj before setState: " + compareOrdObj, "handleOrderAfterUpdate");
+		this.log('this.state.orderObj before setState: ' + compareStateOrdObj, 'handleOrderAfterUpdate');
+		this.log('orderObj before setState: ' + compareOrdObj, 'handleOrderAfterUpdate');
 
 		let orderObjKeys = Object.keys(orderObj);
-		let firstTodoInList = (orderObjKeys.length == 1) && (orderObjKeys[0] == "null");
+		let firstTodoInList = (orderObjKeys.length == 1) && (orderObjKeys[0] == 'null');
 
 		if (firstTodoInList) {
-			this.updateOrder(["todo_" + Object.values(orderObj)[0]]);
+			this.updateOrder(['todo_' + Object.values(orderObj)[0]]);
 		}
 		else {
 			if (compareOrdObj !== compareStateOrdObj) {
-				this.log("order size was different, passing off to updateOrderAfterUpdateTodos", "handleOrderAfterUpdate");
+				this.log('order size was different, passing off to updateOrderAfterUpdateTodos', 'handleOrderAfterUpdate');
 				this.updateOrderAfterUpdateTodos(orderObj);
 			}
 		}
 
-		this.log("done", "handleOrderAfterUpdate");
+		this.log('done', 'handleOrderAfterUpdate');
 	}
 
 	// this allows usage of this.updateOrder to run after updateTodosFromDB
 	updateOrderAfterUpdateTodos(orderObj) {
 		let todoIds = [];
 		for (const val of Object.values(orderObj)) {
-			todoIds.push("todo_" + val);
+			todoIds.push('todo_' + val);
 		}
 		this.updateOrder(todoIds);
 	}
 
 	updateOrder(todoIds) {
-		this.log("starting", "updateOrder");
+		this.log('starting', 'updateOrder');
 		let elementsToBeUpdated = this.state.elementDicts;
 		let orderObj = [];
 		let stateOrderObj = {};
@@ -265,29 +265,29 @@ export default class SchedulerApp extends React.Component {
 			orderObj.push([id, order]);
 			stateOrderObj[order] = id;
 		}
-		this.log("going into postOrderChange with orderObj: " + JSON.stringify(orderObj), "updateOrder");
+		this.log('going into postOrderChange with orderObj: ' + JSON.stringify(orderObj), 'updateOrder');
 		this.postOrderChange(orderObj);
-		this.log("back from postOrderChange", "updateOrder");
-		this.log("done", "updateOrder");
+		this.log('back from postOrderChange', 'updateOrder');
+		this.log('done', 'updateOrder');
 	}
 
 	postOrderChange(orderObj) {
-		this.log("starting", "postOrderChange");
-		if (this.props.username != "") {
-			var url = "http://192.168.0.26:5000/changeOrder";
+		this.log('starting', 'postOrderChange');
+		if (this.props.username != '') {
+			var url = 'http://192.168.0.26:5000/changeOrder';
 			var jsonBody = {
 				user: this.props.username,
 				orderObj: orderObj,
 			}
 
-			this.log("return postJson promise", "postOrderChange");
+			this.log('return postJson promise', 'postOrderChange');
 			return postJson(url, jsonBody).then(() => {
 				this.updateTodosFromDB();
 			}).catch(error => {
 				alert(error);
 			});
 		}
-		this.log("done", "postOrderChange");
+		this.log('done', 'postOrderChange');
 	}
 
 	hideEditTodoForm() {
@@ -302,13 +302,13 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	showTabHeaderContent(tabName) {
-		this.log("starting", "showTabHeaderContent");
+		this.log('starting', 'showTabHeaderContent');
 		if (tabName !== this.state.activeTab) {
-			this.log("setting active tab to " + tabName, "showTabHeaderContent");
+			this.log('setting active tab to ' + tabName, 'showTabHeaderContent');
 			this.setState({ activeTab: tabName });
 			this.updateOrderAfterHeaderSwitch(tabName);
 		}
-		this.log("done", "showTabHeaderContent");
+		this.log('done', 'showTabHeaderContent');
 	}
 
 	render() {
@@ -320,7 +320,7 @@ export default class SchedulerApp extends React.Component {
 		}
 
 		let todoFormProps = {
-			userLoggedIn: this.props.username != ""
+			userLoggedIn: this.props.username != ''
 		};
 
 		let todoColumnProps = {
@@ -333,18 +333,18 @@ export default class SchedulerApp extends React.Component {
 			updateOrder: this.updateOrder
 		}
 
-		let schedulerApp = <div name="schedulerBody" className={styles.schedulerContent}>
+		let schedulerApp = <div name='schedulerBody' className={styles.schedulerContent}>
 			{this.state.showEditTodoPopup && <FormPopup handleCloseForm={this.hideEditTodoForm}
 				content={
 					<React.Fragment>
-						<Icon iconClass="far fa-times-circle" onClick={this.hideEditTodoForm} />
-						<TodoForm {...todoFormProps} headerText="Edit Todo"
+						<Icon iconClass='far fa-times-circle' onClick={this.hideEditTodoForm} />
+						<TodoForm {...todoFormProps} headerText='Edit Todo'
 							handleAfterSubmit={this.updateTodoElement} displayAsPopup={true}
 							prePopulatedContent={this.state.editingTodoProps} />
 					</React.Fragment>
 				} />}
 			<div className={classnames(styles.gridElement, styles.leftColumn)}>
-				<TodoForm {...todoFormProps} headerText="Add Todo"
+				<TodoForm {...todoFormProps} headerText='Add Todo'
 					handleAfterSubmit={this.postTodoElement} />
 			</div>
 			<div className={classnames(styles.gridElement, styles.middleColumn)} >
@@ -357,7 +357,7 @@ export default class SchedulerApp extends React.Component {
 					<div className={styles.finishedItems}>
 						{finishedElements}
 					</div>
-					<FormButton text="Clear" type="button" containerClass={styles.pushDown} onClick={this.clearCompleted} />
+					<FormButton text='Clear' type='button' containerClass={styles.pushDown} onClick={this.clearCompleted} />
 				</div>
 			</div>
 		</div>
@@ -367,7 +367,7 @@ export default class SchedulerApp extends React.Component {
 
 const editTodoPopup = ({ }) => {
 	return <React.Fragment>
-		<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
+		<Icon iconClass='far fa-times-circle' onClick={this.handleCloseForm} />
 		<TodoForm userLoggedIn={this.props.userLoggedIn} postTodoElement={this.props.postTodoElement} />
 	</React.Fragment>;
 }

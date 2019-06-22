@@ -4,6 +4,14 @@ import Icon from '../icons/icon.js';
 
 import styles from './navigationBar.less';
 
+const mapStateToProps = (state) => {
+	const { userLoggedIn } = state.auth;
+
+	return {
+		userLoggedIn: userLoggedIn
+	};
+};
+
 export default class NavigationBar extends React.Component {
 	constructor(props) {
 		super(props);
@@ -26,20 +34,20 @@ export default class NavigationBar extends React.Component {
 	}
 	
 	loginLogoutClick() {
-		if (this.props.userLoggedIn) {
+		const { userLoggedIn, onLogout, showLoginApp, setUsername, setUserLoggedIn } = this.props;
+
+		if (userLoggedIn) {
 			this.hideAccountSettings();
-			this.props.onLogout();
+			setUsername('');
+			setUserLoggedIn(false);
+			onLogout();
 		} else {
-			this.props.loginToggle();
+			showLoginApp();
 		}
 	}
 	
-	isUserLoggedIn() {
-		return this.props.username != "";
-	}
-	
 	capitalizeUsername() {
-		var user = this.props.username;
+		let user = this.props.username;
 		return user.charAt(0).toUpperCase() + user.slice(1);
 	}
 		
@@ -50,7 +58,7 @@ export default class NavigationBar extends React.Component {
 			onMouseLeave: this.hideAccountSettings
 		}
 		
-		var accountOptions = <div className={styles.accountOptions} {...handleHoverSettings}>
+		let accountOptions = <div className={styles.accountOptions} {...handleHoverSettings}>
 			<div className={styles.menuElement} 
 				onClick={this.loginLogoutClick}>
 					{this.props.userLoggedIn ? "Logout" : "Login/Create"}
@@ -58,9 +66,9 @@ export default class NavigationBar extends React.Component {
 			<div className={styles.menuElement}>Settings</div>
 		</div>
 		
-		var accountOrName = this.isUserLoggedIn() ? this.capitalizeUsername() : "Account";
-		
-		var navigationBar = <React.Fragment>
+		let accountOrName = this.props.userLoggedIn ? this.capitalizeUsername() : "Account";
+
+		let navigationBar = <React.Fragment>
 			<div name="navMenu" className={styles.navBarContainer}>
 				<div className={styles.menuElement} 
 					{...handleHoverSettings}>
