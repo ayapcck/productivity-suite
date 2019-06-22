@@ -8,7 +8,8 @@ module.exports = {
   mode: 'development',
   entry: {
     index: __dirname + '/app/index.js',
-    loginApp: __dirname + '/app/components/loginApp/loginApp.js'
+    loginApp: __dirname + '/app/components/loginApp/loginApp.js',
+    routeHandler: __dirname + '/app/routes/routeHandler.js'
   },
   module: {
     rules: [

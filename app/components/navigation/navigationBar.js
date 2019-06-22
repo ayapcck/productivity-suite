@@ -34,7 +34,7 @@ export default class NavigationBar extends React.Component {
 	}
 	
 	loginLogoutClick() {
-		const { userLoggedIn, onLogout, showLoginApp, setUsername, setUserLoggedIn } = this.props;
+		const { userLoggedIn, showLoginApp, setUsername, setUserLoggedIn } = this.props;
 
 		if (userLoggedIn) {
 			this.hideAccountSettings();
