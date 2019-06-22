@@ -40,7 +40,7 @@ export default class NavigationBar extends React.Component {
 			this.hideAccountSettings();
 			setUsername('');
 			setUserLoggedIn(false);
-			onLogout();
+			window.sessionStorage.removeItem("username");
 		} else {
 			showLoginApp();
 		}

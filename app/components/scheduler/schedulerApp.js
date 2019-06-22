@@ -320,7 +320,7 @@ export default class SchedulerApp extends React.Component {
 		}
 
 		let todoFormProps = {
-			userLoggedIn: this.props.username != ''
+			userLoggedIn: this.props.userLoggedIn
 		};
 
 		let todoColumnProps = {

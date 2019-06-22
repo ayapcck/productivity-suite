@@ -9,8 +9,6 @@ import LoginApp from './components/loginApp/loginApp.js';
 import NavigationBar from './components/navigation/navigationBar.js';
 import SchedulerApp from './components/scheduler/schedulerApp.js';
 
-import styles from './index.css';
-
 const mapStateToProps = (state) => {
 	const { username, userLoggedIn } = state.auth;
 	return {
@@ -50,7 +48,6 @@ class IndexPage extends React.Component {
 		
 		this.displayLoginApp = this.displayLoginApp.bind(this);
 		this.hideLoginApp = this.hideLoginApp.bind(this);
-		this.onLogout = this.onLogout.bind(this);
 	}
 
 	hideLoginApp() {
@@ -60,16 +57,6 @@ class IndexPage extends React.Component {
 	displayLoginApp() {
 		this.setState({ showLoginApp: true });
 	}
-	
-	isLoggedIn() {
-		let { userLoggedIn } = this.state.store.getState().auth;
-		userLoggedIn ? true : false;
-	}
-
-	onLogout() {
-		let { store } = this.state;
-		window.sessionStorage.removeItem("username");
-	}
 
 	render() {
 		let { store } = this.state;
@@ -77,8 +64,7 @@ class IndexPage extends React.Component {
 			<Provider store={store}>
 				{this.state.showLoginApp && <LoginAppContainer {...this.props} 
 					hideLoginApp={this.hideLoginApp} showLoginApp={this.state.showLoginApp} />}
-				<NavigationBarContainer {...this.props} showLoginApp={this.displayLoginApp} 
-					onLogout={this.onLogout} />
+				<NavigationBarContainer {...this.props} showLoginApp={this.displayLoginApp} />
 				<SchedulerContainer />
 			</Provider>
 		</React.Fragment>
