@@ -10,19 +10,22 @@ import styles from './form.less';
 export default class LoginForm extends React.Component {
 	constructor(props) {
 		super(props);
-		
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
   
-  loginUser(username, password) {
-	var url = "http://192.168.0.26:5000/getUser?user=" + username + "";
+  	loginUser(username, password) {
+		let url = "http://192.168.0.26:5000/getUser?user=" + username + "";
+		let dispatch = this.props.dispatch;
 	
-	getJson(url).then(myJsonUser => {
+		getJson(url).then(myJsonUser => {
 			var retPassword = myJsonUser[1];
 			var salt = myJsonUser[2];
 			var active = myJsonUser[3];
 			if (generateHmac(password, salt) == retPassword) {
-				active == 1 ? this.props.onLoginSuccess(username) : alert("You need to verify your email");
+				active === 1 ? 
+					this.props.handleLoginSuccess(username) : 
+					alert("You need to verify your email");
 			} else {
 				alert("Incorrect user/password combination")
 			}

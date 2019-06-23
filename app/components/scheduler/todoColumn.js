@@ -27,7 +27,7 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	log(message, functionName) {
-		Logger.log(message, "todoColumn", functionName);
+		Logger.log(message, 'todoColumn', functionName);
 	}
 	
 	previousOrNextSpacer(dropTargetId) {
@@ -52,7 +52,7 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	addDraggedTodoClass(draggedTodoId) {
-		this.log("adding class", "addDraggedTodoClass");
+		this.log('adding class', 'addDraggedTodoClass');
 		let draggedTodoNode = document.getElementById(draggedTodoId);
 		draggedTodoNode.classList.add(styles.hideTodo);
 	}
@@ -64,13 +64,13 @@ export default class TodoColumn extends React.Component {
 	
 	removeDraggedTodoClassWrapper(ev) {
 		let dropEffect = ev.dataTransfer.dropEffect;
-		if (dropEffect === "none") {
+		if (dropEffect === 'none') {
 			this.removeDraggedTodoClass();
 		}
 	}
 	
 	removeDraggedTodoClass(draggedTodoId=null) {
-		this.log("removing class", "removeDraggedTodoClass");
+		this.log('removing class', 'removeDraggedTodoClass');
 		if (draggedTodoId === null) {
 			draggedTodoId = this.state.draggedTodoId;
 		}
@@ -82,17 +82,17 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	startDrag(ev) {
-		this.log("starting drag event", "startDrag");
+		this.log('starting drag event', 'startDrag');
 		let draggedTodoId = ev.target.id;
 		let previousSiblingId = ev.target.previousSibling.id; 
 		let nextSiblingId = ev.target.nextSibling.id;
-		ev.dataTransfer.setData("idText", draggedTodoId);
+		ev.dataTransfer.setData('idText', draggedTodoId);
 		this.setState({draggedTodoId: draggedTodoId});
 		this.addDraggedTodoClass(draggedTodoId);
 	}
 	
 	drop(ev) {
-		this.log("starting", "drop");
+		this.log('starting', 'drop');
 		
 		let eventX = ev.clientX;
 		let eventY = ev.clientY;
@@ -100,7 +100,7 @@ export default class TodoColumn extends React.Component {
 		let targetNode = ev.target;
 		let prevSibNode = targetNode.previousSibling;
 		let previousTodoId = prevSibNode == null ? null : prevSibNode.id;
-		let draggedTodoId = ev.dataTransfer.getData("idText");
+		let draggedTodoId = ev.dataTransfer.getData('idText');
 		
 		let todos = document.getElementsByClassName(todoStyles.todoElement);
 		let todoIds = [];
@@ -116,34 +116,38 @@ export default class TodoColumn extends React.Component {
 		}
 		
 		ev.preventDefault();
-		this.log("passing off to props.updateOrder with todo ids: " + JSON.stringify(todoIds), "drop");
+		this.log('passing off to props.updateOrder with todo ids: ' + JSON.stringify(todoIds), 'drop');
 		this.props.updateOrder(todoIds);
-		this.log("back from props.updateOrder", "drop");
+		this.log('back from props.updateOrder', 'drop');
 		this.removeDropClass(ev); 
-		this.log("done", "drop");
+		this.log('done', 'drop');
 	}
 	
-	shouldComponentUpdate(nextProps) {
-		this.log("Next Props: " + JSON.stringify(nextProps.order), "shouldComponentUpdate");
-		this.log("Current Props: " + JSON.stringify(this.props.order), "shouldComponentUpdate");
+	logElements(elements) {
+		let retVal = [];
+		Object.keys(elements).map((value) => {
+			retVal.push("ord: " + elements[value].order + " id: " + elements[value].id);
+		});
+		return retVal;
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		this.log('Next props order: ' + JSON.stringify(nextProps.order), 'shouldComponentUpdate');
+		this.log('Current props order: ' + JSON.stringify(this.props.order), 'shouldComponentUpdate');
+		this.log('Next props elements: ' + JSON.stringify(this.logElements(nextProps.elementDicts)), 'shouldComponentUpdate');
+		this.log('Current props elements: ' + JSON.stringify(this.logElements(this.props.elementDicts)), 'shouldComponentUpdate');
 		let emptyButNotBoth = Object.entries(this.props.order).length === 0 && this.props.order !== nextProps;
 		if (emptyButNotBoth) {
-			this.log("component should update", "shouldComponentUpdate");
+			this.log('component should update', 'shouldComponentUpdate');
 			return true;
 		}
-		if (nextProps.order !== this.props.order || nextProps.elementDicts !== this.props.elementDicts) {
-			this.log("component should update", "shouldComponentUpdate");
-		 		this.removeDraggedTodoClass(this.state.draggedTodoId);
-		 		return true;
+		if (nextProps.order !== this.props.order || 
+				nextProps.elementDicts !== this.props.elementDicts) {
+			this.log('component should update', 'shouldComponentUpdate');
+		 	this.removeDraggedTodoClass(this.state.draggedTodoId);
+		 	return true;
 		}
-		// for (let i  in this.props.order) {
-		// 	if (nextProps.order[i] !== this.props.order[i]) {
-		// 		this.log("component should update", "shouldComponentUpdate");
-		// 		this.removeDraggedTodoClass(this.state.draggedTodoId);
-		// 		return true;
-		// 	}
-		// }
-		this.log("component should not update", "shouldComponentUpdate");
+		this.log('component should not update', 'shouldComponentUpdate');
 		return false;
 	}
 	
@@ -158,20 +162,21 @@ export default class TodoColumn extends React.Component {
 			onDrop: this.drop,
 		};
 		
-		todosAndDropLocations.push(<DropLocation key={"DropLocation_0"} id={"DropLocation_0"} {...dropTargetProps} />);
-		this.log("order at this point: " + JSON.stringify(this.props.order), "render");
+		todosAndDropLocations.push(<DropLocation key={'DropLocation_0'} id={'DropLocation_0'} {...dropTargetProps} />);
+		this.log('order at this point: ' + JSON.stringify(this.props.order), 'render');
 		for (let i in this.props.order) {
 			let elementId = this.props.order[i];
 			var element = this.props.elementDicts[elementId];
-			if (!element.completed) {
-				this.log("creating todo_" + element.id + " element", "render");
+			if (element) {
+				this.log('creating todo_' + element.id + ' element', 'render');
 				let todoProps = {
 					key: i,
-					id: "todo_" + element.id + "",
+					activeTab: this.props.activeTab,
+					id: 'todo_' + element.id + '',
 					title: element.title,
 					text: element.text,
 					datetime: element.datetime,
-					draggable: "true",
+					draggable: 'true',
 					onDragStart: this.startDrag,
 					onDragEnd: this.removeDraggedTodoClassWrapper,
 					onTodoCompleted: this.props.markTodoCompleted,
@@ -179,13 +184,13 @@ export default class TodoColumn extends React.Component {
 					priority: element.priority
 				};
 				todosAndDropLocations.push(<ToDoElement {...todoProps} />);
-				let id = "DropLocation_" + i+1 + "";
+				let id = 'DropLocation_' + i+1 + '';
 				(i !== todoLength - 1) && 
 					todosAndDropLocations.push(<DropLocation key={id} id={id} {...dropTargetProps} />);
 			}
 		}
-		
-		var todoColumn = <div id="todoContainer" className={classnames(this.props.classes)}>
+
+		let todoColumn = <div id='todoContainer' className={classnames(this.props.classes)}>
 			{todosAndDropLocations}
 		</div>;
 		return todoColumn;

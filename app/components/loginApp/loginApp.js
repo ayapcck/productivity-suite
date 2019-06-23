@@ -18,6 +18,7 @@ export default class LoginApp extends React.Component {
 	}
 	
 	//this.closeOnEsc = this.closeOnEsc.bind(this);
+	this.handleAfterLogin = this.handleAfterLogin.bind(this);
 	this.handleCloseForm = this.handleCloseForm.bind(this);
 	this.handleCloseFromClickOutside = this.handleCloseFromClickOutside.bind(this);
 	this.toggleLoginForm = this.toggleLoginForm.bind(this);
@@ -32,7 +33,7 @@ export default class LoginApp extends React.Component {
   
   handleCloseForm() {
 	this.setState({showLoginForm: true});
-	this.props.onExit();
+	this.props.hideLoginApp();
   }
   
   handleCloseFromClickOutside(e) {
@@ -46,6 +47,14 @@ export default class LoginApp extends React.Component {
 		!clickInsideContainer && this.handleCloseForm();
 	}
   }
+
+  handleAfterLogin(username) {
+	const { setUsername, setUserLoggedIn } = this.props;
+	setUsername(username);
+	setUserLoggedIn(true);
+	window.sessionStorage.setItem("username", username);
+	this.props.hideLoginApp();
+  }
   
   render() {
 	var visibility = this.props.showLoginApp ? styles.visible : styles.hidden;
@@ -57,7 +66,7 @@ export default class LoginApp extends React.Component {
 				<React.Fragment>
 					<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
 					{this.state.showLoginForm ? 
-						<LoginForm onLoginSuccess={this.props.onLoginSuccess} handleExit={this.handleCloseForm} /> : 
+						<LoginForm handleLoginSuccess={this.handleAfterLogin} /> : 
 						<SignupForm handleExit={this.handleCloseForm} />}
 					{this.state.showLoginForm ? 
 						<RedirectLink text="Need an account?" onClick={this.toggleLoginForm} /> : 

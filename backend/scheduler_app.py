@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 
 from flask import Response, request, Blueprint
@@ -29,8 +30,9 @@ def addTodo():
 	content = responseData['content']
 	datetime = responseData['datetime']
 	priority = responseData['priority']
+	tab = responseData['tab']
 	conn = getMySQL().connect()
-	return insertTodoElementIn(user, conn, title, content, datetime, priority)
+	return insertTodoElementIn(user, conn, title, content, datetime, priority, tab)
 
 
 @scheduler.route('/updateTodo', methods=['POST'])
@@ -89,8 +91,9 @@ def createUserTable():
 			"content VARCHAR(255), "
 			"datetime VARCHAR(255), "
 			"id INT NOT NULL AUTO_INCREMENT, "
-			"completed BOOLEAN DEFAULT false, "
 			"ord INT, "
+			"priority BOOLEAN, "
+			"tab VARCHAR(255), "
 			"PRIMARY KEY (id))").format(user)
 			
 	conn = getMySQL().connect()
@@ -119,17 +122,22 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	dbCur.execute(sql)
 	res = dbCur.fetchall()
 	elements = []
-	for x in res:
-		elements.append(x)
+	for todo in res:
+		newTab = handleTodoMoveTabs(scheduler_table, todo)
+		tab = todo[6]
+		if (newTab != ''):
+			tab = newTab
+		element = [todo[0], todo[1], todo[2], todo[3], todo[4], todo[5], tab]
+		elements.append(element)
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
-def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority):
+def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, tab):
 	sql = "INSERT INTO " + scheduler_table + \
-		" (title, content, datetime, priority) VALUES (%s, %s, %s, {})".format(priority)
+		" (title, content, datetime, priority, tab) VALUES (%s, %s, %s, {}, %s)".format(priority)
 	curs = dbConn.cursor()
 	try:
-		curs.execute(sql, (title, content, datetime))
+		curs.execute(sql, (title, content, datetime, tab))
 		dbConn.commit()
 	except Exception:
 		return Response(status=400)
@@ -137,15 +145,15 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 
 
 def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, id):
-	sql = str("UPDATE {} "
-			"SET title='{}',"
-			" content='{}',"
+	sql = str("UPDATE " + scheduler_table + " "
+			"SET title=%s,"
+			" content=%s,"
 			" datetime='{}',"
 			" priority={}"
-			" WHERE id={}").format(scheduler_table, title, content, datetime, priority, id)
+			" WHERE id={}").format(datetime, priority, id)
 	curs = dbConn.cursor()
 	try:
-		curs.execute(sql)
+		curs.execute(sql, (title, content))
 		dbConn.commit()
 	except Exception as e:
 		print(e)
@@ -153,7 +161,7 @@ def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 	return Response(status=200)
 	
 def markTodoCompleted(scheduler_table, dbConn, id):
-	sql = "UPDATE " + scheduler_table + " SET completed=1, ord=0 WHERE id=%s"
+	sql = "UPDATE " + scheduler_table + " SET tab='Completed', ord=0 WHERE id=%s"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, id)
@@ -164,7 +172,7 @@ def markTodoCompleted(scheduler_table, dbConn, id):
 
 	
 def clearCompletedTodos(scheduler_table, dbConn):
-	sql = "DELETE FROM " + scheduler_table + " WHERE completed=1"
+	sql = "DELETE FROM " + scheduler_table + " WHERE tab='Completed'"
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql)
@@ -172,3 +180,40 @@ def clearCompletedTodos(scheduler_table, dbConn):
 	except Exception:
 		return Response(status=400)
 	return Response(status=200)
+
+def handleTodoMoveTabs(user, todo):
+	todoDate = todo[2]
+	todoTab = todo[6]
+	if (todoDate == 'T' or todoTab == 'Completed'):
+		return ''
+	todoDate = todoDate.split('T')[0]
+	nowDate = str(datetime.now()).split(' ')[0]
+	todoDatePieces = todoDate.split('-')
+	nowDatePieces = nowDate.split('-')
+	todoMonth = todoDatePieces[1]
+	nowMonth = nowDatePieces[1]
+	if (todoMonth == nowMonth):
+		todoDay = int(todoDatePieces[2])
+		nowDay = int(nowDatePieces[2])
+		tomorrowDay = nowDay + 1
+		todoId = todo[3]
+		if (todoDay == nowDay):
+			return setTodoTabFor(user, todoId, 'Today')
+		if (todoDay == tomorrowDay):
+			return setTodoTabFor(user, todoId, 'Tomorrow')
+		if (todoDay > tomorrowDay):
+			return setTodoTabFor(user, todoId, 'Soon')
+		
+	return ''
+
+def setTodoTabFor(user, todoId, tabName):
+	sql = "UPDATE {} SET tab='{}' WHERE id={}".format(user, tabName, int(todoId))
+	conn = getMySQL().connect()
+	curs = conn.cursor()
+	try:
+		curs.execute(sql)
+		conn.commit()
+	except Exception as e:
+		print(e)
+		return Response(status=400)
+	return tabName

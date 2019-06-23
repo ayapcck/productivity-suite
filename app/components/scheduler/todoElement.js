@@ -3,33 +3,9 @@ var React = require('react');
 import classnames from 'classnames';
 
 import Icon from '../icons/icon.js';
+import { formatDay, formatTime, formatDate } from '../utilities/dates.js';
 
 import styles from './todoElement.less';
-
-const formatDay = (day) => {
-	let retVal = day[0] === '0' ? day.slice(1) : day; 
-	let lastDigit = day[day.length - 1];
-	if (lastDigit === '1') {
-		return retVal + 'st';
-	} else if (lastDigit === '2') {
-		return retVal + 'nd';
-	} else if (lastDigit === '3') {
-		return retVal + 'rd';
-	} else {
-		return retVal + 'th';
-	}
-};
-const formatDate = (date) => {
-	let dateObj = new Date(date);
-	let datePieces = dateObj.toDateString().split(' ');
-	return datePieces[0] + ', ' + datePieces[1] + ' ' + formatDay(datePieces[2]) + ', ' + datePieces[3];
-};
-const formatTime = (time) => {
-	let hour = parseInt(time.split(':')[0]);
-	let minutes = time.split(':')[1];
-	if (hour > 12) return hour - 12 + ':' + minutes + ' PM';
-	return time + ' AM';
-};
 
 export default class ToDoElement extends React.Component {
 	constructor(props) {
@@ -56,9 +32,10 @@ export default class ToDoElement extends React.Component {
 		let time = '';
 		if (this.props.datetime != 'T') {
 			let dateAndTime = this.props.datetime.split('T');
-			date = formatDate(dateAndTime[0]);
+			date = formatDate(dateAndTime);
 			time = formatTime(dateAndTime[1]);
 		};
+
 		const dragSettings = {
 			draggable: this.props.draggable,
 			onDragStart: this.props.onDragStart,
@@ -90,10 +67,12 @@ export default class ToDoElement extends React.Component {
 				wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
 				iconStyles={styles.todoIcon} onClick={() => this.props.onEditClicked(onEditProps)} />
 			</React.Fragment>}
-			<TodoTextPiece content={this.props.title} extraClass={styles.elementTitle} size="big" />
-			<TodoTextPiece content={this.props.text} extraClass={styles.elementText} size="small" />
-			<TodoTextPiece content={date} extraClass={styles.elementDate} size="big" />
-			<TodoTextPiece content={time} extraClass={styles.elementTime} size="big" />
+			<TodoTextPiece content={this.props.title} extraClass={styles.upperLeft} size="big" />
+			<TodoTextPiece content={this.props.text} extraClass={styles.lowerLeft} size="small" />
+			<TodoTextPiece content={this.props.activeTab === 'Soon' ? date : time} 
+				extraClass={styles.upperRight} size="big" />
+			{this.props.activeTab === 'Soon' && 
+				<TodoTextPiece content={time} extraClass={styles.lowerRight} size="big" />}
 		</div>;
 		return element;
 	}
