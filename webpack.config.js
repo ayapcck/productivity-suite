@@ -1,5 +1,5 @@
 var HTMLWebpackPlugin = require('html-webpack-plugin');
-var HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
+var HTMLWebpackPluginIndex = new HTMLWebpackPlugin({
   template: __dirname + '/app/index.html',
   filename: 'index.html',
   inject: 'body'
@@ -55,7 +55,11 @@ module.exports = {
   },
   output: {
     filename: '[name].[contenthash:8].bundle.js',
-    path: __dirname + '/build'
+    path: __dirname + '/build',
+    publicPath: '/'
+  },
+  devServer: {
+    historyApiFallback: true
   },
   optimization: {
     splitChunks: {
@@ -71,6 +75,6 @@ module.exports = {
       },
     },
   },
-  plugins: [HTMLWebpackPluginConfig]
+  plugins: [HTMLWebpackPluginIndex]
 };
 

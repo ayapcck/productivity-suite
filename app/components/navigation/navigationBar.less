@@ -15,11 +15,12 @@
 	right: 0;
 }
 
-.productivityElements {
+.appMenuElements {
 	&:extend(.hoverElements);
 	right: 8%;
 }
-.productivityElements .menuElement {
+.appMenuElements .menuElement {
+	border-width: 0 2px 2px 2px;
 	width: 100%;
 }
 
@@ -29,6 +30,18 @@
 	overflow: hidden;
 }
 
+a:link .menuElement,
+a:active .menuElement,
+a:visited .menuElement {
+	color: @darkTextColor;
+	text-decoration: none;
+}
+a:hover .menuElement {
+	color: white;
+	text-decoration: underline;
+}
+
+
 .navOptions {
 	margin: 0;
 	padding: 0;
@@ -36,21 +49,21 @@
 }
 
 .menuElement {
-	width: 8%;
-	height: 100%;
-	border-width: 0 0 2px 2px;
-	border-style: solid;
+	color: @darkTextColor;
+	cursor: pointer;
+	background-color: @navBarColor;
 	border-color: @navBarAccentColor;
+	border-style: solid;
+	border-width: 0 0 2px 2px;
+	box-sizing: border-box;
 	float: right;
+	height: 100%;
 	padding: 8px 0;
 	text-align: center;
-	cursor: pointer;
-	box-sizing: border-box;
-	background-color: @navBarColor;
 	user-select: none;
+	width: 8%;
 }
-.menuElement:hover {
-	background-color: navBarElementHover;
+.menuElement:hover .menuText {
 	color: white;
 	text-decoration: underline;
 }
@@ -58,6 +71,10 @@
 .menuIcon {
 	float: none;
 	padding: 0 0 0 5px;
+}
+
+.menuText {
+	padding: 0 5px 0 0;
 }
 
 .accountOptions .menuElement {

@@ -8,6 +8,10 @@ export default class SchedulerPage extends React.Component {
 		super(props);
 	}
 
+	componentDidMount() {
+		document.title = 'Scheduler';
+	}
+
 	render() {
 		const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 

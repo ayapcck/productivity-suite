@@ -1,10 +1,15 @@
 var React = require('react');
 
 import PageHeader from './components/pageTemplate/pageHeader.js';
+import WelcomeContent from './components/welcomeContent/welcomeContent.js';
 
 export default class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
+	}
+
+	componentDidMount() {
+		document.title = 'Welcome';
 	}
 
 	render() {
@@ -17,9 +22,13 @@ export default class IndexPage extends React.Component {
 			username: username
 		}
 
+		const welcomePageProps = {
+			username: username
+		}
+
 		const indexPage = <React.Fragment>
 			<PageHeader {...pageHeaderProps} />
-			This is a test page.
+			<WelcomeContent {...welcomePageProps} />
 		</React.Fragment>
 		return indexPage;
 	}
