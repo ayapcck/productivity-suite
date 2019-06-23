@@ -3,7 +3,7 @@ var ReactDOM = require('react-dom');
 
 import { connect, Provider } from 'react-redux';
 import { getStore } from '../redux/store';
-import { Route, Router, Switch } from 'react-router';
+import { Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import { setUsername, setUserLoggedIn } from '../redux/loginActions';
@@ -11,6 +11,7 @@ import { setUsername, setUserLoggedIn } from '../redux/loginActions';
 const history = createBrowserHistory();
 
 import IndexPage from '../index';
+import SchedulerPage from '../pages/schedulerPage';
 
 const mapStateToProps = (state) => {
     const { username, userLoggedIn } = state.auth;
@@ -26,6 +27,7 @@ const mapDispatchToProps = {
 };
 
 const IndexPageContainer = connect(mapStateToProps, mapDispatchToProps)(IndexPage);
+const SchedulerPageContainer = connect(mapStateToProps, mapDispatchToProps)(SchedulerPage);
 
 class RouteHandler extends React.Component {
     constructor(props) {
@@ -42,6 +44,7 @@ class RouteHandler extends React.Component {
             <Router history={history}>
                 <Switch>
                     <Route exact path='/' component={IndexPageContainer} />
+                    <Route exact path='/scheduler' component={SchedulerPageContainer} />
                 </Switch>
             </Router>
         </Provider>;
@@ -51,6 +54,3 @@ class RouteHandler extends React.Component {
 
 let contentDiv = document.getElementById('content');
 ReactDOM.render(<RouteHandler />, contentDiv);
-
-
-//<Route exact path='/scheduler' component={SchedulerPage} />

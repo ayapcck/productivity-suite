@@ -1,7 +1,6 @@
 var React = require('react');
 
 import PageHeader from './components/pageTemplate/pageHeader.js';
-import SchedulerApp from './components/scheduler/schedulerApp.js';
 
 export default class IndexPage extends React.Component {
 	constructor(props) {
@@ -9,10 +8,18 @@ export default class IndexPage extends React.Component {
 	}
 
 	render() {
-		let { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
-		let indexPage = <React.Fragment>
-			<PageHeader setUsername={setUsername} setUserLoggedIn={setUserLoggedIn} userLoggedIn={userLoggedIn} username={username} />
-			<SchedulerApp userLoggedIn={userLoggedIn} username={username} />
+		const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
+
+		const pageHeaderProps = {
+			setUsername: setUsername,
+			setUserLoggedIn: setUserLoggedIn,
+			userLoggedIn: userLoggedIn,
+			username: username
+		}
+
+		const indexPage = <React.Fragment>
+			<PageHeader {...pageHeaderProps} />
+			This is a test page.
 		</React.Fragment>
 		return indexPage;
 	}
