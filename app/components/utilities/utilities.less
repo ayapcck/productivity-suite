@@ -1,8 +1,25 @@
 @import "./colors.less";
 
+@borderRadius: 15px;
+
 .dottedBorder {
     background-image: linear-gradient(@accentColor 33%, rgba(255, 255, 255, 0), 0%);
     background-position: right;
     background-size: 1px 3px;
     background-repeat: repeat-y;
+}
+
+.spanHeader {
+	@rad: @borderRadius;
+	align-items: center;
+	background-color: @lightPurple;
+	border-color: @accentColor;
+	border-style: solid;
+	border-radius: @rad @rad 0 0;
+	border-width: 0 0 2px 0;
+	color: @darkTextColor;
+	display: inline-flex;
+	grid-row: 1;
+	justify-content: center;
+	padding: 5px 0;
 }

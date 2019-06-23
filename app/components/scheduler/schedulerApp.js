@@ -353,7 +353,7 @@ export default class SchedulerApp extends React.Component {
 			</div>
 			<div className={classnames(styles.gridElement, styles.rightColumn)}>
 				<div className={styles.completedTasksContainer}>
-					<span className={styles.finishedHeader}>Completed Tasks</span>
+					<span className={styles.spanHeader}>Completed Tasks</span>
 					<div className={styles.finishedItems}>
 						{finishedElements}
 					</div>

@@ -85,6 +85,7 @@ export default class NavigationBar extends React.Component {
 		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} 
 			{...handleHoverSettings}>
 			<LinkMenuElement linkTo='/scheduler' menuText='Scheduler' />
+			<LinkMenuElement linkTo='/shuffler' menuText='Shuffler' />
 		</div>;
 		
 		const accountOrName = this.props.userLoggedIn ? capitalizeUsername(this.props.username) : 'Account';

@@ -1,0 +1,65 @@
+@utilities: "../utilities";
+
+@import "@{utilities}/utilities.less";
+
+.addPlaylistDescription {
+    color: @textColor;
+    margin: 5px 10px;
+    text-align: center;
+}
+
+.leftColumn {
+    &:extend(.borderBasics);
+    border-width: 0 1px 0 0;
+    display: grid;
+    grid-column: 1;
+    grid-template-rows: 65% 35%;
+}
+
+.musicInputForm {
+    display: grid;
+    grid-template-rows: 85% 15%;
+}
+
+.musicInputContainer {
+    border-color: @accentColor;
+    border-radius: @borderRadius;
+    border-style: solid;
+    border-width: 2px;
+    display: grid;
+	grid-template-rows: 10% 90%;
+	margin: 10px auto;
+	user-select: none;
+	width: 90%;
+}
+
+.borderBasics {
+    border-color: @opaqueDarkerGrey;
+    border-style: solid;
+}
+
+.playlistBox {
+    display: flex;
+    flex-direction: column;
+    grid-row: 1;
+}
+
+.pushDown {
+    align-items: flex-end;
+    display: flex;
+    grid-row: 2;
+    margin: 0 0 5px 0;
+    width: -webkit-fill-available;
+}
+
+.rightColumn {
+    &:extend(.borderBasics);
+    border-width: 0 0 0 1px;
+    grid-column: 2;
+}
+
+.shufflerContent {
+    background-color: @backgroundColor;
+    display: grid;
+    grid-template-columns: 30% 70%;
+}

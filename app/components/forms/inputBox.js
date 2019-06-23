@@ -70,16 +70,16 @@ export default class InputBox extends React.Component {
 			this.props.tooltipText != "");
 		let tooltipText = this.props.disabled ? this.props.disabledTooltipText : this.props.tooltipText;
 		
-		let inputElemenet = this.props.type == "area" ? 
+		let inputElement = this.props.type == "area" ? 
 			<textarea {...areaProps}></textarea> :
 			<input {...boxProps} />
 		let disabledInput = <div {...mouseProperties}>
-			{inputElemenet}
+			{inputElement}
 		</div>
 		let returnElement = <div className={styles.inputContainer}>
 			{ showTooltip && <Tooltip top={this.state.boxY} left={this.state.mouseX} 
 				name={this.props.name + "Tooltip"} tooltipText={tooltipText} /> }
-			{this.props.disabled ? disabledInput : inputElemenet}
+			{this.props.disabled ? disabledInput : inputElement}
 		</div>
 		return returnElement;
 	}
