@@ -7,11 +7,11 @@ const addDateFormatting = (str) => {
 	return retVal[0] + ', ' + retVal[1] + ' ' + formatDay(retVal[2]);
 }
 const currentTimeString = () => {
-    let retVal = (new Date(Date.now() - timezoneOffset)).toDateString().slice(0, 10);
+    let retVal = (new Date(Date.now())).toDateString().slice(0, 10);
     return addDateFormatting(retVal);
 }
 const tomorrowTimeString = () => {
-    let retVal = (new Date(Date.now() - timezoneOffset + oneDay)).toDateString().slice(0, 10);
+    let retVal = (new Date(Date.now() + oneDay)).toDateString().slice(0, 10);
     return addDateFormatting(retVal);
 }
 
