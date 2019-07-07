@@ -25,7 +25,8 @@ export default class YoutubePlayerContainer extends React.Component {
     // }
 
     render() {
-        const activeVideoId = this.props.activeVideoId;
+        const { activeVideoId, containerClass } = this.props;
+
         const videoId = activeVideoId === '' ? 'M7lc1UVf-VE' : activeVideoId;
 
         const ytContainer = <iframe id="youtubePlayer"

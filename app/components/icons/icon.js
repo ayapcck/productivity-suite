@@ -14,7 +14,7 @@ export default class FormButton extends React.Component {
 		const iconTextStyle = iconTextStyles || styles.iconText;
 
 		const icon = <div className={wrapperStyle}>
-			<span className={iconTextStyle}>{iconText}</span>
+			{iconText && <span className={iconTextStyle}>{iconText}</span>}
 			<i className={classnames(iconStyle, iconClass)} onClick={onClick}></i>
 		</div>
 		return icon;

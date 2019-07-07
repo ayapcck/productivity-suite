@@ -320,6 +320,7 @@ export default class SchedulerApp extends React.Component {
 		}
 
 		let todoFormProps = {
+			currentTab: this.state.activeTab,
 			userLoggedIn: this.props.userLoggedIn
 		};
 

@@ -5,6 +5,21 @@ import Tooltip from '../tooltip/tooltip.js'
 import classnames from 'classnames';
 import styles from './form.less';
 
+const inputElements = {
+	area: ({ val, inputProps }) => {
+		return <textarea {...inputProps} className={styles.inputBox} 
+			defaultValue={val} rows={4}></textarea>;
+	},
+	box: ({ val, inputProps, invalid, type }) => {
+		return <input {...inputProps} defaultValue={val} type={type}
+			className={classnames(styles.inputBox, invalid && styles.invalid)} />;
+	},
+	date: ({ val, inputProps, onChange }) => {
+		return <input {...inputProps} type='date' className={styles.inputBox} 
+			defaultValue={val} value={val} onChange={onChange} />;
+	}
+};
+
 export default class InputBox extends React.Component {
 	constructor(props) {
 		super(props);
@@ -48,39 +63,37 @@ export default class InputBox extends React.Component {
 		};	
 		let properties = {
 			name: this.props.name,
-			defaultValue: this.props.val,
 			disabled: this.props.disabled,
 			placeholder: this.props.text,
 			onBlur: this.props.onBlur,
-			onFocus: this.props.onFocus,
-		};		
-		let inputBoxProperties = {
-			type: this.props.type,
-			className: classnames(styles.inputBox, this.props.invalid && styles.invalid),
+			onFocus: this.props.onFocus
 		};
-		let inputAreaProperties = {
-			className: styles.inputBox,
-			rows: 4,
+		const props = {
+			val: this.props.val,
+			type: this.props.type,
+			inputProps: _.assign({}, mouseProperties, properties),
+			onChange: this.props.onChange,
+			invalid: this.props.invalid
 		};
 
-		let areaProps = Object.assign({}, mouseProperties, properties, inputAreaProperties);
-		let boxProps = Object.assign({}, mouseProperties, properties, inputBoxProperties);
 		let showTooltip = this.state.showTooltip && 
 			((this.props.disabled && this.props.disabledTooltipText != "") || 
 			this.props.tooltipText != "");
 		let tooltipText = this.props.disabled ? this.props.disabledTooltipText : this.props.tooltipText;
 		
-		let inputElement = this.props.type == "area" ? 
-			<textarea {...areaProps}></textarea> :
-			<input {...boxProps} />
+		let type = 'box';
+		if (this.props.type === 'area') type = 'area';
+		if (this.props.type === 'date') type = 'date';
+
+		const inputElement = inputElements[type](props);
 		let disabledInput = <div {...mouseProperties}>
 			{inputElement}
-		</div>
+		</div>;
 		let returnElement = <div className={styles.inputContainer}>
 			{ showTooltip && <Tooltip top={this.state.boxY} left={this.state.mouseX} 
 				name={this.props.name + "Tooltip"} tooltipText={tooltipText} /> }
 			{this.props.disabled ? disabledInput : inputElement}
-		</div>
+		</div>;
 		return returnElement;
 	}
 }
@@ -88,4 +101,4 @@ export default class InputBox extends React.Component {
 InputBox.defaultProps = {
 	type: "text",
 	tooltipText: ""
-}
+};
