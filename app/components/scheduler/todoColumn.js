@@ -94,30 +94,40 @@ export default class TodoColumn extends React.Component {
 	drop(ev) {
 		this.log('starting', 'drop');
 		
-		let eventX = ev.clientX;
-		let eventY = ev.clientY;
+		// let eventX = ev.clientX;
+		// let eventY = ev.clientY;
 		
-		let targetNode = ev.target;
-		let prevSibNode = targetNode.previousSibling;
-		let previousTodoId = prevSibNode == null ? null : prevSibNode.id;
-		let draggedTodoId = ev.dataTransfer.getData('idText');
+		const targetNode = ev.target;
+		const prevSibNode = targetNode.previousSibling;
+		const previousTodoId = prevSibNode == null ? null : prevSibNode.id.replace('todo_', '');
+		const draggedTodoId = ev.dataTransfer.getData('idText').replace('todo_', '');
 		
-		let todos = document.getElementsByClassName(todoStyles.todoElement);
-		let todoIds = [];
-		previousTodoId == null && todoIds.push(draggedTodoId);
+		const todos = document.getElementsByClassName(todoStyles.todoElement);
+		let orderObj = {};
+		let order = 1;
+		if (previousTodoId == null) {
+			orderObj[order] = draggedTodoId;
+			order += 1;
+		}
+
 		for (let i = 0; i < todos.length; i++) {
-			let id = todos[i].id;
+			let id = todos[i].id.replace('todo_', '');
 			if (previousTodoId != null && id === previousTodoId) {
-				todoIds.push(id);
-				todoIds.push(draggedTodoId);
+				orderObj[order] = id;
+				order += 1;
+				orderObj[order] = draggedTodoId;
+				order += 1;
 			} else {
-				id !== draggedTodoId && todoIds.push(id);
+				if (id !== draggedTodoId) {
+					orderObj[order] = id;
+					order += 1;
+				}
 			}
 		}
 		
 		ev.preventDefault();
-		this.log('passing off to props.updateOrder with todo ids: ' + JSON.stringify(todoIds), 'drop');
-		this.props.updateOrder(todoIds);
+		this.log('passing off to props.updateOrder with todo ids: ' + JSON.stringify(orderObj), 'drop');
+		this.props.updateOrder(orderObj);
 		this.log('back from props.updateOrder', 'drop');
 		this.removeDropClass(ev); 
 		this.log('done', 'drop');

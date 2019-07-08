@@ -116,6 +116,17 @@ def changeOrderFor(scheduler_table, orderPair, dbConn):
 		raise e
 	
 
+class TodoElement:
+	def __init__(self, title, text, datetime, id, order, priority, tab):
+		self.title = title
+		self.text = text
+		self.datetime = datetime
+		self.id = id
+		self.order = order
+		self.priority = priority
+		self.tab = tab
+
+
 def fetchTodoElementsFrom(scheduler_table, dbCur):
 	sql = "SELECT * FROM " + scheduler_table + ""
 	
@@ -127,8 +138,8 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 		tab = todo[6]
 		if (newTab != ''):
 			tab = newTab
-		element = [todo[0], todo[1], todo[2], todo[3], todo[4], todo[5], tab]
-		elements.append(element)
+		element = TodoElement(todo[0], todo[1], todo[2], todo[3], todo[4], todo[5], tab)
+		elements.append(element.__dict__)
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
