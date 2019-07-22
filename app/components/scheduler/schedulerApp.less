@@ -1,8 +1,6 @@
 @utilities: "../utilities";
 
-@import "@{utilities}/colors.less";
-
-@completedTaskRadius: 15px;
+@import "@{utilities}/utilities.less";
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -35,7 +33,7 @@
 
 .completedTasksContainer {
 	border-color: @accentColor;
-	border-radius: @completedTaskRadius;
+	border-radius: @borderRadius;
 	border-style: solid;
 	border-width: 2px;
 	display: grid;
@@ -58,8 +56,10 @@
 	grid-template-rows: 65% 35%;
 }
 .middleColumn {
-	grid-column: 2;
 	border-width: 0 1px;
+	grid-column: 2;
+	overflow: auto;
+	overflow-y: hidden;
 	padding: 5px;
 }
 .rightColumn {
@@ -67,21 +67,6 @@
 	border-width: 0 0 0 1px;
 	display: grid;
 	grid-template-rows: 65% 35%;
-}
-
-.finishedHeader {
-	@rad: @completedTaskRadius;
-	align-items: center;
-	background-color: @lightPurple;
-	border-color: @accentColor;
-	border-style: solid;
-	border-radius: @rad @rad 0 0;
-	border-width: 0 0 2px 0;
-	color: @darkTextColor;
-	display: inline-flex;
-	grid-row: 1;
-	justify-content: center;
-	padding: 5px 0;
 }
 
 .finishedItem {

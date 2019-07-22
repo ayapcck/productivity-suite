@@ -1,8 +1,6 @@
 @utilities: "../utilities";
 
-@import "@{utilities}/colors.less";
-
-@borderRadius: 15px;
+@import "@{utilities}/utilities.less";
 
 .addTodoContainer {
 	display: grid;
@@ -55,21 +53,6 @@
 	display: flex;
 	grid-row: 2;
 	width: -webkit-fill-available;
-}
-
-.spanHeader {
-	@rad: @borderRadius;
-	align-items: center;
-	background-color: @lightPurple;
-	border-color: @accentColor;
-	border-style: solid;
-	border-radius: @rad @rad 0 0;
-	border-width: 0 0 2px 0;
-	color: @darkTextColor;
-	display: inline-flex;
-	grid-row: 1;
-	justify-content: center;
-	padding: 5px 0;
 }
 
 .textHeader {

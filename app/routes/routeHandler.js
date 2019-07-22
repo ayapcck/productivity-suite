@@ -12,6 +12,7 @@ const history = createBrowserHistory();
 
 import IndexPage from '../index';
 import SchedulerPage from '../pages/schedulerPage';
+import ShufflerPage from '../pages/shufflerPage';
 
 const mapStateToProps = (state) => {
     const { username, userLoggedIn } = state.auth;
@@ -28,6 +29,7 @@ const mapDispatchToProps = {
 
 const IndexPageContainer = connect(mapStateToProps, mapDispatchToProps)(IndexPage);
 const SchedulerPageContainer = connect(mapStateToProps, mapDispatchToProps)(SchedulerPage);
+const ShufflerPageContainer = connect(mapStateToProps, mapDispatchToProps)(ShufflerPage);
 
 class RouteHandler extends React.Component {
     constructor(props) {
@@ -45,6 +47,7 @@ class RouteHandler extends React.Component {
                 <Switch>
                     <Route exact path='/' component={IndexPageContainer} />
                     <Route exact path='/scheduler' component={SchedulerPageContainer} />
+                    <Route exact path='/shuffler' component={ShufflerPageContainer} />
                 </Switch>
             </Router>
         </Provider>;

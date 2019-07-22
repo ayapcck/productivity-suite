@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+import _ from 'lodash';
 import classnames from 'classnames';
 
 import FormButton from '../forms/button.js';
@@ -111,27 +112,23 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	updateTodosFromDB() {
-		if (this.props.username && this.props.username !== '') {
+		const { username } = this.props;
+		if (username && username !== '') {
+			const { activeTab } = this.state;
 			this.log('starting', 'updateTodosFromDB');
 			var url = 'http://192.168.0.26:5000/retrieveTodos?user=' +
-				this.props.username + '&tab=' + this.state.activeTab;
+				username + '&tab=' + activeTab;
+
 			getJson(url).then(response => {
 				var numberTodos = 0;
 				var elements = initialElementDicts();
 
 				response.forEach(todoItem => {
-					let order = parseInt(todoItem[4]);
-					let tabName = todoItem[6];
-					let newElement = {
-						title: todoItem[0], text: todoItem[1], datetime: todoItem[2],
-						id: todoItem[3], order: order, priority: todoItem[5],
-						tabName: tabName
-					}
-					elements[tabName][newElement.id] = newElement;
+					elements[todoItem.tab][todoItem.id] = todoItem;
 					numberTodos += 1;
 				});
 
-				let orderObj = this.handleOrderWithCollisions(this.state.activeTab, elements)
+				let orderObj = this.handleCollisions(elements[activeTab]);
 				this.handleOrderAfterUpdate(orderObj);
 
 				this.setState(prevState => ({
@@ -184,27 +181,23 @@ export default class SchedulerApp extends React.Component {
 		}
 	}
 
-	handleOrderWithCollisions(tabName, elementDicts) {
+	handleCollisions(todos) {
 		let orderObj = {};
 		let collisions = [];
 		let lastOrder = 0;
-		let todos = elementDicts[tabName];
 
-		Object.entries(todos).forEach(entry => {
-			if (entry) {
-				let todo = entry[1];
-				let id = todo && todo.id;
-				let order = todo && todo.order;
-				if (!(order in orderObj)) {
-					lastOrder = order > lastOrder ? order : lastOrder;
-					orderObj[order] = id;
-				} else {
-					collisions.push(id);
-				}
+		!_.isEmpty(todos) && _.forIn(todos, (val, key) => {
+			const id = val.id;
+			const order = val.order;
+			if (!(order in orderObj)) {
+				lastOrder = order > lastOrder ? order : lastOrder;
+				orderObj[order] = id;
+			} else {
+				collisions.push(id);
 			}
 		});
 
-		if (collisions != []) {
+		if (!_.isEmpty(collisions)) {
 			collisions.forEach(id => {
 				orderObj[lastOrder + 1] = id;
 				lastOrder++;
@@ -216,7 +209,7 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	updateOrderAfterHeaderSwitch(tabName) {
-		let orderObj = this.handleOrderWithCollisions(tabName, this.state.elementDicts);
+		let orderObj = this.handleCollisions(this.state.elementDicts[tabName]);
 		this.log('orderObj: ' + JSON.stringify(orderObj), 'updateOrderAfterHeaderSwitch');
 		this.setState({ orderObj: orderObj });
 	}
@@ -229,42 +222,26 @@ export default class SchedulerApp extends React.Component {
 		this.log('this.state.orderObj before setState: ' + compareStateOrdObj, 'handleOrderAfterUpdate');
 		this.log('orderObj before setState: ' + compareOrdObj, 'handleOrderAfterUpdate');
 
-		let orderObjKeys = Object.keys(orderObj);
-		let firstTodoInList = (orderObjKeys.length == 1) && (orderObjKeys[0] == 'null');
-
-		if (firstTodoInList) {
-			this.updateOrder(['todo_' + Object.values(orderObj)[0]]);
+		if (compareOrdObj !== compareStateOrdObj && !_.includes(compareStateOrdObj, 'null')) {
+			this.log('order size was different, passing off to updateOrder', 'handleOrderAfterUpdate');
+			this.updateOrder(orderObj);
 		}
-		else {
-			if (compareOrdObj !== compareStateOrdObj) {
-				this.log('order size was different, passing off to updateOrderAfterUpdateTodos', 'handleOrderAfterUpdate');
-				this.updateOrderAfterUpdateTodos(orderObj);
-			}
-		}
-
 		this.log('done', 'handleOrderAfterUpdate');
 	}
 
-	// this allows usage of this.updateOrder to run after updateTodosFromDB
-	updateOrderAfterUpdateTodos(orderObj) {
-		let todoIds = [];
-		for (const val of Object.values(orderObj)) {
-			todoIds.push('todo_' + val);
-		}
-		this.updateOrder(todoIds);
-	}
-
-	updateOrder(todoIds) {
+	updateOrder(orderedIds) {
 		this.log('starting', 'updateOrder');
-		let elementsToBeUpdated = this.state.elementDicts;
 		let orderObj = [];
 		let stateOrderObj = {};
-		for (let i in todoIds) {
-			let id = parseInt(todoIds[i].split('_')[1]);
-			let order = parseInt(i) + 1;
+		let lastOrder = 0;
+		_.forIn(orderedIds, (val, key) => {
+			const id = val;
+			let order = key === 'null' ? lastOrder + 1 : parseInt(key);
+			lastOrder = order > lastOrder ? order : lastOrder;
+
 			orderObj.push([id, order]);
 			stateOrderObj[order] = id;
-		}
+		});
 		this.log('going into postOrderChange with orderObj: ' + JSON.stringify(orderObj), 'updateOrder');
 		this.postOrderChange(orderObj);
 		this.log('back from postOrderChange', 'updateOrder');
@@ -320,6 +297,7 @@ export default class SchedulerApp extends React.Component {
 		}
 
 		let todoFormProps = {
+			currentTab: this.state.activeTab,
 			userLoggedIn: this.props.userLoggedIn
 		};
 
@@ -353,7 +331,7 @@ export default class SchedulerApp extends React.Component {
 			</div>
 			<div className={classnames(styles.gridElement, styles.rightColumn)}>
 				<div className={styles.completedTasksContainer}>
-					<span className={styles.finishedHeader}>Completed Tasks</span>
+					<span className={styles.spanHeader}>Completed Tasks</span>
 					<div className={styles.finishedItems}>
 						{finishedElements}
 					</div>
@@ -364,10 +342,3 @@ export default class SchedulerApp extends React.Component {
 		return schedulerApp;
 	}
 };
-
-const editTodoPopup = ({ }) => {
-	return <React.Fragment>
-		<Icon iconClass='far fa-times-circle' onClick={this.handleCloseForm} />
-		<TodoForm userLoggedIn={this.props.userLoggedIn} postTodoElement={this.props.postTodoElement} />
-	</React.Fragment>;
-}

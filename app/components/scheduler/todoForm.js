@@ -2,18 +2,26 @@ var React = require('react');
 
 import classnames from 'classnames';
 
-import InputBox from '../forms/inputBox.js';
-import FormButton from '../forms/button.js';
+import InputBox from '../forms/inputBox';
+import FormButton from '../forms/button';
+import { currentISOTime, soonISOTime, tomorrowISOTime } from '../utilities/dates';
 import styles from './todoForm.less';
 
 var Logger = require('../utilities/logger');
 
 const containerHeader = (text) => <span className={styles.spanHeader}>{text}</span>;
 const popupHeader = (text) => <h1 className={styles.textHeader}>{text}</h1>;
-const currentISOTime = () => {
-	let timezoneOffset = (new Date()).getTimezoneOffset() * 60000;
-	let localISOTime = (new Date(Date.now() - timezoneOffset)).toISOString().slice(0, 16);
-	return localISOTime;
+const getTimeByTab = (tab) => {
+	switch (tab) {
+		case 'Today':
+			return currentISOTime();
+		case 'Tomorrow':
+			return tomorrowISOTime();
+		case 'Soon':
+			return soonISOTime();
+		default:
+			return currentISOTime();
+	}
 }
 
 export default class TodoForm extends React.Component {
@@ -24,7 +32,7 @@ export default class TodoForm extends React.Component {
 		let datetime = prefill ? this.props.prePopulatedContent.datetime : '';
 		let datetimeEmpty = datetime === 'T' || datetime === '';
 		
-		datetime = datetimeEmpty ? currentISOTime() : datetime;
+		datetime = datetimeEmpty ? getTimeByTab(this.props.currentTab) : datetime;
 		datetime = datetime.split('T');
 		let date = datetime[0];
 		let time = datetime[1] ;
@@ -42,13 +50,25 @@ export default class TodoForm extends React.Component {
 			todoTimeEnabled: todoTimeEnabled
         }
 
+		this.changeDate = this.changeDate.bind(this);
 		this.submitClicked = this.submitClicked.bind(this);
 		this.handlePriorityChange = this.handlePriorityChange.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
-    }
+	}
 	
 	log(message, functionName) {
 		Logger.log(message, 'todoForm', functionName);
+	}
+
+	shouldComponentUpdate(nextProps) {
+		if (this.props.currentTab !== nextProps.currentTab) {
+			this.setState({ date: getTimeByTab(nextProps.currentTab).split('T')[0] });
+		}
+		return true;
+	}
+	
+	changeDate(ev) {
+		this.setState({ date: ev.target.value });
 	}
 
     submitClicked(e) {
@@ -102,7 +122,7 @@ export default class TodoForm extends React.Component {
     handleTimeChange(ev) {
         let checked = ev.target.checked;
         this.setState({ todoTimeEnabled: checked });
-    }
+	}
 
     render() {
 		let header = (text) => this.props.displayAsPopup ? popupHeader(text) : containerHeader(text);
@@ -130,7 +150,7 @@ export default class TodoForm extends React.Component {
 					</div>
 					<div className={styles.dateTimeContainer}>
 						<InputBox text='Date' type='date' name='toDoDate'
-							val={this.state.date} />
+							val={this.state.date} onChange={this.changeDate} />
 						<InputBox text='Time' type='time' name='toDoTime' 
 							val={this.state.time} disabled={!this.state.todoTimeEnabled} 
 							disabledTooltipText='Disabled' />
