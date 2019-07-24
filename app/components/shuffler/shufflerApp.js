@@ -53,9 +53,9 @@ const fetchVideoListPart = async (listId, pageToken = '') => {
 const fetchVideoList = (listId, pageToken = '') => fetchVideoListPart(listId, pageToken).then((videoListContent) => {
     if (videoListContent.nextPageToken !== '') {
         return fetchVideoList(listId, videoListContent.nextPageToken)
-            .then((nextVideoListContent) => _.concat(videoListContent.videoList, nextVideoListContent.videoList || nextVideoListContent));
+            .then((nextVideoListContent) => _.concat(videoListContent.videoList, nextVideoListContent));
     }
-    return videoListContent;
+    return videoListContent.videoList;
 });
 
 const durstenfeldShuffle = (list) => {
@@ -80,17 +80,11 @@ export default class ShufflerApp extends React.Component {
         }
 
         this.shuffle = this.shuffle.bind(this);
+        this.updateActiveVideo = this.updateActiveVideo.bind(this);
     }
 
     log(message, functionName) {
         Logger.log(message, 'shufflerApp', functionName);
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.state.list !== nextState.list) {
-            this.setState({ activeVideoId: nextState.list[0].id });
-        }
-        return true;
     }
 
     shuffle(ev) {
@@ -101,6 +95,10 @@ export default class ShufflerApp extends React.Component {
             const shuffledList = durstenfeldShuffle(videoIdList);
             this.setState({ list: shuffledList });
         });
+    }
+
+    updateActiveVideo(videoId) {
+        this.setState({ activeVideoId: videoId });
     }
 
     render() {
@@ -114,7 +112,8 @@ export default class ShufflerApp extends React.Component {
         };
 
         const songs = _.map(list, (item, index) => {
-            return <Song key={index} songName={item.title} active={item.id === activeVideoId} />;
+            return <Song key={index} index={index} 
+                songName={item.title} active={item.id === activeVideoId} />;
         });
 
         const shufflerApp = <div className={styles.shufflerContent}>
@@ -132,7 +131,7 @@ export default class ShufflerApp extends React.Component {
             </div>
             <div className={styles.rightColumn}>
                 <div className={styles.youtubeContainer}>
-                    <YoutubePlayerContainer activeVideoId={activeVideoId} />
+                    <YoutubePlayerContainer updateActiveVideo={this.updateActiveVideo} list={list} />
                 </div>
                 <div className={styles.songPanel}>
                     <div className={styles.infoAndControls}></div>
@@ -148,7 +147,7 @@ export default class ShufflerApp extends React.Component {
 }
 
 const Song = (props) => {
-    const {key, active, songName} = props;
+    const {index, active, songName} = props;
 
-    return <p key={key} className={classnames(active ? styles.activeSong : '')}>{songName}</p>
+    return <p key={index} className={classnames(active ? styles.activeSong : '')}>{songName}</p>
 }
