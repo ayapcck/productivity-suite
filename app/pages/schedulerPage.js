@@ -1,7 +1,7 @@
 var React = require('react');
 
-import PageHeader from '../components/pageTemplate/pageHeader.js';
-import SchedulerApp from '../components/scheduler/schedulerApp.js';
+import PageHeader from '../components/pageTemplate/pageHeader';
+import SchedulerApp from '../components/scheduler/schedulerApp';
 
 export default class SchedulerPage extends React.Component {
 	constructor(props) {
@@ -25,7 +25,7 @@ export default class SchedulerPage extends React.Component {
 		const schedulerPage = <React.Fragment>
 			<PageHeader {...pageHeaderProps} />
 			<SchedulerApp userLoggedIn={userLoggedIn} username={username} />
-		</React.Fragment>
+		</React.Fragment>;
 		return schedulerPage;
 	}
 }

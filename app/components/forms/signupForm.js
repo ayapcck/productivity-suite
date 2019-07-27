@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';

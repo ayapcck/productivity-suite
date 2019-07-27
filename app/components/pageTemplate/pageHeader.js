@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import LoginApp from '../loginApp/loginApp.js';
 import NavigationBar from '../navigation/navigationBar.js';

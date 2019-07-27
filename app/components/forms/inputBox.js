@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import Tooltip from '../tooltip/tooltip.js'
 

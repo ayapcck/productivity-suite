@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import styles from './tooltip.less';
 import classnames from 'classnames';

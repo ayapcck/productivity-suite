@@ -1,6 +1,6 @@
 'use strict';
 var crypto = require('crypto');
-var React = require('react');
+import React from 'react';
 
 function generateSalt(len) {
 	return crypto.randomBytes(Math.ceil(len/2)).toString('hex').slice(0, len);

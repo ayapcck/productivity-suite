@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 var classnames = require('classnames');
 
 import CenterPanel from '../centerPanel/centerPanel.js';
