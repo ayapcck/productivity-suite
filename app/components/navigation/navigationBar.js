@@ -84,6 +84,7 @@ export default class NavigationBar extends React.Component {
 
 		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} 
 			{...handleHoverSettings}>
+			<LinkMenuElement linkTo='/notes' menuText='Notes' />
 			<LinkMenuElement linkTo='/scheduler' menuText='Scheduler' />
 		</div>;
 		
