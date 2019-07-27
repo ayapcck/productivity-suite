@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Icon from '../icons/icon.js';
@@ -84,6 +84,7 @@ export default class NavigationBar extends React.Component {
 
 		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} 
 			{...handleHoverSettings}>
+			<LinkMenuElement linkTo='/notes' menuText='Notes' />
 			<LinkMenuElement linkTo='/scheduler' menuText='Scheduler' />
 			<LinkMenuElement linkTo='/shuffler' menuText='Shuffler' />
 		</div>;

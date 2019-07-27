@@ -11,6 +11,7 @@ import { setUsername, setUserLoggedIn } from '../redux/loginActions';
 const history = createBrowserHistory();
 
 import IndexPage from '../index';
+import NotesPage from '../pages/notesPage';
 import SchedulerPage from '../pages/schedulerPage';
 import ShufflerPage from '../pages/shufflerPage';
 
@@ -28,6 +29,7 @@ const mapDispatchToProps = {
 };
 
 const IndexPageContainer = connect(mapStateToProps, mapDispatchToProps)(IndexPage);
+const NotesPageContainer = connect(mapStateToProps, mapDispatchToProps)(NotesPage);
 const SchedulerPageContainer = connect(mapStateToProps, mapDispatchToProps)(SchedulerPage);
 const ShufflerPageContainer = connect(mapStateToProps, mapDispatchToProps)(ShufflerPage);
 
@@ -46,6 +48,7 @@ class RouteHandler extends React.Component {
             <Router history={history}>
                 <Switch>
                     <Route exact path='/' component={IndexPageContainer} />
+                    <Route exact path='/notes' component={NotesPageContainer} />
                     <Route exact path='/scheduler' component={SchedulerPageContainer} />
                     <Route exact path='/shuffler' component={ShufflerPageContainer} />
                 </Switch>
