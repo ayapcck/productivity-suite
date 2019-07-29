@@ -1,5 +1,8 @@
 import React from 'react';
 
+import Note from './note';
+import { NoteSteps } from './steps';
+
 import styles from './notes.less';
 
 export default class NotesApp extends React.Component {
@@ -9,7 +12,7 @@ export default class NotesApp extends React.Component {
 
     render() {
         return <div className={styles.notesAppContent}>
-
+            <Note step='uninitialized' />
         </div>;
     }
 }
