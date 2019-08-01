@@ -61,5 +61,18 @@
 }
 
 .noteContent {
-    content: 'test';
+    border-radius: 15px;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 10px;
+    text-align: left;
+}
+.noteContent:focus {
+    outline: 0;
+    box-shadow: 0 0 2pt 1pt @inputFocusColor;
+}
+
+.noteContainer {
+    grid-row: 2;
+    padding: 10px;
 }

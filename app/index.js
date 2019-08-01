@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import PageHeader from './components/pageTemplate/pageHeader.js';
 import WelcomeContent from './components/welcomeContent/welcomeContent.js';
@@ -16,7 +16,7 @@ export default class IndexPage extends React.Component {
 		const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
 		const pageHeaderProps = {
-			setUsername: setUsername,
+			setUsername,
 			setUserLoggedIn: setUserLoggedIn,
 			userLoggedIn: userLoggedIn,
 			username: username

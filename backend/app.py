@@ -18,14 +18,14 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['REACT_DATABASE_PASSWORD']
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_DB'] = 'reactWebsiteData'
 app.config['CORS_HEADERS'] = 'Content-Type'
 mysql.init_app(app)
 
-user_table = 'loginUsers'
+USER_TABLE = 'loginUsers'
 
 
-def getMySQLForScheduler():
-	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
+def getMySQL():
 	return mysql
 
 	
@@ -51,7 +51,7 @@ def sendValidationEmail(user, email, activationCode):
 def validateUser():
 	user = request.args.get('user')
 	activationCode = request.args.get('activationCode')
-	sql = "SELECT hash, active FROM " + user_table + " WHERE user='" + user + "'"
+	sql = "SELECT hash, active FROM " + USER_TABLE + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -65,7 +65,7 @@ def validateUser():
 		print("hash: " + resHash)
 		print("active: " + str(resActive))
 		if (resActive == 0 and activationCode == resHash ):
-			sql = "UPDATE " + user_table + " SET active=1 WHERE user=%s AND activation=%s AND active=0"
+			sql = "UPDATE " + USER_TABLE + " SET active=1 WHERE user=%s AND activation=%s AND active=0"
 			try:
 				curs.execute(sql, (user, activationCode))
 				conn.commit()
@@ -79,14 +79,13 @@ def validateUser():
 @app.route('/addUser', methods=['POST'])
 @cross_origin()
 def addUser():
-	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	responseData = json.loads(request.data)
 	user = responseData['user']
 	email = responseData['email']
 	password = responseData['password']
 	salt = responseData['salt']
 	activationCode = responseData['activationCode']
-	sql = "INSERT INTO " + user_table + " (user, email, pass, salt, activation, active) VALUES (%s, %s, %s, %s, %s, 0)"
+	sql = "INSERT INTO " + USER_TABLE + " (user, email, pass, salt, activation, active) VALUES (%s, %s, %s, %s, %s, 0)"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -102,9 +101,8 @@ def addUser():
 @app.route('/getUser', methods=['GET'])
 @cross_origin()
 def getUser():
-	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	user = request.args.get('user')
-	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user=%s"
+	sql = "SELECT user, pass, salt, active FROM " + USER_TABLE + " WHERE user=%s"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -121,6 +119,20 @@ def getUser():
 def testEmail():
 	sendValidationEmail("test", "", "testing_activation_code")
 	return Response(status=200)
+
+
+def getUserId(user):
+	sql = "SELECT id FROM " + USER_TABLE + " WHERE user=%s"
+
+	conn = mysql.connect()
+	curs = conn.cursor()
+	curs.execute(sql, user)
+	sqlRes = curs.fetchone()
+	if sqlRes == None:
+		return Response(status=404)
+	else:
+		return sqlRes
+
 
 	
 if __name__ == '__main__':

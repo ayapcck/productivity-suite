@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
@@ -40,14 +40,6 @@ export default class SignupForm extends React.Component {
 	
   log(message, functionName) {
     Logger.log(message, "schedulerApp", functionName);
-  }
-  
-  checkCreateUserTable(user) {
-		var url = "http://192.168.0.26:5000/createUserTable?user=" + user;
-		
-		getJson(url).then(response => {}).catch(error => {
-			alert(error);
-		});
   }
   
   createUser(username, email, password) {
@@ -131,7 +123,6 @@ export default class SignupForm extends React.Component {
 			alert("Passwords don't match");
 		} else {
 			this.clearForm(e);
-			this.checkCreateUserTable(username);
 			this.createUser(username, email, password);
 		}
 		this.log("done", "handleSubmit");
