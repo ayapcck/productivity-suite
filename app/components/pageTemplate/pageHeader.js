@@ -29,12 +29,12 @@ export default class PageHeader extends React.Component {
         const loginAppProps = {
             hideLoginApp: this.hideLoginApp,
             setUserLoggedIn: setUserLoggedIn,
-            setUsername: setUsername,
+            setUsername,
             showLoginApp: this.state.showLoginApp
         };
         const navigationBarProps = {
             setUserLoggedIn: setUserLoggedIn,
-            setUsername: setUsername,
+            setUsername,
             showLoginApp: this.displayLoginApp,
             userLoggedIn: userLoggedIn,
             username: username

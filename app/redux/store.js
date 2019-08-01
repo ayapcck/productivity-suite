@@ -3,7 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import reducer from './index';
 
 let user = window.sessionStorage.getItem('username');
-let userLoggedIn = !!user;
+const userLoggedIn = !!user;
 user = user === null ? '' : user;
 
 const initialStore = {

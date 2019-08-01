@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import PageHeader from '../components/pageTemplate/pageHeader';
 import SchedulerApp from '../components/scheduler/schedulerApp';
@@ -16,7 +16,7 @@ export default class SchedulerPage extends React.Component {
 		const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
 		const pageHeaderProps = {
-			setUsername: setUsername,
+			setUsername,
 			setUserLoggedIn: setUserLoggedIn,
 			userLoggedIn: userLoggedIn,
 			username: username

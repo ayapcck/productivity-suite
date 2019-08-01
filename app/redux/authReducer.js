@@ -6,7 +6,7 @@ const setUserLoggedIn = (state, userLoggedIn) => {
 };
 
 const setUsername = (state, username) => {
-    let retVal = Object.assign({}, state, {username: username});
+    const retVal = Object.assign({}, state, {username: username});
     return retVal;
 };
 

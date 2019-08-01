@@ -12,7 +12,7 @@ export default class ShufflerPage extends React.Component {
         const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
 		const pageHeaderProps = {
-			setUsername: setUsername,
+			setUsername,
 			setUserLoggedIn: setUserLoggedIn,
 			userLoggedIn: userLoggedIn,
 			username: username
