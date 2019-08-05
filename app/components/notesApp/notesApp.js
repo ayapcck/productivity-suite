@@ -12,7 +12,7 @@ export default class NotesApp extends React.Component {
 
     render() {
         return <div className={styles.notesAppContent}>
-            <Note step='uninitialized' />
+            <Note step='list' />
         </div>;
     }
 }
