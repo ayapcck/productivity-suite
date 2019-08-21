@@ -24,7 +24,11 @@ export default class Note extends React.Component {
         const { stepName } = this.state;
         
         const currentStep = _.get(NoteSteps, stepName);
-        const step = currentStep.getContent(this.changeStep);
+        const stepProps = {
+            changeStep: this.changeStep,
+            content: this.props.content
+        }
+        const step = currentStep.getContent(stepProps);
         const finalStep = stepName === 'note' || stepName === 'list';
 
         const noteClass = finalStep ? styles.finalNote : styles.note;

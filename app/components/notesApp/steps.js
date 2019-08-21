@@ -7,19 +7,19 @@ import { NoteType } from './steps/noteType';
 
 export const NoteSteps = {
     uninitialized: {
-        getContent: (changeStep) => <AddNote changeStep={changeStep} />,
+        getContent: ({ changeStep }) => <AddNote changeStep={changeStep} />,
         title: 'uninitialized'
     },
     chooseType: {
-        getContent: (changeStep) => <ChooseNote changeStep={changeStep} />,
+        getContent: ({ changeStep }) => <ChooseNote changeStep={changeStep} />,
         title: 'chooseType'
     },
     note: {
-        getContent: (changeStep) => <NoteType />,
+        getContent: ({ content }) => <NoteType content={content} />,
         title: 'note'
     },
     list: {
-        getContent: (changeStep) => <ListType />,
+        getContent: ({ content }) => <ListType content={content} />,
         title: 'list'
     }
 };

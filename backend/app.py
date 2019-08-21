@@ -7,10 +7,12 @@ from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
 
 from email_server import sendMessage, returnMailApp
+from notes_app import notes
 from scheduler_app import scheduler
 
 app = Flask(__name__)
 app.register_blueprint(scheduler)
+app.register_blueprint(notes)
 mail = returnMailApp(app)
 cors = CORS(app)
 
