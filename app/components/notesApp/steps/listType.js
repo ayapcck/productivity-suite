@@ -11,20 +11,39 @@ export class ListType extends React.Component {
         super(props);
 
         this.state = {
-            listItems: [1]
+            listItemIds: ["LI1"],
+            listItems: [{id: "LI1", content: this.props.content}]
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
-    addNewElement() {
-        let { listItems } = this.state;
-        listItems = _.concat(listItems, _.last(listItems) + 1);
-        this.setState({ listItems });
+    addNewElement(ev) {
+        const { listItemIds } = this.state;
+        const focusedListItemId = ev.target.parentNode.id;
+        const indexInList = _.indexOf(listItemIds, focusedListItemId);
+        const indexPlusOne = indexInList + 1;
+        let newListItemIds = _.slice(listItemIds, 0, indexPlusOne);
+        const indexPlusTwo = indexPlusOne + 1;
+        newListItemIds.push('LI' + indexPlusTwo);
+        const listItemIdsToShift = _.slice(listItemIds, indexPlusOne);
+        _.forEach(listItemIdsToShift, (value) => {
+            const idNum = parseInt(value.replace('LI', '')) + 1;
+            newListItemIds.push('LI' + idNum);
+        })
+
+        this.setState({ listItemIds: newListItemIds });
     }
 
     handleRemoveElement(ev) {
-        console.log('here');
+        const listContent = ev.target.innerText;
+        const numberListItems = document.getElementsByClassName(styles.listItem).length;
+        if (listContent === '' && numberListItems !== 1) {
+            ev.preventDefault();
+            const listItemId = ev.target.parentNode.id;
+            const listItem = document.getElementById(listItemId);
+            listItem.parentNode.removeChild(listItem);
+        }
     }
 
     handleKeyDown(ev) {
@@ -34,7 +53,7 @@ export class ListType extends React.Component {
                 break;
             case 13:
                 ev.preventDefault();
-                this.addNewElement();
+                this.addNewElement(ev);
                 break;
             default:
                 break;
@@ -52,21 +71,24 @@ export class ListType extends React.Component {
     }
 
     render() {
-        const { listItems } = this.state;
+        const { content } = this.props;
 
         return <div className={styles.listType}>
             <div className={utilStyles.spanHeader}>List</div>
             <div className={styles.noteContainer}>
-                {_.map(listItems, (value) => <ListItem key={"LI" + value} />)}
+                {content && _.map([content], (listItem) => {
+                    return <ListItem key={listItem.id} id={listItem.id} content={listItem.content} />;
+                })}
             </div>
         </div>;
     }
 }
 
 const ListItem = (props) => {
-    return <div className={styles.listItem}>
+    const { content, id } = props;
+    return <div id={id} className={styles.listItem}>
         <Icon iconClass="fas fa-circle" iconStyles={styles.bulletPoint}
             wrapperStyles={styles.bulletPointWrapper} />
-        <span className={styles.listContent} contentEditable={true}></span>
+        <span className={styles.listContent} contentEditable={true}>{content}</span>
     </div>;
 }

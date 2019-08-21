@@ -24,7 +24,7 @@ export default class NotesPage extends React.Component {
 
 		const notesPage = <React.Fragment>
 			<PageHeader {...pageHeaderProps} />
-            <NotesApp />
+            <NotesApp username={username} userLoggedIn={userLoggedIn} />
         </React.Fragment>;
         
 		return notesPage;
