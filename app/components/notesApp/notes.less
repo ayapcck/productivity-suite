@@ -65,6 +65,23 @@
     color: black;
 }
 
+/*.editing {
+    border-color: @moreOpaqueGrey!important;
+}*/
+
+.editNoteButton {
+    left: 0;
+    margin: 0 0 0 10px;
+    position: absolute;
+}
+.editNoteButton:hover {
+    color: @textColor;
+    cursor: pointer;
+}
+.editNoteButtonActive {
+    color: @textColor;
+}
+
 .listType, .noteType {
     display: grid;
 	grid-template-rows: 40px;
@@ -81,9 +98,20 @@
     padding: 10px;
     text-align: left;
 }
-.noteContent:focus, .listContent:focus {
+.noteContent:focus, .listContent:focus, .listName:focus {
     outline: 0;
     box-shadow: 0 0 2pt 1pt @inputFocusColor;
+}
+
+.listContent {
+    background-color: @backgroundColor;
+    border-color: @backgroundColor;
+    border-style: solid;
+    border-width: 2px;
+    color: @textColor;
+}
+.listContent:disabled {
+    color: @textColor;
 }
 
 .noteContent {
@@ -93,7 +121,23 @@
 .listItem {
     display: grid;
     grid-template-columns: 20px 1fr;
+    padding: 2.5px;
     text-align: left;
+}
+
+.listName {
+    background-color: @lightPurple;
+    border-color: @lightPurple;
+    border-radius: 15px;
+    border-style: solid;
+    border-width: 2px;
+    margin: 0 5px 0 0;
+    padding: 2.5px;
+    text-align: center;
+}
+.listNameEditing {
+    width: 43%;
+    text-align: left!important;
 }
 
 .noteContainer {
@@ -102,4 +146,11 @@
     margin: 10px;
     overflow: auto;
     padding: 5px 10px 5px 0;
+}
+
+.noteHeader {
+    position: relative;
+}
+.noteHeaderEditing {
+    justify-content: flex-end!important;
 }

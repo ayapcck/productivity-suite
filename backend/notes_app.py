@@ -12,10 +12,11 @@ NOTES_TABLE = 'notes'
 ### UTILS ###
 
 class Note:
-    def __init__(self, id, content, noteType):
+    def __init__(self, id, content, noteType, name):
         self.id = id
         self.content = content
         self.noteType = noteType
+        self.name = name
 
 
 def getMySQL():
@@ -49,7 +50,7 @@ def fetchNotesFor(user, curs):
     res = curs.fetchall()
     notes = []
     for note in res:
-        resNote = Note(note[0], note[1], note[2])
+        resNote = Note(note[0], note[1], note[2], note[4])
         print(resNote)
         print(resNote.__dict__)
         notes.append(resNote.__dict__)
