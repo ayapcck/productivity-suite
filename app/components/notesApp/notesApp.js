@@ -4,15 +4,31 @@ import _ from 'lodash';
 import Note from './note';
 import { NoteSteps } from './steps';
 import { postJson, getJson } from '../utilities/jsonHelpers';
+import { LinkedList } from '../utilities/dataStructures';
 
 import styles from './notes.less';
+
+const parseNotes = notes => {
+    const lists = [];
+    _.forEach(notes, item => {
+        if (item.noteType === 'list') {
+            const listItems = new LinkedList();
+            _.forEach(item.content.split(','), (content, index) => {
+                listItems.add({id: `LI${index}`, content: content});
+            });
+            lists.push({name: item.name, listItems});
+        }
+    });
+    return {lists};
+}
 
 export default class NotesApp extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            notes: []
+            firstFetch: false,
+            lists: [{name: '',  listItems: new LinkedList()}]
         };
 
         this.getNotes = this.getNotes.bind(this);
@@ -31,18 +47,19 @@ export default class NotesApp extends React.Component {
                 let notes = [];
                 _.forEach(response, (note) => notes.push(note));
 
-                this.setState({ notes });
+                notes = parseNotes(notes);
+                this.setState({ firstFetch: true, lists: notes.lists});
             }).catch(error => alert(error));
         } else {
-            this.setState({ notes: [] });
+            this.setState({ lists: {name: '', listItems: new LinkedList()} });
         }
     }
 
     render() {
-        const { notes } = this.state;
+        const { firstFetch, lists } = this.state;
 
         return <div className={styles.notesAppContent}>
-            <Note step='list' content={notes[0]} />
+            {firstFetch && <Note step='list' content={lists[0]} />}
         </div>;
     }
 }
