@@ -21,45 +21,45 @@ export class ListType extends React.Component {
     }
 
     addNewElement(ev) {
-        const { listItemIds } = this.state;
-        const focusedListItemId = ev.target.parentNode.id;
-        const indexInList = _.indexOf(listItemIds, focusedListItemId);
-        const indexPlusOne = indexInList + 1;
-        let newListItemIds = _.slice(listItemIds, 0, indexPlusOne);
-        const indexPlusTwo = indexPlusOne + 1;
-        newListItemIds.push('LI' + indexPlusTwo);
-        const listItemIdsToShift = _.slice(listItemIds, indexPlusOne);
-        _.forEach(listItemIdsToShift, (value) => {
-            const idNum = parseInt(value.replace('LI', '')) + 1;
-            newListItemIds.push('LI' + idNum);
-        })
-
-        this.setState({ listItemIds: newListItemIds });
+        const { listItems } = this.state;
+        const targetIndex = parseInt(ev.target.parentNode.id.replace('LI', ''));
+        const index = targetIndex + 1;
+        listItems.insertAt(index, {content: ''});
+        this.setState({ listItems }, () => this.focusNewElement(index));
     }
 
-    handleRemoveElement(ev) {
-        const listContent = ev.target.innerText;
+    focusNewElement(index) {
+        document.getElementById(`LI${index}`).lastChild.focus();
+    }
+
+    removeElement(ev) {
+        const listContent = ev.target.value;
         const numberListItems = document.getElementsByClassName(styles.listItem).length;
         if (listContent === '' && numberListItems !== 1) {
             ev.preventDefault();
-            const listItemId = ev.target.parentNode.id;
-            const listItem = document.getElementById(listItemId);
-            listItem.parentNode.removeChild(listItem);
+            const { listItems } = this.state;
+            const targetIndex = parseInt(ev.target.parentNode.id.replace('LI', ''));
+            listItems.remove(targetIndex);
+            this.setState({ listItems }, () => document.activeElement.blur());
         }
     }
 
     handleKeyDown(ev) {
-        // switch(ev.which) {
-        //     case 8:
-        //         this.handleRemoveElement(ev);
-        //         break;
-        //     case 13:
-        //         ev.preventDefault();
-        //         this.addNewElement(ev);
-        //         break;
-        //     default:
-        //         break;
-        // }
+        const { editing } = this.props;
+
+        switch(ev.which) {
+            case 8:
+                this.removeElement(ev);
+                break;
+            case 13:
+                if (editing) {
+                    ev.preventDefault();
+                    this.addNewElement(ev);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     listItemContentChange(ev) {
@@ -119,12 +119,14 @@ const noContentItem = (editing, onChange) => <ListItem key="LI1" id="LI1" conten
 const listContentItems = (listItems, editing, onChange) => {
     let items = [];
     let item = listItems.getHead();
-    const firstId = item.data.id;
+    let index = 0;
+    const firstId = `LI${index}`;
     items.push(<ListItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} onChange={onChange} />);
     while (item.hasNext() && item.next.data !== null) {
         item = item.next;
+        index += 1;
         const content = item.data.content;
-        const nextId = item.data.id;
+        const nextId = `LI${index}`;
         items.push(<ListItem key={nextId} id={nextId} content={content} disabled={!editing} onChange={onChange} />);
     }
     return items;
