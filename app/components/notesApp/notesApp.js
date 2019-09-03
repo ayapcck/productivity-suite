@@ -16,7 +16,7 @@ const parseNotes = notes => {
             _.forEach(item.content.split(','), (content, index) => {
                 listItems.add({id: `LI${index}`, content: content});
             });
-            lists.push({name: item.name, listItems});
+            lists.push({id: item.id, name: item.name, listItems});
         }
     });
     return {lists};
@@ -32,6 +32,7 @@ export default class NotesApp extends React.Component {
         };
 
         this.getNotes = this.getNotes.bind(this);
+        this.updateNote = this.updateNote.bind(this);
     }
 
     componentDidMount(){
@@ -41,7 +42,7 @@ export default class NotesApp extends React.Component {
     getNotes() {
         const { username } = this.props;
         if (username && username !== '') {
-            const url = 'http://192.168.0.26:5000/retrieveNotes?user=' + username;
+            const url = `http://192.168.0.26:5000/retrieveNotes?user=${username}`;
 
             getJson(url).then(response => {
                 let notes = [];
@@ -55,11 +56,37 @@ export default class NotesApp extends React.Component {
         }
     }
 
+    async updateNote(content, name, id) {
+        const { username } = this.props;
+        if (username && username !== '') {
+            const url = `http://192.168.0.26:5000/updateNote`;
+            const jsonBody = {
+                content,
+                id,
+                name,
+                user: username
+            };
+
+            try {
+                await postJson(url, jsonBody);
+                this.getNotes();
+            }
+            catch (error) {
+                alert(error);
+            }
+        }
+    }
+
     render() {
         const { firstFetch, lists } = this.state;
 
+        const notes = <React.Fragment>
+            <Note step='list' content={lists[0]} updateNote={this.updateNote} />
+            <Note step='note' content="" updateNote={this.updateNote} />
+        </React.Fragment>;
+
         return <div className={styles.notesAppContent}>
-            {firstFetch && <Note step='list' content={lists[0]} />}
+            {firstFetch && notes}
         </div>;
     }
 }
