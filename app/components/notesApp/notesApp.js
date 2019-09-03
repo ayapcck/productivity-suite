@@ -80,9 +80,11 @@ export default class NotesApp extends React.Component {
     render() {
         const { firstFetch, lists } = this.state;
 
+        const mockNoteData = { name: 'testing', content: '' };
+
         const notes = <React.Fragment>
             <Note step='list' content={lists[0]} updateNote={this.updateNote} />
-            <Note step='note' content="" updateNote={this.updateNote} />
+            <Note step='note' content={mockNoteData} updateNote={this.updateNote} />
         </React.Fragment>;
 
         return <div className={styles.notesAppContent}>

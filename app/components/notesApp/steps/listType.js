@@ -2,44 +2,22 @@ import React from 'react';
 import _ from 'lodash';
 
 import Icon from '../../icons/icon';
-import { LinkedList } from '../../utilities/dataStructures';
 
-import classnames from 'classnames';
 import styles from '../notes.less';
-import utilStyles from '../../utilities/utilities.less';
-
-const parseLinkedListAsCommas = linkedList => {
-    let node = linkedList.getHead();
-    let content = '';
-    content = node.data.content;
-    while (node.hasNext()) {
-        node = node.next;
-        content = `${content},${node.data.content}`;
-    }
-    return content;
-}
 
 export class ListType extends React.Component {
     constructor(props) {
         super(props);
         
         const { content } = this.props;
-        const { id, listItems, name } = content;
-
-        const listName = name === '' ? 'List' : name;
+        const { listItems } = content;
 
         this.state = {
-            editing: false,
-            id,
-            listItems,
-            name: listName
+            listItems
         }
 
-        this.handleClick = this.handleClick.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.listItemContentChange = this.listItemContentChange.bind(this);
-        this.listNameChange = this.listNameChange.bind(this);
-        this.handleEditingChange = this.handleEditingChange.bind(this);
     }
 
     addNewElement(ev) {
@@ -70,22 +48,6 @@ export class ListType extends React.Component {
         }
     }
 
-    handleClick(ev) {
-        if (this.state.editing) {
-            const clickX = ev.clientX;
-            const clickY = ev.clientY;
-            if (clickX !== 0 && clickY !== 0) {
-                const listContainer = document.getElementsByClassName(styles.listType)[0];
-                const listContainerBox = listContainer.getBoundingClientRect();
-                const clickInsideContainer = clickX > listContainerBox.left 
-                    && clickX < listContainerBox.right 
-                    && clickY > listContainerBox.top 
-                    && clickY < listContainerBox.bottom;
-                !clickInsideContainer && this.handleEditingChange();
-            }
-        }
-    }
-
     handleKeyDown(ev) {
         // switch(ev.which) {
         //     case 8:
@@ -110,52 +72,21 @@ export class ListType extends React.Component {
         this.setState({ listItems });
     }
 
-    listNameChange(ev) {
-        const { name } = this.state;
-        ev.target.value !== name && this.setState({ name: ev.target.value });
-    }
-
     componentDidMount() {
         const listContainer = document.getElementsByClassName(styles.listType)[0];
         listContainer.addEventListener('keydown', this.handleKeyDown);
-        document.getElementById('content').addEventListener('mousedown', this.handleClick);
     }
 
     componentWillUnmount() {
         const listContainer = document.getElementsByClassName(styles.listType)[0];
         listContainer.removeEventListener('keydown', this.handleKeyDown);
-        document.getElementById('content').removeEventListener('mousedown', this.handleClick);
-    }
-
-    handleContentUpdate() {
-        const { id, listItems, name } = this.state;
-        const content = parseLinkedListAsCommas(listItems);
-        this.props.updateNote(content, name, id);
-        console.log("");
-    }
-
-    handleEditingChange() {
-        const { editing } = this.state;
-        if (editing) {
-            this.handleContentUpdate();
-        } else {
-
-        }
-        this.setState({ editing: !editing });
     }
 
     render() {
-        const { editing, listItems, name } = this.state;
-
-        const headerProps = {
-            editing,
-            listName: name,
-            onEditClick: this.handleEditingChange,
-            onNameChange: this.listNameChange
-        }
+        const { listItems } = this.state;
+        const { editing } = this.props;
 
         return <div className={styles.listType}>
-            {renderHeader(headerProps)}
             <div className={styles.noteContainer}>
                 {renderListItems(listItems, editing, this.listItemContentChange)}
             </div>
@@ -170,22 +101,6 @@ const ListItem = props => {
             wrapperStyles={styles.bulletPointWrapper} />
         <input type="text" className={styles.listContent}
             value={content} disabled={disabled} onChange={onChange} />
-    </div>;
-}
-
-const renderHeader = props => {
-    const { editing, listName, onEditClick, onNameChange } = props;
-
-    const headerStyles = classnames(utilStyles.spanHeader, styles.noteHeader,
-        editing ? styles.noteHeaderEditing : '');
-
-    return <div className={headerStyles}>
-        {editing && <span>Editing - </span>}
-        <input type="text" className={classnames(styles.listName, editing ? styles.listNameEditing : '')} 
-            value={listName} disabled={!editing} onChange={onNameChange} />
-        <Icon iconClass="far fa-edit" noWrapper={true} 
-            iconStyles={classnames(styles.editNoteButton, editing ? styles.editNoteButtonActive : '')} 
-            onClick={onEditClick} />
     </div>;
 }
 

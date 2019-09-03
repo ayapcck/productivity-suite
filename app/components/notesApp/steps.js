@@ -15,11 +15,11 @@ export const NoteSteps = {
         title: 'chooseType'
     },
     note: {
-        getContent: ({ content, updateNote }) => <NoteType content={content} updateNote={updateNote} />,
+        getContent: ({ content, editing, updateNote }) => <NoteType content={content} editing={editing} updateNote={updateNote} />,
         title: 'note'
     },
     list: {
-        getContent: ({ content, updateNote }) => <ListType content={content} updateNote={updateNote} />,
+        getContent: ({ content, editing, updateNote }) => <ListType content={content} editing={editing} updateNote={updateNote} />,
         title: 'list'
     }
 };
