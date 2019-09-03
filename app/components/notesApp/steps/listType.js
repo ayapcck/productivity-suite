@@ -8,23 +8,38 @@ import classnames from 'classnames';
 import styles from '../notes.less';
 import utilStyles from '../../utilities/utilities.less';
 
+const parseLinkedListAsCommas = linkedList => {
+    let node = linkedList.getHead();
+    let content = '';
+    content = node.data.content;
+    while (node.hasNext()) {
+        node = node.next;
+        content = `${content},${node.data.content}`;
+    }
+    return content;
+}
+
 export class ListType extends React.Component {
     constructor(props) {
         super(props);
+        
+        const { content } = this.props;
+        const { id, listItems, name } = content;
 
-        const propName = this.props.content.name;
-
-        const listName = propName === '' ? 'List' : propName;
+        const listName = name === '' ? 'List' : name;
 
         this.state = {
             editing: false,
+            id,
+            listItems,
             name: listName
         }
 
         this.handleClick = this.handleClick.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.listItemContentChange = this.listItemContentChange.bind(this);
         this.listNameChange = this.listNameChange.bind(this);
-        this._toggleEditing = this._toggleEditing.bind(this);
+        this.handleEditingChange = this.handleEditingChange.bind(this);
     }
 
     addNewElement(ev) {
@@ -66,23 +81,33 @@ export class ListType extends React.Component {
                     && clickX < listContainerBox.right 
                     && clickY > listContainerBox.top 
                     && clickY < listContainerBox.bottom;
-                !clickInsideContainer && this._toggleEditing();
+                !clickInsideContainer && this.handleEditingChange();
             }
         }
     }
 
     handleKeyDown(ev) {
-        switch(ev.which) {
-            case 8:
-                this.handleRemoveElement(ev);
-                break;
-            case 13:
-                ev.preventDefault();
-                this.addNewElement(ev);
-                break;
-            default:
-                break;
-        }
+        // switch(ev.which) {
+        //     case 8:
+        //         this.handleRemoveElement(ev);
+        //         break;
+        //     case 13:
+        //         ev.preventDefault();
+        //         this.addNewElement(ev);
+        //         break;
+        //     default:
+        //         break;
+        // }
+    }
+
+    listItemContentChange(ev) {
+        const { listItems } = this.state;
+        const listIndex = parseInt(ev.target.parentNode.id.replace('LI', ''));
+        const listNode = listItems.get(listIndex);
+        const newContent = ev.target.value;
+        const newData = Object.assign({}, listNode.data, { content: newContent });
+        listNode.data = newData;
+        this.setState({ listItems });
     }
 
     listNameChange(ev) {
@@ -102,37 +127,49 @@ export class ListType extends React.Component {
         document.getElementById('content').removeEventListener('mousedown', this.handleClick);
     }
 
-    _toggleEditing() {
-        this.setState({ editing: !this.state.editing });
+    handleContentUpdate() {
+        const { id, listItems, name } = this.state;
+        const content = parseLinkedListAsCommas(listItems);
+        this.props.updateNote(content, name, id);
+        console.log("");
+    }
+
+    handleEditingChange() {
+        const { editing } = this.state;
+        if (editing) {
+            this.handleContentUpdate();
+        } else {
+
+        }
+        this.setState({ editing: !editing });
     }
 
     render() {
-        const { content } = this.props;
-        const { editing, name } = this.state;
+        const { editing, listItems, name } = this.state;
 
         const headerProps = {
             editing,
             listName: name,
-            onEditClick: this._toggleEditing,
+            onEditClick: this.handleEditingChange,
             onNameChange: this.listNameChange
         }
 
         return <div className={styles.listType}>
             {renderHeader(headerProps)}
             <div className={styles.noteContainer}>
-                {renderListItems(content.listItems, editing)}
+                {renderListItems(listItems, editing, this.listItemContentChange)}
             </div>
         </div>;
     }
 }
 
 const ListItem = props => {
-    const { content, id, disabled } = props;
+    const { content, id, disabled, onChange } = props;
     return <div id={id} className={styles.listItem}>
         <Icon iconClass="fas fa-circle" iconStyles={styles.bulletPoint}
             wrapperStyles={styles.bulletPointWrapper} />
         <input type="text" className={styles.listContent}
-            value={content} disabled={disabled} />
+            value={content} disabled={disabled} onChange={onChange} />
     </div>;
 }
 
@@ -152,28 +189,28 @@ const renderHeader = props => {
     </div>;
 }
 
-const renderListItems = (content, editing) => {
+const renderListItems = (content, editing, onItemContentChange) => {
     let listItems = [];
     if (_.isUndefined(content) || content.getHead() === null) {
-        listItems.push(noContentItem(editing));
+        listItems.push(noContentItem(editing, onItemContentChange));
     } else {
-        listItems = listContentItems(content, editing);
+        listItems = listContentItems(content, editing, onItemContentChange);
     }
     return listItems;
 }
 
-const noContentItem = editing => <ListItem key="LI1" id="LI1" content="" disabled={!editing} />;
+const noContentItem = (editing, onChange) => <ListItem key="LI1" id="LI1" content="" disabled={!editing} onChange={onChange} />;
 
-const listContentItems = (listItems, editing) => {
+const listContentItems = (listItems, editing, onChange) => {
     let items = [];
     let item = listItems.getHead();
     const firstId = item.data.id;
-    items.push(<ListItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} />);
+    items.push(<ListItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} onChange={onChange} />);
     while (item.hasNext() && item.next.data !== null) {
         item = item.next;
         const content = item.data.content;
         const nextId = item.data.id;
-        items.push(<ListItem key={nextId} id={nextId} content={content} disabled={!editing} />);
+        items.push(<ListItem key={nextId} id={nextId} content={content} disabled={!editing} onChange={onChange} />);
     }
     return items;
 }
