@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --host 192.168.0.26 --port 7984",
-    "start-public": "webpack-dev-server --host 192.168.0.26 --port 7984 --public 192.168.0.26"
+    "start": "webpack-dev-server --host 192.168.0.11 --port 7984",
+    "start-public": "webpack-dev-server --host 192.168.0.11 --port 7984 --public 192.168.0.11"
   },
   "author": "",
   "license": "ISC",
@@ -14,7 +14,7 @@
     "@babel/core": "^7.2.0",
     "babel-preset-env": "^1.7.0",
     "classnames": "^2.2.6",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
