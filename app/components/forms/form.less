@@ -1,0 +1,90 @@
+@utilities: "../utilities";
+
+@import "@{utilities}/colors.less";
+
+.form {
+	padding: 0 10%;
+}
+
+.formButton {
+	width: 25%;
+	color: @darkTextColor;
+	border: 2px solid @accentColor;
+	background-color: @buttonColor;
+	border-radius: 15px;
+	margin: 5px auto;
+	padding: 5px 2.5px;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+.formButton:hover {
+	background-color: #ff7c7c;
+}
+.formButton:active {
+	background-color: #7e7eff;
+}
+.formButton:focus {
+	outline: 0;
+	box-shadow: 0 0 2pt 1pt @inputFocusColor;
+}
+
+.formTitle {
+	text-align: center;
+	margin: 0;
+	padding: 0 0 10px 0;
+}
+
+.inputBox {
+	background-color: @textColor;
+	border: 2px solid @accentColor;
+	border-radius: 10px;
+	box-sizing: border-box;
+	line-height: 2;
+	padding: 2px 5px;
+	resize: none;
+	width: -webkit-fill-available;
+}
+.inputBox:disabled {
+	color: @inputDisabledColor;
+}
+.inputBox:focus {
+	outline: 0;
+	box-shadow: 0 0 2pt 1pt @inputFocusColor;
+}
+
+.invalid {
+	font-weight: bold;
+	color: @invalidFormInputColor;
+}
+
+.inputLabel {
+	margin: 0;
+}
+
+.inputContainer {
+	padding: 5px;
+}
+
+input[disabled] {
+	pointer-events: none;
+}
+
+input[type=date]::-webkit-clear-button,
+input[type=time]::-webkit-clear-button {
+	display: none;
+}
+input[type=date]::-webkit-inner-spin-button,
+input[type=time]::-webkit-inner-spin-button {
+	display: none;
+}
+input[type=datetime-local]::-webkit-calendar-picker-indicator {
+	opacity: 100;
+}
+input::-webkit-datetime-edit-day-field:focus,
+input::-webkit-datetime-edit-month-field:focus,
+input::-webkit-datetime-edit-year-field:focus,
+input::-webkit-datetime-edit-minute-field:focus,
+input::-webkit-datetime-edit-hour-field:focus,
+input::-webkit-datetime-edit-ampm-field:focus {
+    background-color: @datetimeSelectionColor;
+}

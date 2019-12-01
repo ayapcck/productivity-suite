@@ -1,0 +1,96 @@
+@utilities: "../utilities";
+
+@import "@{utilities}/colors.less";
+
+.hoverElements {
+	grid-row: 2;
+	padding: 0;
+	position: absolute;	
+	width: 8%;
+	z-index: 10;
+}
+
+.accountOptions {
+	&:extend(.hoverElements);
+	right: 0;
+}
+
+.appMenuElements {
+	&:extend(.hoverElements);
+	right: 8%;
+}
+.appMenuElements .menuElement {
+	border-width: 0 2px 2px 2px;
+	width: 100%;
+}
+
+.navBarContainer {
+	width: 100%;
+	background-color: @navBarColor;
+	overflow: hidden;
+}
+
+a:link .menuElement,
+a:active .menuElement,
+a:visited .menuElement {
+	color: @darkTextColor;
+	text-decoration: none;
+}
+a:hover .menuElement {
+	color: white;
+	text-decoration: underline;
+}
+
+
+.navOptions {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+.menuElement {
+	color: @darkTextColor;
+	cursor: pointer;
+	background-color: @navBarColor;
+	border-color: @navBarAccentColor;
+	border-style: solid;
+	border-width: 0 0 2px 2px;
+	box-sizing: border-box;
+	float: right;
+	height: 100%;
+	padding: 8px 0;
+	text-align: center;
+	user-select: none;
+	width: 8%;
+}
+.menuElement:hover .menuText,
+.menuElement:hover .menuIcon {
+	color: white;
+}
+.menuElement:hover .menuText {
+	text-decoration: underline;
+}
+
+.menuIcon {
+	float: none;
+	padding: 0 0 0 5px;
+}
+
+.menuText {
+	padding: 0 5px 0 0;
+}
+
+.accountOptions .menuElement {
+	clear: right;
+	width: 100%;
+}
+
+.spacer {
+	width: 76%;
+	height: 100%;
+	box-sizing: border-box;
+	float: right;
+	border-width: 0 0 2px 0;
+	border-style: solid;
+	border-color: @navBarAccentColor;
+}

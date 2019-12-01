@@ -1,0 +1,109 @@
+@utilities: "../utilities";
+
+@import "@{utilities}/utilities.less";
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.addbutton {
+	height: 7%;
+	width: 30%;
+	margin: 0 auto;
+	border: 2px solid @accentColor;
+	user-select: none;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 25px;
+}
+
+.completedTasksContainer {
+	border-color: @accentColor;
+	border-radius: @borderRadius;
+	border-style: solid;
+	border-width: 2px;
+	display: grid;
+	grid-template-rows: 10% 75% 15%;
+	margin: 10px auto;
+	user-select: none;
+	width: 90%;
+}
+
+.gridElement {
+	box-sizing: border-box;
+	border-style: solid;
+	border-color: @opaqueDarkerGrey;
+}
+
+.leftColumn {
+	grid-column: 1;
+	border-width: 0 1px 0 0;
+	display: grid;
+	grid-template-rows: 65% 35%;
+}
+.middleColumn {
+	border-width: 0 1px;
+	grid-column: 2;
+	overflow: auto;
+	overflow-y: hidden;
+	padding: 5px;
+}
+.rightColumn {
+	grid-column: 3;
+	border-width: 0 0 0 1px;
+	display: grid;
+	grid-template-rows: 65% 35%;
+}
+
+.finishedItem {
+	width: 100%;
+	display: block;
+	height: 10%;
+	line-height: 1.5;
+	padding: 5px;
+}
+
+.finishedItems {
+	color: @textColor;
+	grid-row: 2;
+	overflow: auto;
+	overflow-x: hidden;
+	padding: 5px 0;
+	position: relative;
+	text-align: center;
+	width: 100%;
+}
+
+.pushDown {
+	width: -webkit-fill-available;
+	display: flex;
+	align-items: flex-end;
+	margin: 0 0 5px 0;
+}
+
+.schedulerContent {
+	background-color: @backgroundColor;
+	display: grid;
+	grid-template-columns: 25% 50% 25%;
+	height: 100%;
+	width: 100%;
+}
+
+.todoColumn {
+	height: 90%;
+	overflow: auto;
+}
