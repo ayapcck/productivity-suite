@@ -3,7 +3,7 @@ var React = require('react');
 import classnames from 'classnames';
 
 import Icon from '../icons/icon.js';
-import { formatDay, formatTime, formatDate } from '../utilities/dates.js';
+import { formatTime, formatDate } from '../utilities/dates.js';
 
 import styles from './todoElement.less';
 
@@ -28,19 +28,18 @@ export default class ToDoElement extends React.Component {
 	}
 	
 	render() {
+		const { activeTab, datetime, draggable, id, onDragEnd, onDragStart, 
+			onEditClicked, onTodoCompleted, priority, title, text } = this.props;
+
 		let date = '';
 		let time = '';
-		if (this.props.datetime != 'T') {
-			let dateAndTime = this.props.datetime.split('T');
+		if (datetime != 'T') {
+			let dateAndTime = datetime.split('T');
 			date = formatDate(dateAndTime);
 			time = formatTime(dateAndTime[1]);
 		};
 
-		const dragSettings = {
-			draggable: this.props.draggable,
-			onDragStart: this.props.onDragStart,
-			onDragEnd: this.props.onDragEnd
-		};
+		const dragSettings = { draggable, onDragEnd, onDragStart };
 		const hoverSettings = {
 			onMouseEnter: this.showHoverIcons,
 			onMouseMove: this.showHoverIcons,
@@ -48,35 +47,40 @@ export default class ToDoElement extends React.Component {
 		};
 		
 		// todo element id is of form 'todo_1'
-		let elementId = this.props.id.split('_')[1];
-		let elementClasses = classnames(styles.todoElement, this.props.priority == 1 && styles.priority);
-		let onEditProps = {
-			title: this.props.title,
-			content: this.props.text,
-			datetime: this.props.datetime,
-			priority: this.props.priority,
-			id: elementId
-		};
-		let element = <div id={this.props.id} className={elementClasses} {...dragSettings}
+		let elementId = id.split('_')[1];
+		let elementClasses = classnames(styles.todoElement, priority == 1 && styles.priority);
+		let onEditProps = { title, content: text, datetime, priority, id: elementId };
+		
+		let element = <div id={id} className={elementClasses} {...dragSettings}
 			{...hoverSettings}>
-			{this.state.hovered && <React.Fragment>
-			<Icon iconClass="far fa-check-circle" 
-				wrapperStyles={classnames(styles.elementDone, styles.todoIconWrapper)} 
-				iconStyles={styles.todoIcon} onClick={() => this.props.onTodoCompleted(elementId)} />
-			<Icon iconClass="far fa-edit" 
-				wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
-				iconStyles={styles.todoIcon} onClick={() => this.props.onEditClicked(onEditProps)} />
-			</React.Fragment>}
-			<TodoTextPiece content={this.props.title} extraClass={styles.upperLeft} size="big" />
-			<TodoTextPiece content={this.props.text} extraClass={styles.lowerLeft} size="small" />
-			<TodoTextPiece content={this.props.activeTab === 'Soon' ? date : time} 
+			{ this.state.hovered && <React.Fragment>
+				<EditIcon onClick={() => onEditClicked(onEditProps)} />
+				<DoneIcon onClick={() => onTodoCompleted(elementId)} />
+			</React.Fragment> }
+			<TodoTextPiece content={title} extraClass={styles.upperLeft} size="big" />
+			<TodoTextPiece content={text} extraClass={styles.lowerLeft} size="small" />
+			<TodoTextPiece content={activeTab === 'Soon' ? date : time} 
 				extraClass={styles.upperRight} size="big" />
-			{this.props.activeTab === 'Soon' && 
+			{activeTab === 'Soon' && 
 				<TodoTextPiece content={time} extraClass={styles.lowerRight} size="big" />}
 		</div>;
 		return element;
 	}
 }
+
+const DoneIcon = (props) => {
+	const { onClick } = props;
+	return <Icon iconClass="far fa-check-circle"
+		wrapperStyles={classnames(styles.elementDone, styles.todoIconWrapper)} 
+		iconStyles={styles.todoIcon} onClick={onClick} />;
+};
+
+const EditIcon = (props) => {
+	const { onClick } = props;
+	return <Icon iconClass="far fa-edit"
+		wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
+		iconStyles={styles.todoIcon} onClick={onClick} />;
+};
 
 const TodoTextPiece = ({ content, extraClass, size }) => {
 	let classes = classnames(styles.todoPiece, extraClass);

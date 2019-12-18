@@ -111,7 +111,7 @@ export default class TodoForm extends React.Component {
 		e.target[4].value = time;
 		e.target[5].value = '';
 
-		this.setState({ todoTimeEnabled: false });
+		this.setState({ priority: false, todoTimeEnabled: false });
 	}
 
 	handlePriorityChange(ev) {
