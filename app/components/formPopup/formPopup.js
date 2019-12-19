@@ -3,7 +3,7 @@ var React = require('react');
 import classnames from 'classnames';
 
 import CenterPanel from '../centerPanel/centerPanel.js';
-import Icon from '../icons/icon.js';
+import { clickedInsideContainer } from '../utilities/DOMHelper.js';
 
 import centeredBoxStyles from '../centerPanel/centerPanel.less';
 import styles from './formPopup.less';
@@ -16,15 +16,8 @@ export default class FormPopup extends React.Component {
     }
     
     handleCloseFromClickOutside(e) {
-        let clickX = e.clientX;
-        let clickY = e.clientY;
-        if (clickX !== 0 && clickY !== 0) {
-            let loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox);
-            let containerRect = loginContainer[0].getBoundingClientRect();
-            let clickInsideContainer = clickX > containerRect.left && clickX < containerRect.right &&
-                                        clickY > containerRect.top && clickY < containerRect.bottom;
-            !clickInsideContainer && this.props.handleCloseForm();
-        }
+        let container = document.getElementsByClassName(centeredBoxStyles.centeredBox)[0];
+        !clickedInsideContainer(e, container) && this.props.handleCloseForm();
     }
 
     render() {

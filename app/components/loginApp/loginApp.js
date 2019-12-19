@@ -2,6 +2,7 @@ var React = require('react');
 var classnames = require('classnames');
 
 import CenterPanel from '../centerPanel/centerPanel.js';
+import { clickedInsideContainer } from '../utilities/DOMHelper.js';
 import Icon from '../icons/icon.js';
 import LoginForm from '../forms/loginForm.js';
 import SignupForm from '../forms/signupForm.js';
@@ -37,15 +38,8 @@ export default class LoginApp extends React.Component {
   }
   
   handleCloseFromClickOutside(e) {
-	let clickX = e.clientX;
-	let clickY = e.clientY;
-	if (clickX !== 0 && clickY !== 0) {
-		let loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox);
-		let containerRect = loginContainer[0].getBoundingClientRect();
-		let clickInsideContainer = clickX > containerRect.left && clickX < containerRect.right &&
-									clickY > containerRect.top && clickY < containerRect.bottom;
-		!clickInsideContainer && this.handleCloseForm();
-	}
+	const loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox)[0];
+	!clickedInsideContainer(e, loginContainer) && this.handleCloseForm();
   }
 
   handleAfterLogin(username) {

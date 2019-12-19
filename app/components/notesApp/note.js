@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 import Icon from '../icons/icon';
 import { NoteSteps } from './steps';
+import { clickedInsideContainer } from '../utilities/DOMHelper.js';
 
 import styles from './notes.less';
 import utilStyles from '../utilities/utilities.less';
@@ -38,7 +39,6 @@ export default class Note extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleEditingChange = this.handleEditingChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
-        this.listNameChange = this.listNameChange.bind(this);
     }
 
     changeStep(nextStep) {
@@ -55,17 +55,8 @@ export default class Note extends React.Component {
 
     handleClick(ev) {
         if (this.state.editing) {
-            const clickX = ev.clientX;
-            const clickY = ev.clientY;
-            if (clickX !== 0 && clickY !== 0) {
-                const listContainer = document.getElementsByClassName(styles.finalNote)[0];
-                const listContainerBox = listContainer.getBoundingClientRect();
-                const clickInsideContainer = clickX > listContainerBox.left 
-                    && clickX < listContainerBox.right 
-                    && clickY > listContainerBox.top 
-                    && clickY < listContainerBox.bottom;
-                !clickInsideContainer && this.handleEditingChange();
-            }
+            const listContainer = document.getElementsByClassName(styles.finalNote)[0];
+            !clickedInsideContainer(ev, listContainer) && this.handleEditingChange();
         }
     }
 
@@ -93,11 +84,6 @@ export default class Note extends React.Component {
         ev.target.value !== name && this.setState({ name: ev.target.value });
     }
 
-    listNameChange(ev) {
-        const { name } = this.state;
-        ev.target.value !== name && this.setState({ name: ev.target.value });
-    }
-
     render() {
         const { content, updateNote } = this.props;
         const { editing, name, stepName } = this.state;
@@ -117,7 +103,7 @@ export default class Note extends React.Component {
             editing,
             listName: name,
             onEditClick: this.handleEditingChange,
-            onNameChange: this.listNameChange
+            onNameChange: this.handleNameChange
         };
 
         const stepContent = finalStep ? renderFinalNote(headerProps, step) : step;
