@@ -10,10 +10,10 @@ import styles from './notes.less';
 import utilStyles from '../utilities/utilities.less';
 
 const getListItemContent = () => {
-    const listItems = document.getElementsByClassName(styles.listContent);
+    const listItems = document.getElementsByClassName("listItem");
     let content = '';
     _.forEach(listItems, listItem => {
-        content = `${content},${listItem.value}`;
+        content = `${content},${listItem.innerText}`;
     });
     content = content.slice(1);
     return content;

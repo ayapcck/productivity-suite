@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import Icon from '../../icons/icon';
+import { ListTypeItem } from '../listTypeItem';
 
 import styles from '../notes.less';
 
@@ -33,8 +34,8 @@ export class ListType extends React.Component {
     }
 
     removeElement(ev) {
-        const listContent = ev.target.value;
-        const numberListItems = document.getElementsByClassName(styles.listItem).length;
+        const listContent = ev.target.innerText;
+        const numberListItems = document.getElementsByClassName("listItem").length;
         if (listContent === '' && numberListItems !== 1) {
             ev.preventDefault();
             const { listItems } = this.state;
@@ -66,7 +67,7 @@ export class ListType extends React.Component {
         const { listItems } = this.state;
         const listIndex = parseInt(ev.target.parentNode.id.replace('LI', ''));
         const listNode = listItems.get(listIndex);
-        const newContent = ev.target.value;
+        const newContent = ev.target.innerText;
         const newData = Object.assign({}, listNode.data, { content: newContent });
         listNode.data = newData;
         this.setState({ listItems });
@@ -94,16 +95,6 @@ export class ListType extends React.Component {
     }
 }
 
-const ListItem = props => {
-    const { content, id, disabled, onChange } = props;
-    return <div id={id} className={styles.listItem}>
-        <Icon iconClass="fas fa-circle" iconStyles={styles.bulletPoint}
-            wrapperStyles={styles.bulletPointWrapper} />
-        <input type="text" className={styles.listContent}
-            value={content} disabled={disabled} onChange={onChange} />
-    </div>;
-}
-
 const renderListItems = (content, editing, onItemContentChange) => {
     let listItems = [];
     if (_.isUndefined(content) || content.getHead() === null) {
@@ -114,20 +105,20 @@ const renderListItems = (content, editing, onItemContentChange) => {
     return listItems;
 }
 
-const noContentItem = (editing, onChange) => <ListItem key="LI1" id="LI1" content="" disabled={!editing} onChange={onChange} />;
+const noContentItem = (editing, onChange) => <ListTypeItem key="LI1" id="LI1" content="" disabled={!editing} onChange={onChange} />;
 
 const listContentItems = (listItems, editing, onChange) => {
     let items = [];
     let item = listItems.getHead();
     let index = 0;
     const firstId = `LI${index}`;
-    items.push(<ListItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} onChange={onChange} />);
+    items.push(<ListTypeItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} onChange={onChange} />);
     while (item.hasNext() && item.next.data !== null) {
         item = item.next;
         index += 1;
         const content = item.data.content;
         const nextId = `LI${index}`;
-        items.push(<ListItem key={nextId} id={nextId} content={content} disabled={!editing} onChange={onChange} />);
+        items.push(<ListTypeItem key={nextId} id={nextId} content={content} disabled={!editing} onChange={onChange} />);
     }
     return items;
 }
