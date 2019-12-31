@@ -8,6 +8,7 @@ import styles from './notes.less';
 import utilStyles from '../utilities/utilities.less';
 
 const HeaderContainer = styled.div`
+    border-radius: 20px 20px 0 0;
     box-sizing: border-box;
     height: 100%!important;
     position: relative;

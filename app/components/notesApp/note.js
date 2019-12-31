@@ -1,17 +1,53 @@
 import React from 'react';
-import classnames from 'classnames';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 
-import Icon from '../icons/icon';
 import { clickedInsideContainer } from '../utilities/DOMHelper.js';
 import { NoteHeader } from './noteHeader';
 import { NoteSteps } from './steps';
 import { NoteTypes } from './types';
 
 import { colorTheme } from '../../colors';
-import styles from './notes.less';
-import utilStyles from '../utilities/utilities.less';
+
+const Container = styled.div`
+    display: block;
+    grid-row: 2;
+    margin: 10px;
+    overflow: auto;
+    padding: 5px 10px 5px 0;
+`;
+
+const Spacer = styled.div`
+    height: 100%;
+    ${ ({ stepName }) => stepName === 'list' && `
+        max-height: -webkit-fill-available;
+    `}
+`;
+
+const StyledNote = styled.div`
+    align-items: center;
+    border-color: ${props => props.theme.accentColor};
+    border-radius: 20px;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 2px;
+    color: ${props => props.theme.textColor};
+    display: inline-grid;
+    margin: 0 5px;
+    max-height: 100%;
+    min-height: 45%;
+    padding: 10px;
+    text-align: center;
+    width: 20%;
+    vertical-align: top;
+    ${ ({ editing, theme }) => editing && `
+        border-color: ${theme.inputFocusColor};
+    `}
+    ${ ({ finalStep }) => finalStep && `
+        grid-template-rows: 40px;
+        padding: 0;
+    `}
+`;
 
 export default class Note extends React.Component {
     constructor(props) {
@@ -90,9 +126,8 @@ export default class Note extends React.Component {
             noteId,
             updateNote
         };
-        const step = currentStep.getContent(stepProps);
+        const stepContent = currentStep.getContent(stepProps);
         const finalStep = stepName === 'note' || stepName === 'list';
-        const noteClass = finalStep ? styles.finalNote : styles.note;
         
         const headerProps = {
             editing,
@@ -100,35 +135,17 @@ export default class Note extends React.Component {
             onEditClick: this.handleEditingChange,
             onNameChange: this.handleNameChange
         };
+        const header = <ThemeProvider theme={colorTheme}>
+            <NoteHeader {...headerProps} />
+        </ThemeProvider>;
 
-        const stepContent = finalStep ? renderFinalNote(headerProps, step) : step;
-
-        return <div className={noteClass} id={noteId}>
-            {stepContent}
-        </div>;
+        return <StyledNote editing={editing} finalStep={finalStep} id={noteId}>
+            {finalStep && header}
+            <Spacer stepName={stepName}>
+                <Container>
+                    {stepContent}
+                </Container>
+            </Spacer>
+        </StyledNote>;
     }
 }
-
-const renderHeader = props => {
-    const { editing, listName, onEditClick, onNameChange } = props;
-
-    const headerStyles = classnames(utilStyles.spanHeader, styles.noteHeader,
-        editing ? styles.noteHeaderEditing : '');
-
-    return <div className={headerStyles}>
-        <input type="text" className={classnames(styles.listName, editing ? styles.listNameEditing : '')} 
-            value={listName} disabled={!editing} onChange={onNameChange} />
-        <Icon iconClass="far fa-edit" noWrapper={true} 
-            iconStyles={classnames(styles.editNoteButton, editing ? styles.editNoteButtonActive : '')} 
-            onClick={onEditClick} />
-    </div>;
-};
-
-const renderFinalNote = (headerProps, step) => {
-    return <React.Fragment>
-        <ThemeProvider theme={colorTheme}>
-            <NoteHeader {...headerProps} />
-        </ThemeProvider>
-        {step}
-    </React.Fragment>;
-};

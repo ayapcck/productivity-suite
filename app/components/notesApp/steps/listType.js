@@ -98,11 +98,9 @@ export class ListType extends React.Component {
         const { listItems } = this.state;
         const { editing, noteId } = this.props;
 
-        return <div className={styles.listType}>
-            <div className={styles.noteContainer}>
-                {renderListItems(listItems, editing, noteId, this.listItemContentChange)}
-            </div>
-        </div>;
+        return <React.Fragment>
+            {renderListItems(listItems, editing, noteId, this.listItemContentChange)}
+        </React.Fragment>;
     }
 }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 
 import Note from './note';
@@ -7,6 +8,7 @@ import { NoteTypes } from './types';
 import { postJson, getJson } from '../utilities/jsonHelpers';
 import { LinkedList } from '../utilities/dataStructures';
 
+import { colorTheme } from '../../colors';
 import styles from './notes.less';
 
 const parseNotes = notes => {
@@ -80,9 +82,11 @@ export default class NotesApp extends React.Component {
 
         const notes = renderNotes(allNotes, this.updateNote);
 
-        return <div className={styles.notesAppContent}>
-            {firstFetch && notes}
-        </div>;
+        return <ThemeProvider theme={colorTheme}>
+            <div className={styles.notesAppContent}>
+                {firstFetch && notes}
+            </div>;
+        </ThemeProvider>;
     }
 }
 

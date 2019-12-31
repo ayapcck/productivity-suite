@@ -17,28 +17,6 @@
     padding: 10px;
 }
 
-.finalNote, .note {
-    align-items: center;
-    border-color: @accentColor;
-    border-radius: 20px;
-    box-sizing: border-box;
-    border-style: solid;
-    border-width: 2px;
-    color: @textColor;
-    display: inline-grid;
-    margin: 0 5px;
-    max-height: 100%;
-    min-height: 45%;
-    padding: 10px;
-    text-align: center;
-    width: 20%;
-    vertical-align: top;
-}
-.finalNote {
-    grid-template-rows: 40px;
-    padding: 0;
-}
-
 .addNoteIcon {
     font-size: 5em;
 }
@@ -85,14 +63,6 @@
     color: @textColor;
 }
 
-.listType, .noteType {
-    height: 100%;
-}
-
-.listType {
-    max-height: -webkit-fill-available;
-}
-
 .noteContent, .listContent {
     border-radius: 15px;
     box-sizing: border-box;
@@ -119,16 +89,4 @@
 .noteContent {
     height: 100%;
     white-space: pre;
-}
-
-.noteContainer {
-    display: block;
-    grid-row: 2;
-    margin: 10px;
-    overflow: auto;
-    padding: 5px 10px 5px 0;
-}
-
-.noteHeaderEditing {
-    justify-content: flex-end!important;
 }
