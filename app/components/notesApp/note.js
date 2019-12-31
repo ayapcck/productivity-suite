@@ -139,13 +139,15 @@ export default class Note extends React.Component {
             <NoteHeader {...headerProps} />
         </ThemeProvider>;
 
+        const stepWithWrappers = <Spacer stepName={stepName}>
+            <Container>
+                {stepContent}
+            </Container>
+        </Spacer>;
+
         return <StyledNote editing={editing} finalStep={finalStep} id={noteId}>
-            {finalStep && header}
-            <Spacer stepName={stepName}>
-                <Container>
-                    {stepContent}
-                </Container>
-            </Spacer>
+            { finalStep && header }
+            { finalStep ? stepWithWrappers : stepContent }
         </StyledNote>;
     }
 }
