@@ -1,10 +1,13 @@
 import React from 'react';
 import _ from 'lodash';
 
-import Icon from '../../icons/icon';
 import { ListTypeItem } from '../listTypeItem';
 
 import styles from '../notes.less';
+
+const parseIndexFromId = (id, noteId) => {
+    return parseInt(id.replace(`${noteId}LI`, ''));
+}
 
 export class ListType extends React.Component {
     constructor(props) {
@@ -22,24 +25,30 @@ export class ListType extends React.Component {
     }
 
     addNewElement(ev) {
+        const { noteId } = this.props;
         const { listItems } = this.state;
-        const targetIndex = parseInt(ev.target.parentNode.id.replace('LI', ''));
+        const id = ev.target.parentNode.id;
+        const targetIndex = parseIndexFromId(id, noteId);
         const index = targetIndex + 1;
         listItems.insertAt(index, {content: ''});
         this.setState({ listItems }, () => this.focusNewElement(index));
     }
 
     focusNewElement(index) {
-        document.getElementById(`LI${index}`).lastChild.focus();
+        const { noteId } = this.props;
+        document.getElementById(`${noteId}LI${index}`).lastChild.focus();
     }
 
     removeElement(ev) {
+        const { noteId } = this.props;
         const listContent = ev.target.innerText;
-        const numberListItems = document.getElementsByClassName("listItem").length;
+        const note = document.getElementById(noteId);
+        const numberListItems = note.getElementsByClassName("listItem").length;
         if (listContent === '' && numberListItems !== 1) {
             ev.preventDefault();
             const { listItems } = this.state;
-            const targetIndex = parseInt(ev.target.parentNode.id.replace('LI', ''));
+            const id = ev.target.parentNode.id;
+            const targetIndex = parseIndexFromId(id, noteId);
             listItems.remove(targetIndex);
             this.setState({ listItems }, () => document.activeElement.blur());
         }
@@ -74,50 +83,53 @@ export class ListType extends React.Component {
     }
 
     componentDidMount() {
-        const listContainer = document.getElementsByClassName(styles.listType)[0];
+        const { noteId } = this.props;
+        const listContainer = document.getElementById(noteId);
         listContainer.addEventListener('keydown', this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        const listContainer = document.getElementsByClassName(styles.listType)[0];
+        const { noteId } = this.props;
+        const listContainer = document.getElementById(noteId);
         listContainer.removeEventListener('keydown', this.handleKeyDown);
     }
 
     render() {
         const { listItems } = this.state;
-        const { editing } = this.props;
+        const { editing, noteId } = this.props;
 
         return <div className={styles.listType}>
             <div className={styles.noteContainer}>
-                {renderListItems(listItems, editing, this.listItemContentChange)}
+                {renderListItems(listItems, editing, noteId, this.listItemContentChange)}
             </div>
         </div>;
     }
 }
 
-const renderListItems = (content, editing, onItemContentChange) => {
+const renderListItems = (content, editing, noteId, onItemContentChange) => {
     let listItems = [];
     if (_.isUndefined(content) || content.getHead() === null) {
-        listItems.push(noContentItem(editing, onItemContentChange));
+        const id = `${noteId}LI1`;
+        listItems.push(noContentItem(editing, id, onItemContentChange));
     } else {
-        listItems = listContentItems(content, editing, onItemContentChange);
+        listItems = listContentItems(content, editing, noteId, onItemContentChange);
     }
     return listItems;
 }
 
-const noContentItem = (editing, onChange) => <ListTypeItem key="LI1" id="LI1" content="" disabled={!editing} onChange={onChange} />;
+const noContentItem = (editing, id, onChange) => <ListTypeItem key={id} id={id} content="" disabled={!editing} onChange={onChange} />;
 
-const listContentItems = (listItems, editing, onChange) => {
+const listContentItems = (listItems, editing, noteId, onChange) => {
     let items = [];
     let item = listItems.getHead();
     let index = 0;
-    const firstId = `LI${index}`;
+    const firstId = `${noteId}LI${index}`;
     items.push(<ListTypeItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} onChange={onChange} />);
     while (item.hasNext() && item.next.data !== null) {
         item = item.next;
         index += 1;
         const content = item.data.content;
-        const nextId = `LI${index}`;
+        const nextId = `${noteId}LI${index}`;
         items.push(<ListTypeItem key={nextId} id={nextId} content={content} disabled={!editing} onChange={onChange} />);
     }
     return items;

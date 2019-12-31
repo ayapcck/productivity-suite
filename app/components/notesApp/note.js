@@ -1,23 +1,17 @@
 import React from 'react';
-import _ from 'lodash';
 import classnames from 'classnames';
+import { ThemeProvider } from 'styled-components';
+import _ from 'lodash';
 
 import Icon from '../icons/icon';
-import { NoteSteps } from './steps';
 import { clickedInsideContainer } from '../utilities/DOMHelper.js';
+import { NoteHeader } from './noteHeader';
+import { NoteSteps } from './steps';
+import { NoteTypes } from './types';
 
+import { colorTheme } from '../../colors';
 import styles from './notes.less';
 import utilStyles from '../utilities/utilities.less';
-
-const getListItemContent = () => {
-    const listItems = document.getElementsByClassName("listItem");
-    let content = '';
-    _.forEach(listItems, listItem => {
-        content = `${content},${listItem.innerText}`;
-    });
-    content = content.slice(1);
-    return content;
-}
 
 export default class Note extends React.Component {
     constructor(props) {
@@ -55,17 +49,17 @@ export default class Note extends React.Component {
 
     handleClick(ev) {
         if (this.state.editing) {
-            const listContainer = document.getElementsByClassName(styles.finalNote)[0];
+            const { noteId } = this.props;
+            const listContainer = document.getElementById(noteId);
             !clickedInsideContainer(ev, listContainer) && this.handleEditingChange();
         }
     }
 
     handleContentUpdate() {
+        const { noteId } = this.props;
         const { id, name, stepName } = this.state;
         let content = null;
-        if (stepName === 'list') {
-            content = getListItemContent();
-        }
+        content = NoteTypes[stepName].getContent(noteId);
         content !== null && this.props.updateNote(content, name, id);
     }
 
@@ -85,7 +79,7 @@ export default class Note extends React.Component {
     }
 
     render() {
-        const { content, updateNote } = this.props;
+        const { content, noteId, updateNote } = this.props;
         const { editing, name, stepName } = this.state;
         
         const currentStep = _.get(NoteSteps, stepName);
@@ -93,6 +87,7 @@ export default class Note extends React.Component {
             changeStep: this.changeStep,
             content,
             editing,
+            noteId,
             updateNote
         };
         const step = currentStep.getContent(stepProps);
@@ -108,7 +103,7 @@ export default class Note extends React.Component {
 
         const stepContent = finalStep ? renderFinalNote(headerProps, step) : step;
 
-        return <div className={noteClass}>
+        return <div className={noteClass} id={noteId}>
             {stepContent}
         </div>;
     }
@@ -121,7 +116,6 @@ const renderHeader = props => {
         editing ? styles.noteHeaderEditing : '');
 
     return <div className={headerStyles}>
-        {editing && <span>Editing - </span>}
         <input type="text" className={classnames(styles.listName, editing ? styles.listNameEditing : '')} 
             value={listName} disabled={!editing} onChange={onNameChange} />
         <Icon iconClass="far fa-edit" noWrapper={true} 
@@ -132,7 +126,9 @@ const renderHeader = props => {
 
 const renderFinalNote = (headerProps, step) => {
     return <React.Fragment>
-        {renderHeader(headerProps)}
+        <ThemeProvider theme={colorTheme}>
+            <NoteHeader {...headerProps} />
+        </ThemeProvider>
         {step}
     </React.Fragment>;
 };
