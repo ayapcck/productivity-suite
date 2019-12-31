@@ -85,7 +85,7 @@ export default class NotesApp extends React.Component {
         return <ThemeProvider theme={colorTheme}>
             <div className={styles.notesAppContent}>
                 {firstFetch && notes}
-            </div>;
+            </div>
         </ThemeProvider>;
     }
 }
@@ -104,9 +104,9 @@ const renderNotes = (allNotes, updateNote) => {
     return <React.Fragment>
         {notes}
     </React.Fragment>;
-}
+};
 
 const unititializedNote = (id) => {
     const content = {id, name: ''};
     return <Note key={id} noteId={id} step="uninitialized" content={content} />;
-}
+};
