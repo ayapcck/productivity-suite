@@ -1,10 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Icon from '../icons/icon';
+const StyledBulletPoint = styled.i`
+    font-size:  0.5em;
+`;
+const BPWrapper = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: center;
+`;
 
-import styles from './notes.less';
-
+const ListContent = styled.div`
+    background-color: ${(props) => props.theme.backgroundColor};
+    border-color: ${(props) => props.theme.backgroundColor};
+    border-radius: 15px;
+    border-style: solid;
+    box-sizing: border-box;
+    border-width: 2px;
+    color: ${(props) => props.theme.textColor};
+    padding: 2.5px;
+    text-align: left;
+    &:focus {
+        outline: 0;
+        box-shadow: 0 0 2pt 1pt ${(props) => props.theme.inputFocusColor};
+    }
+`;
 const ListItem = styled.div`
     display: grid;
     grid-template-columns: 20px 1fr;
@@ -14,13 +34,19 @@ const ListItem = styled.div`
 `;
 
 export const ListTypeItem = props => {
-    const { content, disabled, id, onChange } = props;
+    const { content, editing, id, onChange } = props;
 
     return <ListItem id={id} className="listItem">
-        <Icon iconClass="fas fa-circle" iconStyles={styles.bulletPoint}
-            wrapperStyles={styles.bulletPointWrapper} />
-        <div type="text" className={styles.listContent} contentEditable={!disabled}
-            disabled={disabled} onBlur={onChange}
-            suppressContentEditableWarning="true">{content}</div>
+        <BulletPoint />
+        <ListContent contentEditable={editing} onBlur={onChange}
+            suppressContentEditableWarning="true">
+                {content}
+        </ListContent>
     </ListItem>;
+};
+
+const BulletPoint = () => {
+    return <BPWrapper>
+        <StyledBulletPoint className="fas fa-circle"></StyledBulletPoint>
+    </BPWrapper>
 };

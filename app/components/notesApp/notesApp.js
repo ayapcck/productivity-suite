@@ -1,15 +1,18 @@
 import React from 'react';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 
 import Note from './note';
-import { NoteSteps } from './steps';
 import { NoteTypes } from './types';
 import { postJson, getJson } from '../utilities/jsonHelpers';
 import { LinkedList } from '../utilities/dataStructures';
 
 import { colorTheme } from '../../colors';
-import styles from './notes.less';
+
+const AppContent = styled.div`
+    background-color: ${(props) => props.theme.backgroundColor};
+    padding: 10px;
+`;
 
 const parseNotes = notes => {
     const allNotes = [];
@@ -83,9 +86,9 @@ export default class NotesApp extends React.Component {
         const notes = renderNotes(allNotes, this.updateNote);
 
         return <ThemeProvider theme={colorTheme}>
-            <div className={styles.notesAppContent}>
+            <AppContent>
                 {firstFetch && notes}
-            </div>
+            </AppContent>
         </ThemeProvider>;
     }
 }

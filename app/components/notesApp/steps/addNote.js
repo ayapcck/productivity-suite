@@ -1,12 +1,20 @@
 import React from 'react';
+import styled from 'styled-components';
 
-import Icon from '../../icons/icon';
-
-import styles from '../notes.less';
+const StyledPlus = styled.i`
+    font-size: 5em;
+    &:hover {
+        color: ${(props) => props.theme.onHoverColor};
+        cursor: pointer;
+    }
+    &:active {
+        color: ${(props) => props.theme.onActiveColor};
+    }
+`;
 
 export const AddNote = (props) => {
     const { changeStep } = props;
 
-    return <Icon iconClass="fa fa-plus-circle" 
-        iconStyles={styles.addNoteIcon} noWrapper={true} onClick={() => changeStep('chooseType')} />;
+    return <StyledPlus className="fa fa-plus-circle"
+        onClick={() => changeStep('chooseType')}></StyledPlus>;
 };

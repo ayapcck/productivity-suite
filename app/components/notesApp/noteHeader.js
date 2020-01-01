@@ -1,11 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import classnames from 'classnames';
 
-import Icon from '../icons/icon';
-
-import styles from './notes.less';
 import utilStyles from '../utilities/utilities.less';
+
+const EditNoteButton = styled.i`
+    left: 0;
+    margin: 0 0 0 10px;
+    position: absolute;
+    &:hover {
+        color: ${(props) => props.theme.textColor};
+        cursor: pointer;
+    }
+    ${ ({ editing, theme }) => editing && `
+        color: ${theme.textColor};
+    `}
+`;
 
 const HeaderContainer = styled.div`
     border-radius: 20px 20px 0 0;
@@ -36,8 +45,7 @@ export const NoteHeader = (props) => {
     return <HeaderContainer className={utilStyles.spanHeader}>
         <NameInput type="text" value={listName}
             disabled={!editing} onChange={onNameChange} props={props} />
-        <Icon iconClass="far fa-edit" noWrapper={true} 
-            iconStyles={classnames(styles.editNoteButton, editing ? styles.editNoteButtonActive : '')} 
-            onClick={onEditClick} />
+        <EditNoteButton className="far fa-edit" editing={editing} 
+            onClick={onEditClick}></EditNoteButton>
     </HeaderContainer>;
 };

@@ -3,8 +3,6 @@ import _ from 'lodash';
 
 import { ListTypeItem } from '../listTypeItem';
 
-import styles from '../notes.less';
-
 const parseIndexFromId = (id, noteId) => {
     return parseInt(id.replace(`${noteId}LI`, ''));
 }
@@ -115,20 +113,20 @@ const renderListItems = (content, editing, noteId, onItemContentChange) => {
     return listItems;
 }
 
-const noContentItem = (editing, id, onChange) => <ListTypeItem key={id} id={id} content="" disabled={!editing} onChange={onChange} />;
+const noContentItem = (editing, id, onChange) => <ListTypeItem key={id} id={id} content="" editing={editing} onChange={onChange} />;
 
 const listContentItems = (listItems, editing, noteId, onChange) => {
     let items = [];
     let item = listItems.getHead();
     let index = 0;
     const firstId = `${noteId}LI${index}`;
-    items.push(<ListTypeItem key={firstId} id={firstId} content={item.data.content} disabled={!editing} onChange={onChange} />);
+    items.push(<ListTypeItem key={firstId} id={firstId} content={item.data.content} editing={editing} onChange={onChange} />);
     while (item.hasNext() && item.next.data !== null) {
         item = item.next;
         index += 1;
         const content = item.data.content;
         const nextId = `${noteId}LI${index}`;
-        items.push(<ListTypeItem key={nextId} id={nextId} content={content} disabled={!editing} onChange={onChange} />);
+        items.push(<ListTypeItem key={nextId} id={nextId} content={content} editing={editing} onChange={onChange} />);
     }
     return items;
 }
