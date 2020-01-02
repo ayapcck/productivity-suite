@@ -3,6 +3,16 @@ import styled from 'styled-components';
 
 import utilStyles from '../utilities/utilities.less';
 
+const DeleteNoteButton = styled.i`
+    right: 0;
+    margin: 0 10px 0 0;
+    position: absolute;
+    &:hover {
+        color: ${(props) => props.theme.textColor};
+        cursor: pointer;
+    }
+`;
+
 const EditNoteButton = styled.i`
     left: 0;
     margin: 0 0 0 10px;
@@ -47,5 +57,6 @@ export const NoteHeader = (props) => {
             disabled={!editing} onChange={onNameChange} props={props} />
         <EditNoteButton className="far fa-edit" editing={editing} 
             onClick={onEditClick}></EditNoteButton>
+        <DeleteNoteButton className="far fa-trash-alt"></DeleteNoteButton>
     </HeaderContainer>;
 };

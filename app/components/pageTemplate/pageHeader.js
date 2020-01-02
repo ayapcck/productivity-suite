@@ -1,7 +1,10 @@
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
 import LoginApp from '../loginApp/loginApp.js';
 import NavigationBar from '../navigation/navigationBar.js';
+
+import { colorTheme } from '../../colors';
 
 export default class PageHeader extends React.Component {
     constructor(props) {
@@ -45,6 +48,8 @@ export default class PageHeader extends React.Component {
             <NavigationBar {...navigationBarProps} />
         </React.Fragment>;
         
-        return pageHeader;
+        return <ThemeProvider theme={colorTheme}>
+            {pageHeader}
+        </ThemeProvider>;
     }
 }

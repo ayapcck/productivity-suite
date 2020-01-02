@@ -1,5 +1,5 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 
 import _ from 'lodash';
 import classnames from 'classnames';
@@ -11,9 +11,10 @@ import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
 import styles from './schedulerApp.less';
-import utilities from '../utilities/utilities.less';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 import { currentTimeString, tomorrowTimeString } from '../utilities/dates.js';
+
+import { colorTheme } from '../../colors';
 
 var Logger = require('../utilities/logger');
 
@@ -310,17 +311,16 @@ export default class SchedulerApp extends React.Component {
 			order: this.state.orderObj,
 			updateOrder: this.updateOrder
 		}
+		const todoForm = <React.Fragment>
+			<Icon iconClass='far fa-times-circle' onClick={this.hideEditTodoForm} />
+			<TodoForm {...todoFormProps} headerText='Edit Todo'
+				handleAfterSubmit={this.updateTodoElement} displayAsPopup={true}
+				prePopulatedContent={this.state.editingTodoProps} />
+		</React.Fragment>;
 
-		let schedulerApp = <div name='schedulerBody' className={styles.schedulerContent}>
-			{this.state.showEditTodoPopup && <FormPopup handleCloseForm={this.hideEditTodoForm}
-				content={
-					<React.Fragment>
-						<Icon iconClass='far fa-times-circle' onClick={this.hideEditTodoForm} />
-						<TodoForm {...todoFormProps} headerText='Edit Todo'
-							handleAfterSubmit={this.updateTodoElement} displayAsPopup={true}
-							prePopulatedContent={this.state.editingTodoProps} />
-					</React.Fragment>
-				} />}
+		const schedulerApp = <div name='schedulerBody' className={styles.schedulerContent}>
+			{this.state.showEditTodoPopup && <FormPopup content={todoForm} id="EditFormPopup"
+				handleCloseForm={this.hideEditTodoForm} />}
 			<div className={classnames(styles.gridElement, styles.leftColumn)}>
 				<TodoForm {...todoFormProps} headerText='Add Todo'
 					handleAfterSubmit={this.postTodoElement} />
@@ -339,6 +339,8 @@ export default class SchedulerApp extends React.Component {
 				</div>
 			</div>
 		</div>
-		return schedulerApp;
+		return <ThemeProvider theme={colorTheme}>
+			{schedulerApp}
+		</ThemeProvider>;
 	}
 };

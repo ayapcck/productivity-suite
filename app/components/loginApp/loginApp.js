@@ -1,14 +1,13 @@
 var React = require('react');
 var classnames = require('classnames');
 
-import CenterPanel from '../centerPanel/centerPanel.js';
+import { CenterPanel } from '../centerPanel/centerPanel.js';
 import { clickedInsideContainer } from '../utilities/DOMHelper.js';
 import Icon from '../icons/icon.js';
 import LoginForm from '../forms/loginForm.js';
 import SignupForm from '../forms/signupForm.js';
 
 import styles from './loginApp.less';
-import centeredBoxStyles from '../centerPanel/centerPanel.less';
 
 export default class LoginApp extends React.Component {
   constructor(props) {
@@ -38,7 +37,7 @@ export default class LoginApp extends React.Component {
   }
   
   handleCloseFromClickOutside(e) {
-	const loginContainer = document.getElementsByClassName(centeredBoxStyles.centeredBox)[0];
+	const loginContainer = document.getElementById("LoginApp");
 	!clickedInsideContainer(e, loginContainer) && this.handleCloseForm();
   }
 
@@ -53,22 +52,22 @@ export default class LoginApp extends React.Component {
   render() {
 	var visibility = this.props.showLoginApp ? styles.visible : styles.hidden;
 	var loginApp = <React.Fragment>
-	<div className={classnames(styles.opaqueBackground, visibility)}></div>
-	<div className={classnames(styles.container, visibility)} onMouseDown={this.handleCloseFromClickOutside}>
-		<CenterPanel 
-			content={ 
-				<React.Fragment>
-					<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
-					{this.state.showLoginForm ? 
-						<LoginForm handleLoginSuccess={this.handleAfterLogin} /> : 
-						<SignupForm handleExit={this.handleCloseForm} />}
-					{this.state.showLoginForm ? 
-						<RedirectLink text="Need an account?" onClick={this.toggleLoginForm} /> : 
-						<RedirectLink text="Already have an account?" onClick={this.toggleLoginForm} />}
-				</React.Fragment>
-			}
-		/>
-	</div>
+		<div className={classnames(styles.opaqueBackground, visibility)}></div>
+		<div className={classnames(styles.container, visibility)} onMouseDown={this.handleCloseFromClickOutside}>
+			<CenterPanel id="LoginApp"
+				content={ 
+					<React.Fragment>
+						<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
+						{this.state.showLoginForm ? 
+							<LoginForm handleLoginSuccess={this.handleAfterLogin} /> : 
+							<SignupForm handleExit={this.handleCloseForm} />}
+						{this.state.showLoginForm ? 
+							<RedirectLink text="Need an account?" onClick={this.toggleLoginForm} /> : 
+							<RedirectLink text="Already have an account?" onClick={this.toggleLoginForm} />}
+					</React.Fragment>
+				}
+			/>
+		</div>
 	</React.Fragment>
     return loginApp;
   }
