@@ -46,11 +46,35 @@ def updateNotes():
     return updateNotesFor(user, content, name, id, conn)
 
 
+@notes.route('/deleteNote', methods=['POST'])
+@cross_origin
+def deleteNotes():
+    responseData = json.loads(request.data)
+    user = responseData['user']
+    id = responseData['id']
+    conn = getMySQL().connect()
+    return deleteNoteFor(user, id, conn)
+
+
 ### API HELPERS ###
 def getUserId(user):
     from app import getUserId
     id = getUserId(user)[0]
     return id
+
+
+def deleteNoteFor(user, id, conn):
+    userId = getUserId(user)
+    sql = "DELETE FROM " + NOTES_TABLE + " WHERE userId={}, id={}".format(userId,id)
+
+    curs = conn.cursor()
+    try:
+        curs.execute(sql)
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=400)
+    return Response(status=200)
 
 
 def fetchNotesFor(user, curs):
