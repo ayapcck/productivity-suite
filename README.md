@@ -17,6 +17,8 @@ The application uses the database `reactWebsiteData` and currently has three tab
 1. `pip install virtualenv`
 2. `source env/bin/activate`
 3. `pip install -r requirements.txt`
+4. `cd backend`
+5. `python app.py`
 
 ## Frontend
 
