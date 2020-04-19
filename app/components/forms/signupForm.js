@@ -39,16 +39,18 @@ export default class SignupForm extends React.Component {
   }
 	
   log(message, functionName) {
-    Logger.log(message, "schedulerApp", functionName);
+    Logger.log(message, "signupForm", functionName);
   }
   
   createUser(username, email, password) {
+		const { serverAddress } = this.props;
+	
 		this.log("starting", "createUser");
 		var salt = generateSalt(16);
 		var passHash = generateHmac(password, salt);
 		var activationCode = generateActivationCode();
 		
-		var url = "http://192.168.0.26:5000/addUser";
+		var url = serverAddress + "/addUser";
 		var jsonBody = {
 			user: username,
 			email: email,

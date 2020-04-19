@@ -17,14 +17,15 @@ mail = returnMailApp(app)
 cors = CORS(app)
 
 mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_USER'] = 'ayapcck'
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['REACT_DATABASE_PASSWORD']
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_DB'] = 'reactWebsiteData'
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['MYSQL_DATABASE_DB'] = 'productivity_suite'
 mysql.init_app(app)
 
-USER_TABLE = 'loginUsers'
+USER_TABLE = 'users'
 
 
 def getMySQL():
@@ -43,7 +44,7 @@ def generateResponse(error):
 	
 def sendValidationEmail(user, email, activationCode):
 	messageBody = "<p>Please verify you account by clicking the below link. If it does not appear as a link, please copy and paste into your browser</p>" + \
-	"<p><a href='http://192.168.0.26:5000/validateUser?user=" + user + "&activationCode=" + activationCode + "'>Validate Email Address</a></p>"
+	"<p><a href='http://10.0.2.15:5000/validateUser?user=" + user + "&activationCode=" + activationCode + "'>Validate Email Address</a></p>"
 	messageSubject = "Please verify your account"
 	sendMessage(mail, messageSubject, messageBody, email)
 
@@ -53,7 +54,7 @@ def sendValidationEmail(user, email, activationCode):
 def validateUser():
 	user = request.args.get('user')
 	activationCode = request.args.get('activationCode')
-	sql = "SELECT hash, active FROM " + USER_TABLE + " WHERE user='" + user + "'"
+	sql = "SELECT activation, active FROM " + USER_TABLE + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -123,6 +124,12 @@ def testEmail():
 	return Response(status=200)
 
 
+@app.route('/testServer')
+@cross_origin()
+def testServer():
+	return "Hello world"
+	
+
 def getUserId(user):
 	sql = "SELECT id FROM " + USER_TABLE + " WHERE user=%s"
 
@@ -135,7 +142,5 @@ def getUserId(user):
 	else:
 		return sqlRes
 
-
-	
 if __name__ == '__main__':
-    app.run(host='192.168.0.26')
+    app.run(host='10.0.2.15')

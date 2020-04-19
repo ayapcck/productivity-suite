@@ -9,6 +9,9 @@ scheduler = Blueprint('scheduler', __name__)
 
 SCHEDULER_TABLE = 'todos'
 
+SCHEDULER_TABLE = "todos"
+
+
 def getMySQL():
 	from app import getMySQL
 	return getMySQL()
@@ -99,11 +102,11 @@ def changeOrderFor(user, orderPair, dbConn):
 	
 
 class TodoElement:
-	def __init__(self, title, text, datetime, id, order, priority, tab):
+	def __init__(self, id, title, text, datetime, order, priority, tab):
+		self.id = id
 		self.title = title
 		self.text = text
 		self.datetime = datetime
-		self.id = id
 		self.order = order
 		self.priority = priority
 		self.tab = tab
@@ -170,7 +173,7 @@ def markTodoCompleted(user, dbConn, id):
 	
 def clearCompletedTodos(user, dbConn):
 	userId = getUserId(user)
-	sql = "DELETE FROM " + SCHEDULER_TABLE + " WHERE tab='Completed' AND userId={}".format(userId)
+		sql = "DELETE FROM " + SCHEDULER_TABLE + " WHERE tab='Completed' AND userId={}".format(userId)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql)
@@ -182,12 +185,13 @@ def clearCompletedTodos(user, dbConn):
 
 def handleTodoMoveTabs(user, todo):
 	userId = getUserId(user)
-	todoDate = todo[2]
+	todoId = todo[0]
+	todoDate = todo[3]
 	todoTab = todo[6]
-	todoId = todo[3]
 	if (todoDate == 'T' or todoTab == 'Completed'):
 		return ''
 	todoDate = todoDate.split('T')[0]
+	("Date: {}".format(todoDate))
 	nowDate = str(datetime.now() - timedelta(hours=7)).split(' ')[0]
 	tomorrowDate = str(datetime.now() - timedelta(hours=7) + timedelta(days=1)).split(' ')[0]
 	if (todoDate <= nowDate):
@@ -197,7 +201,6 @@ def handleTodoMoveTabs(user, todo):
 	if (todoDate > tomorrowDate):
 		return setTodoTabFor(userId, todoId, 'Soon')
 	return ''
-
 
 def setTodoTabFor(userId, todoId, tabName):
 	sql = "UPDATE " + SCHEDULER_TABLE + " SET tab='{}' WHERE id={} AND userId={}".format(tabName, int(todoId), userId)
@@ -211,7 +214,10 @@ def setTodoTabFor(userId, todoId, tabName):
 		return Response(status=400)
 	return tabName
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 def getUserId(user):
 	from app import getUserId
 	id = getUserId(user)[0]

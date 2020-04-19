@@ -13,7 +13,7 @@ export default class SchedulerPage extends React.Component {
 	}
 
 	render() {
-		const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
+		const { serverAddress, username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
 		const pageHeaderProps = {
 			setUsername,
@@ -24,7 +24,7 @@ export default class SchedulerPage extends React.Component {
 
 		const schedulerPage = <React.Fragment>
 			<PageHeader {...pageHeaderProps} />
-			<SchedulerApp userLoggedIn={userLoggedIn} username={username} />
+			<SchedulerApp serverAddress={serverAddress} userLoggedIn={userLoggedIn} username={username} />
 		</React.Fragment>;
 		return schedulerPage;
 	}
