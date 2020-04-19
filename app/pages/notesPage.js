@@ -16,7 +16,8 @@ export default class NotesPage extends React.Component {
         const { serverAddress, username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
         const pageHeaderProps = {
-			setUsername,
+            serverAddress,
+            setUsername,
 			setUserLoggedIn: setUserLoggedIn,
 			userLoggedIn: userLoggedIn,
 			username: username

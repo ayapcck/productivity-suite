@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 
+import { DeleteConfirmationBox } from './deleteConfirmationBox';
 import Note from './note';
 import { NoteTypes } from './types';
 import { postJson, getJson } from '../utilities/jsonHelpers';
@@ -11,6 +12,12 @@ import { colorTheme } from '../../colors';
 
 const AppContent = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
+    display: grid;
+    grid-auto-rows: 50%;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-rows: 50% 50%;
+    justify-content: center;
+    overflow: auto;
     padding: 10px;
 `;
 
@@ -28,12 +35,14 @@ export default class NotesApp extends React.Component {
         super(props);
 
         this.state = {
+            allNotes: [{name: '',  listItems: new LinkedList()}],
             firstFetch: false,
-            allNotes: [{name: '',  listItems: new LinkedList()}]
+            showDeleteConfirmation: false
         };
 
         this.addNote = this.addNote.bind(this);
         this.getNotes = this.getNotes.bind(this);
+        this.toggleDeleteNoteConfirmation = this.toggleDeleteNoteConfirmation.bind(this);
         this.updateNote = this.updateNote.bind(this);
     }
 
@@ -101,20 +110,29 @@ export default class NotesApp extends React.Component {
         }
     }
 
-    render() {
-        const { firstFetch, allNotes } = this.state;
+    toggleDeleteNoteConfirmation() {
+        const { showDeleteConfirmation } = this.state;
+        this.setState({ showDeleteConfirmation: !showDeleteConfirmation });
+    }
 
-        const notes = renderNotes(allNotes, this.addNote, this.updateNote);
+    render() {
+        const { allNotes, firstFetch, showDeleteConfirmation } = this.state;
+
+        const notes = renderNotes(allNotes, 
+            this.addNote, 
+            this.toggleDeleteNoteConfirmation, 
+            this.updateNote);
 
         return <ThemeProvider theme={colorTheme}>
             <AppContent>
-                {firstFetch && notes}
+                { showDeleteConfirmation && <DeleteConfirmationBox /> }
+                { firstFetch && notes }
             </AppContent>
         </ThemeProvider>;
     }
 }
 
-const renderNotes = (allNotes, addNote, updateNote) => {
+const renderNotes = (allNotes, addNote, toggleDeleteNoteConfirmation, updateNote) => {
     let id = '';
     let lastIndex = 0;
     const notes = [];
@@ -125,6 +143,7 @@ const renderNotes = (allNotes, addNote, updateNote) => {
             noteId={id} 
             step={note.type} 
             content={note}
+            toggleDeleteNoteConfirmation={toggleDeleteNoteConfirmation}
             updateNote={updateNote} />);
     });
     id = `note${lastIndex}`;

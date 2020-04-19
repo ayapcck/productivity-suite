@@ -16,6 +16,7 @@ export default class SchedulerPage extends React.Component {
 		const { serverAddress, username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
 		const pageHeaderProps = {
+			serverAddress,
 			setUsername,
 			setUserLoggedIn: setUserLoggedIn,
 			userLoggedIn: userLoggedIn,

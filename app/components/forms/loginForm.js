@@ -17,7 +17,7 @@ export default class LoginForm extends React.Component {
   	loginUser(username, password) {
 		const { serverAddress } = this.props;
 		
-		let url = serverAddress + "/getUser?user=" + username + "";
+		let url = serverAddress + "/getUser?user=" + username;
 	
 		getJson(url).then(myJsonUser => {
 			const retPassword = myJsonUser[1];

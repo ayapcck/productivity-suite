@@ -13,7 +13,6 @@ const Container = styled.div`
     display: block;
     grid-row: 2;
     margin: 10px;
-    overflow: auto;
     padding: 5px 10px 5px 0;
 `;
 
@@ -22,6 +21,7 @@ const Spacer = styled.div`
     ${ ({ stepName }) => stepName === 'list' && `
         max-height: -webkit-fill-available;
     `}
+    overflow: auto;
 `;
 
 const StyledNote = styled.div`
@@ -33,12 +33,11 @@ const StyledNote = styled.div`
     border-width: 2px;
     color: ${props => props.theme.textColor};
     display: inline-grid;
-    margin: 0 5px;
+    margin: 5px;
     max-height: 100%;
     min-height: 45%;
-    padding: 10px;
+    overflow: hidden;
     text-align: center;
-    width: 20%;
     vertical-align: top;
     ${ ({ editing, theme }) => editing && `
         border-color: ${theme.inputFocusColor};
@@ -123,7 +122,7 @@ export default class Note extends React.Component {
     }
 
     render() {
-        const { content, noteId, updateNote } = this.props;
+        const { content, noteId, toggleDeleteNoteConfirmation, updateNote } = this.props;
         const { editing, name, stepName } = this.state;
         
         const currentStep = _.get(NoteSteps, stepName);
@@ -140,6 +139,7 @@ export default class Note extends React.Component {
         const headerProps = {
             editing,
             listName: name,
+            onDeleteClick: toggleDeleteNoteConfirmation,
             onEditClick: this.handleEditingChange,
             onNameChange: this.handleNameChange
         };

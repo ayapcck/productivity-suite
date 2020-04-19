@@ -5,7 +5,7 @@ import _ from 'lodash';
 import classnames from 'classnames';
 
 import FormButton from '../forms/button.js';
-import FormPopup from '../formPopup/formPopup.js'
+import CenterPanel from '../centerPanel/centerPanel'
 import Icon from '../icons/icon.js';
 import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
@@ -324,8 +324,8 @@ export default class SchedulerApp extends React.Component {
 		</React.Fragment>;
 
 		const schedulerApp = <div name='schedulerBody' className={styles.schedulerContent}>
-			{this.state.showEditTodoPopup && <FormPopup content={todoForm} id="EditFormPopup"
-				handleCloseForm={this.hideEditTodoForm} />}
+			{this.state.showEditTodoPopup && <CenterPanel content={todoForm} id="EditFormPopup"
+				handleClose={this.hideEditTodoForm} />}
 			<div className={classnames(styles.gridElement, styles.leftColumn)}>
 				<TodoForm {...todoFormProps} headerText='Add Todo'
 					handleAfterSubmit={this.postTodoElement} />

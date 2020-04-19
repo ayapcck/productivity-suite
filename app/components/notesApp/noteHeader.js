@@ -50,13 +50,14 @@ const NameInput = styled.input`
 `;
 
 export const NoteHeader = (props) => {
-    const { editing, listName, onEditClick, onNameChange } = props;
+    const { editing, listName, onDeleteClick, onEditClick, onNameChange } = props;
 
     return <HeaderContainer className={utilStyles.spanHeader}>
         <NameInput type="text" value={listName}
             disabled={!editing} onChange={onNameChange} props={props} />
         <EditNoteButton className="far fa-edit" editing={editing} 
             onClick={onEditClick}></EditNoteButton>
-        <DeleteNoteButton className="far fa-trash-alt"></DeleteNoteButton>
+        <DeleteNoteButton className="far fa-trash-alt"
+            onClick={onDeleteClick}></DeleteNoteButton>
     </HeaderContainer>;
 };
