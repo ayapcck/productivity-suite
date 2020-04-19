@@ -9,8 +9,8 @@ scheduler = Blueprint('scheduler', __name__)
 
 
 def getMySQL():
-	from app import getMySQLForScheduler
-	return getMySQLForScheduler()
+	from app import getMySQL
+	return getMySQL()
 
 	
 @scheduler.route('/retrieveTodos')

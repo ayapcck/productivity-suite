@@ -15,7 +15,9 @@ import SchedulerPage from '../pages/schedulerPage';
 
 const mapStateToProps = (state) => {
     const { username, userLoggedIn } = state.auth;
+    const serverAddress = "http://localhost:5000";
     return {
+        serverAddress,
         username, 
         userLoggedIn
     };

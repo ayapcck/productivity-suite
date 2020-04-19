@@ -74,7 +74,8 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	postTodoElement(title, content, datetime, priority) {
-		var url = 'http://192.168.0.26:5000/addTodo';
+		const { serverAddress } = this.props;
+		var url = serverAddress + '/addTodo';
 		var jsonBody = {
 			user: this.props.username,
 			title: title,
@@ -93,7 +94,8 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	updateTodoElement(title, content, datetime, priority) {
-		let url = 'http://192.168.0.26:5000/updateTodo';
+		const { serverAddress } = this.props;
+		let url = serverAddress + '/updateTodo';
 		let jsonBody = {
 			user: this.props.username,
 			title: title,
@@ -112,11 +114,11 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	updateTodosFromDB() {
-		const { username } = this.props;
+		const { serverAddress, username } = this.props;
 		if (username && username !== '') {
 			const { activeTab } = this.state;
 			this.log('starting', 'updateTodosFromDB');
-			var url = 'http://192.168.0.26:5000/retrieveTodos?user=' +
+			var url = serverAddress + '/retrieveTodos?user=' +
 				username + '&tab=' + activeTab;
 
 			getJson(url).then(response => {
@@ -152,9 +154,10 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	markCompleted(id) {
+		const { serverAddress } = this.props;
 		if (this.props.username != '') {
 			this.log('starting', 'markCompleted');
-			var url = 'http://192.168.0.26:5000/markCompleted?user=' + this.props.username + '&id=' + id + '';
+			var url = serverAddress + '/markCompleted?user=' + this.props.username + '&id=' + id + '';
 
 			this.log('POST todo id: ' + id + ' as completed', 'markCompleted');
 			postJson(url).then(response => {
@@ -169,8 +172,9 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	clearCompleted() {
+		const { serverAddress } = this.props;
 		if (this.props.username != '') {
-			var url = 'http://192.168.0.26:5000/clearCompleted?user=' + this.props.username;
+			var url = serverAddress + '/clearCompleted?user=' + this.props.username;
 
 			postJson(url).then(response => {
 				this.setState({ needsUpdate: true });
@@ -249,9 +253,10 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	postOrderChange(orderObj) {
+		const { serverAddress } = this.props;
 		this.log('starting', 'postOrderChange');
 		if (this.props.username != '') {
-			var url = 'http://192.168.0.26:5000/changeOrder';
+			var url = serverAddress + '/changeOrder';
 			var jsonBody = {
 				user: this.props.username,
 				orderObj: orderObj,

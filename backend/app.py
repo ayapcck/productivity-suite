@@ -15,17 +15,17 @@ mail = returnMailApp(app)
 cors = CORS(app)
 
 mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_USER'] = 'ayapcck'
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['REACT_DATABASE_PASSWORD']
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['MYSQL_DATABASE_DB'] = 'productivity_suite'
 mysql.init_app(app)
 
-user_table = 'loginUsers'
+user_table = 'users'
 
 
-def getMySQLForScheduler():
-	app.config['MYSQL_DATABASE_DB'] = 'Scheduler'
+def getMySQL():
 	return mysql
 
 	
@@ -41,7 +41,7 @@ def generateResponse(error):
 	
 def sendValidationEmail(user, email, activationCode):
 	messageBody = "<p>Please verify you account by clicking the below link. If it does not appear as a link, please copy and paste into your browser</p>" + \
-	"<p><a href='http://192.168.0.26:5000/validateUser?user=" + user + "&activationCode=" + activationCode + "'>Validate Email Address</a></p>"
+	"<p><a href='http://10.0.2.15:5000/validateUser?user=" + user + "&activationCode=" + activationCode + "'>Validate Email Address</a></p>"
 	messageSubject = "Please verify your account"
 	sendMessage(mail, messageSubject, messageBody, email)
 
@@ -51,7 +51,7 @@ def sendValidationEmail(user, email, activationCode):
 def validateUser():
 	user = request.args.get('user')
 	activationCode = request.args.get('activationCode')
-	sql = "SELECT hash, active FROM " + user_table + " WHERE user='" + user + "'"
+	sql = "SELECT activation, active FROM " + user_table + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -79,7 +79,6 @@ def validateUser():
 @app.route('/addUser', methods=['POST'])
 @cross_origin()
 def addUser():
-	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	responseData = json.loads(request.data)
 	user = responseData['user']
 	email = responseData['email']
@@ -102,7 +101,6 @@ def addUser():
 @app.route('/getUser', methods=['GET'])
 @cross_origin()
 def getUser():
-	app.config['MYSQL_DATABASE_DB'] = 'reactLoginSystem'
 	user = request.args.get('user')
 	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user=%s"
 	
@@ -122,6 +120,12 @@ def testEmail():
 	sendValidationEmail("test", "", "testing_activation_code")
 	return Response(status=200)
 
+
+@app.route('/testServer')
+@cross_origin()
+def testServer():
+	return "Hello world"
+	
 	
 if __name__ == '__main__':
-    app.run(host='192.168.0.26')
+    app.run(host='10.0.2.15')
