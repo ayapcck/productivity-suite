@@ -13,7 +13,7 @@ export default class NotesPage extends React.Component {
     }
 
     render() {
-        const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
+        const { serverAddress, username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
         const pageHeaderProps = {
 			setUsername,
@@ -24,7 +24,7 @@ export default class NotesPage extends React.Component {
 
 		const notesPage = <React.Fragment>
 			<PageHeader {...pageHeaderProps} />
-            <NotesApp username={username} userLoggedIn={userLoggedIn} />
+            <NotesApp serverAddress={serverAddress} username={username} userLoggedIn={userLoggedIn} />
         </React.Fragment>;
         
 		return notesPage;

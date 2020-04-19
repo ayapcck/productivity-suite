@@ -19,14 +19,21 @@ const parseNoteContentFromDOM = (noteId) => {
 }
 
 const parseNote = (note) => {
-    return { content: note.content.replace(/\\n/g, '\n'), id: note.id, name: note.name, type: note.noteType };;
+    return { 
+        content: note.content !== null && note.content.replace(/\\n/g, '\n'), 
+        id: note.id, 
+        name: note.name, 
+        type: note.noteType 
+    };
 };
 
 const parseList = (list) => {
     const listItems = new LinkedList();
-    list.content && _.forEach(list.content.split(','), (content, index) => {
-        listItems.add({id: `LI${index}`, content: content});
-    });
+    list.content 
+        ? _.forEach(list.content.split(','), (content, index) => {
+            listItems.add({id: `LI${index}`, content: content});
+        })
+        : listItems.add({id: `LI0`, content: list.content});
     return { id: list.id, name: list.name, type: list.noteType, listItems };
 };
 

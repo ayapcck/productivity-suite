@@ -32,6 +32,7 @@ export default class NotesApp extends React.Component {
             allNotes: [{name: '',  listItems: new LinkedList()}]
         };
 
+        this.addNote = this.addNote.bind(this);
         this.getNotes = this.getNotes.bind(this);
         this.updateNote = this.updateNote.bind(this);
     }
@@ -41,9 +42,9 @@ export default class NotesApp extends React.Component {
     }
 
     getNotes() {
-        const { username } = this.props;
+        const { serverAddress, username } = this.props;
         if (username && username !== '') {
-            const url = `http://192.168.0.26:5000/retrieveNotes?user=${username}`;
+            const url = `${serverAddress}/retrieveNotes?user=${username}`;
 
             getJson(url).then(response => {
                 let allNotes = [];
@@ -60,9 +61,9 @@ export default class NotesApp extends React.Component {
     }
 
     async updateNote(content, name, id) {
-        const { username } = this.props;
+        const { serverAddress, username } = this.props;
         if (username && username !== '') {
-            const url = `http://192.168.0.26:5000/updateNote`;
+            const url = `${serverAddress}/updateNote`;
             const jsonBody = {
                 content,
                 id,
@@ -80,10 +81,30 @@ export default class NotesApp extends React.Component {
         }
     }
 
+    async addNote(content, name, type) {
+        const { serverAddress, username } = this.props
+        if (username && username !== '') {
+            const url = `${serverAddress}/addNote`;
+            const jsonBody = {
+                content,
+                user: username,
+                name,
+                type
+            }
+
+            try {
+                await postJson(url, jsonBody);
+                this.getNotes();
+            } catch (error) {
+                alert(error);
+            }
+        }
+    }
+
     render() {
         const { firstFetch, allNotes } = this.state;
 
-        const notes = renderNotes(allNotes, this.updateNote);
+        const notes = renderNotes(allNotes, this.addNote, this.updateNote);
 
         return <ThemeProvider theme={colorTheme}>
             <AppContent>
@@ -93,23 +114,27 @@ export default class NotesApp extends React.Component {
     }
 }
 
-const renderNotes = (allNotes, updateNote) => {
+const renderNotes = (allNotes, addNote, updateNote) => {
     let id = '';
     let lastIndex = 0;
     const notes = [];
     _.forEach(allNotes, (note, index) => {
         id = `note${index}`;
         lastIndex = index + 1;
-        notes.push(<Note key={id} noteId={id} step={note.type} content={note} updateNote={updateNote} />);
+        notes.push(<Note key={id} 
+            noteId={id} 
+            step={note.type} 
+            content={note}
+            updateNote={updateNote} />);
     });
     id = `note${lastIndex}`;
-    notes.push(unititializedNote(id));
+    notes.push(unititializedNote(addNote, id));
     return <React.Fragment>
         {notes}
     </React.Fragment>;
 };
 
-const unititializedNote = (id) => {
+const unititializedNote = (addNote, id) => {
     const content = {id, name: ''};
-    return <Note key={id} noteId={id} step="uninitialized" content={content} />;
+    return <Note key={id} noteId={id} step="uninitialized" addNote={addNote} content={content} />;
 };

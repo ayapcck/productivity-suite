@@ -53,15 +53,13 @@ export default class Note extends React.Component {
     constructor(props) {
         super(props);
 
-        const { content } = this.props;
+        const { content, stepName } = this.props;
         const { id, name } = content;
         
-        const listName = name === '' ? 'List' : name;
-
         this.state = {
             editing: false,
             id,
-            name: listName,
+            name,
             stepName: this.props.step
         };
 
@@ -72,7 +70,17 @@ export default class Note extends React.Component {
     }
 
     changeStep(nextStep) {
-        this.setState({ stepName: nextStep });
+        if (nextStep === 'list' || nextStep === 'note') {
+            const { addNote } = this.props;
+            const { name } = this.state;
+            const listName = nextStep === 'list' 
+                && name === '' 
+                ? 'New List' : 'New Note';
+            this.setState({ name: listName, stepName: nextStep });
+            addNote("", listName, nextStep)
+        } else {
+            this.setState({ stepName: nextStep });
+        }       
     }    
 
     componentDidMount() {
@@ -92,11 +100,11 @@ export default class Note extends React.Component {
     }
 
     handleContentUpdate() {
-        const { noteId } = this.props;
+        const { noteId, updateNote } = this.props;
         const { id, name, stepName } = this.state;
         let content = null;
         content = NoteTypes[stepName].getContent(noteId);
-        content !== null && this.props.updateNote(content, name, id);
+        content !== null && updateNote(content, name, id);
     }
 
     handleEditingChange() {

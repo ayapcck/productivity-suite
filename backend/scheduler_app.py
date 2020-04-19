@@ -173,7 +173,7 @@ def markTodoCompleted(user, dbConn, id):
 	
 def clearCompletedTodos(user, dbConn):
 	userId = getUserId(user)
-		sql = "DELETE FROM " + SCHEDULER_TABLE + " WHERE tab='Completed' AND userId={}".format(userId)
+	sql = "DELETE FROM " + SCHEDULER_TABLE + " WHERE tab='Completed' AND userId={}".format(userId)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql)
@@ -214,10 +214,6 @@ def setTodoTabFor(userId, todoId, tabName):
 		return Response(status=400)
 	return tabName
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 def getUserId(user):
 	from app import getUserId
 	id = getUserId(user)[0]

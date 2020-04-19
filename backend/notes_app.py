@@ -11,6 +11,7 @@ NOTES_TABLE = 'notes'
 
 ### UTILS ###
 
+
 class Note:
     def __init__(self, id, content, noteType, name):
         self.id = id
@@ -47,7 +48,7 @@ def updateNotes():
 
 
 @notes.route('/deleteNote', methods=['POST'])
-@cross_origin
+@cross_origin()
 def deleteNotes():
     responseData = json.loads(request.data)
     user = responseData['user']
@@ -56,11 +57,38 @@ def deleteNotes():
     return deleteNoteFor(user, id, conn)
 
 
+@notes.route('/addNote', methods=['POST'])
+@cross_origin()
+def addNote():
+    responseData = json.loads(request.data)
+    user = responseData['user']
+    content = responseData['content']
+    name = responseData['name']
+    noteType = responseData['type']
+    conn = getMySQL().connect()
+    return addNoteFor(user, content, name, noteType, conn)
+
+
 ### API HELPERS ###
 def getUserId(user):
     from app import getUserId
     id = getUserId(user)[0]
     return id
+
+
+def addNoteFor(user, content, name, noteType, conn):
+    userId = getUserId(user)
+    sql = str("INSERT INTO " + NOTES_TABLE + " "
+            "(userId, name, content, type) "
+            "VALUES ({}, %s, %s, %s)").format(userId)
+    curs = conn.cursor()
+    try: 
+        curs.execute(sql, (name, content, noteType))
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=400)
+    return Response(status=200)
 
 
 def deleteNoteFor(user, id, conn):
