@@ -57,6 +57,8 @@ export default class LoginApp extends React.Component {
   }
   
   render() {
+	const { serverAddress } = this.props;
+	
 	var visibility = this.props.showLoginApp ? styles.visible : styles.hidden;
 	var loginApp = <React.Fragment>
 	<div className={classnames(styles.opaqueBackground, visibility)}></div>
@@ -66,8 +68,8 @@ export default class LoginApp extends React.Component {
 				<React.Fragment>
 					<Icon iconClass="far fa-times-circle" onClick={this.handleCloseForm} />
 					{this.state.showLoginForm ? 
-						<LoginForm handleLoginSuccess={this.handleAfterLogin} /> : 
-						<SignupForm handleExit={this.handleCloseForm} />}
+						<LoginForm handleLoginSuccess={this.handleAfterLogin} serverAddress={serverAddress} /> : 
+						<SignupForm handleExit={this.handleCloseForm} serverAddress={serverAddress} />}
 					{this.state.showLoginForm ? 
 						<RedirectLink text="Need an account?" onClick={this.toggleLoginForm} /> : 
 						<RedirectLink text="Already have an account?" onClick={this.toggleLoginForm} />}

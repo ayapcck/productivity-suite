@@ -8,9 +8,12 @@ from flaskext.mysql import MySQL
 scheduler = Blueprint('scheduler', __name__)
 
 
+SCHEDULER_TABLE = "todos"
+
+
 def getMySQL():
-	from app import getMySQLForScheduler
-	return getMySQLForScheduler()
+	from app import getMySQL
+	return getMySQL()
 
 	
 @scheduler.route('/retrieveTodos')
@@ -82,31 +85,12 @@ def clearCompleted():
 	return clearCompletedTodos(user, conn)
 	
 	
-@scheduler.route('/createUserTable')
-@cross_origin()
-def createUserTable():
-	user = request.args.get('user')
-	sql = str("CREATE TABLE IF NOT EXISTS {} ("
-			"title VARCHAR(255), "
-			"content VARCHAR(255), "
-			"datetime VARCHAR(255), "
-			"id INT NOT NULL AUTO_INCREMENT, "
-			"ord INT, "
-			"priority BOOLEAN, "
-			"tab VARCHAR(255), "
-			"PRIMARY KEY (id))").format(user)
-			
-	conn = getMySQL().connect()
-	curs = conn.cursor()
-	curs.execute(sql)
-	return Response(json.dumps([]), status=200)
-	
-	
-def changeOrderFor(scheduler_table, orderPair, dbConn):
+def changeOrderFor(user, orderPair, dbConn):
+	userId = getUserId(user)
 	id = orderPair[0]
 	order = orderPair[1]
 	
-	sql = "UPDATE {} SET ord={} WHERE id={}".format(scheduler_table, order, id)
+	sql = "UPDATE " + SCHEDULER_TABLE + " SET ord={} WHERE id={} AND userId={}".format(order, id, userId)
 	
 	curs = dbConn.cursor()
 	try: 
@@ -117,24 +101,25 @@ def changeOrderFor(scheduler_table, orderPair, dbConn):
 	
 
 class TodoElement:
-	def __init__(self, title, text, datetime, id, order, priority, tab):
+	def __init__(self, id, title, text, datetime, order, priority, tab):
+		self.id = id
 		self.title = title
 		self.text = text
 		self.datetime = datetime
-		self.id = id
 		self.order = order
 		self.priority = priority
 		self.tab = tab
 
 
-def fetchTodoElementsFrom(scheduler_table, dbCur):
-	sql = "SELECT * FROM " + scheduler_table + ""
+def fetchTodoElementsFrom(user, dbCur):
+	userId = getUserId(user)
+	sql = "SELECT * FROM " + SCHEDULER_TABLE + " WHERE userId={}".format(userId)
 	
 	dbCur.execute(sql)
 	res = dbCur.fetchall()
 	elements = []
 	for todo in res:
-		newTab = handleTodoMoveTabs(scheduler_table, todo)
+		newTab = handleTodoMoveTabs(user, todo)
 		tab = todo[6]
 		if (newTab != ''):
 			tab = newTab
@@ -143,9 +128,10 @@ def fetchTodoElementsFrom(scheduler_table, dbCur):
 	return Response(json.dumps(elements), mimetype="application/json")
 	
 	
-def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, tab):
-	sql = "INSERT INTO " + scheduler_table + \
-		" (title, content, datetime, priority, tab) VALUES (%s, %s, %s, {}, %s)".format(priority)
+def insertTodoElementIn(user, dbConn, title, content, datetime, priority, tab):
+	userId = getUserId(user)
+	sql = "INSERT INTO " + SCHEDULER_TABLE + \
+		" (title, content, datetime, priority, tab, userId) VALUES (%s, %s, %s, {}, %s, {})".format(priority, userId)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, (title, content, datetime, tab))
@@ -155,13 +141,14 @@ def insertTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 	return Response(status=200)
 
 
-def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, priority, id):
-	sql = str("UPDATE " + scheduler_table + " "
+def updateTodoElementIn(user, dbConn, title, content, datetime, priority, id):
+	userId = getUserId(user)
+	sql = str("UPDATE " + SCHEDULER_TABLE + " "
 			"SET title=%s,"
 			" content=%s,"
 			" datetime='{}',"
 			" priority={}"
-			" WHERE id={}").format(datetime, priority, id)
+			" WHERE id={} AND userId={}").format(datetime, priority, id, userId)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, (title, content))
@@ -171,8 +158,10 @@ def updateTodoElementIn(scheduler_table, dbConn, title, content, datetime, prior
 		return Response(status=400)
 	return Response(status=200)
 	
-def markTodoCompleted(scheduler_table, dbConn, id):
-	sql = "UPDATE " + scheduler_table + " SET tab='Completed', ord=0 WHERE id=%s"
+def markTodoCompleted(user, dbConn, id):
+	userId = getUserId(user)
+
+	sql = "UPDATE " + SCHEDULER_TABLE + " SET tab='Completed', ord=0 WHERE id=%s AND userId={}".format(userId)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql, id)
@@ -182,8 +171,10 @@ def markTodoCompleted(scheduler_table, dbConn, id):
 	return Response(status=200)
 
 	
-def clearCompletedTodos(scheduler_table, dbConn):
-	sql = "DELETE FROM " + scheduler_table + " WHERE tab='Completed'"
+def clearCompletedTodos(user, dbConn):
+	userId = getUserId(user)
+	
+	sql = "DELETE FROM " + SCHEDULER_TABLE + " WHERE tab='Completed' AND userId={}".format(userId)
 	curs = dbConn.cursor()
 	try:
 		curs.execute(sql)
@@ -193,24 +184,26 @@ def clearCompletedTodos(scheduler_table, dbConn):
 	return Response(status=200)
 
 def handleTodoMoveTabs(user, todo):
-	todoDate = todo[2]
+	userId = getUserId(user)
+	todoId = todo[0]
+	todoDate = todo[3]
 	todoTab = todo[6]
-	todoId = todo[3]
 	if (todoDate == 'T' or todoTab == 'Completed'):
 		return ''
 	todoDate = todoDate.split('T')[0]
+	("Date: {}".format(todoDate))
 	nowDate = str(datetime.now() - timedelta(hours=7)).split(' ')[0]
 	tomorrowDate = str(datetime.now() - timedelta(hours=7) + timedelta(days=1)).split(' ')[0]
 	if (todoDate <= nowDate):
-		return setTodoTabFor(user, todoId, 'Today')
+		return setTodoTabFor(userId, todoId, 'Today')
 	if (todoDate == tomorrowDate):
-		return setTodoTabFor(user, todoId, 'Tomorrow')
+		return setTodoTabFor(userId, todoId, 'Tomorrow')
 	if (todoDate > tomorrowDate):
-		return setTodoTabFor(user, todoId, 'Soon')
+		return setTodoTabFor(userId, todoId, 'Soon')
 	return ''
 
-def setTodoTabFor(user, todoId, tabName):
-	sql = "UPDATE {} SET tab='{}' WHERE id={}".format(user, tabName, int(todoId))
+def setTodoTabFor(userId, todoId, tabName):
+	sql = "UPDATE " + SCHEDULER_TABLE + " SET tab='{}' WHERE id={} AND userId={}".format(tabName, int(todoId), userId)
 	conn = getMySQL().connect()
 	curs = conn.cursor()
 	try:
@@ -220,3 +213,8 @@ def setTodoTabFor(user, todoId, tabName):
 		print(e)
 		return Response(status=400)
 	return tabName
+
+def getUserId(user):
+	from app import getUserId
+	id = getUserId(user)[0]
+	return id

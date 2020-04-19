@@ -59,7 +59,12 @@ module.exports = {
     publicPath: '/'
   },
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: true,
+    host: "10.0.2.15",
+    watchOptions: {
+      aggregateTimeout: 1000,
+      poll: 1500
+    }
   },
   optimization: {
     splitChunks: {

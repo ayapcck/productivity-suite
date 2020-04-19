@@ -24,20 +24,22 @@ export default class PageHeader extends React.Component {
     }
 
     render() {
-        const { setUsername, setUserLoggedIn, userLoggedIn, username } = this.props;
+        const { serverAddress, setUsername, setUserLoggedIn, userLoggedIn, username } = this.props;
 
         const loginAppProps = {
             hideLoginApp: this.hideLoginApp,
-            setUserLoggedIn: setUserLoggedIn,
-            setUsername: setUsername,
+            serverAddress,
+            setUserLoggedIn,
+            setUsername,
             showLoginApp: this.state.showLoginApp
         };
         const navigationBarProps = {
-            setUserLoggedIn: setUserLoggedIn,
-            setUsername: setUsername,
+            serverAddress,
+            setUserLoggedIn,
+            setUsername,
             showLoginApp: this.displayLoginApp,
-            userLoggedIn: userLoggedIn,
-            username: username
+            userLoggedIn,
+            username
         };
 
         const pageHeader = <React.Fragment>

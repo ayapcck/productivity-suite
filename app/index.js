@@ -13,17 +13,18 @@ export default class IndexPage extends React.Component {
 	}
 
 	render() {
-		const { username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
+		const { serverAddress, username, userLoggedIn, setUsername, setUserLoggedIn } = this.props;
 
 		const pageHeaderProps = {
-			setUsername: setUsername,
-			setUserLoggedIn: setUserLoggedIn,
-			userLoggedIn: userLoggedIn,
-			username: username
+			serverAddress,
+			setUsername,
+			setUserLoggedIn,
+			userLoggedIn,
+			username
 		}
 
 		const welcomePageProps = {
-			username: username
+			username
 		}
 
 		const indexPage = <React.Fragment>
