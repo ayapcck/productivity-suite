@@ -22,7 +22,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['MYSQL_DATABASE_DB'] = 'productivity_suite'
 mysql.init_app(app)
 
-user_table = 'users'
+USER_TABLE = 'users'
 
 
 def getMySQL():
@@ -51,7 +51,7 @@ def sendValidationEmail(user, email, activationCode):
 def validateUser():
 	user = request.args.get('user')
 	activationCode = request.args.get('activationCode')
-	sql = "SELECT activation, active FROM " + user_table + " WHERE user='" + user + "'"
+	sql = "SELECT activation, active FROM " + USER_TABLE + " WHERE user='" + user + "'"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -65,7 +65,7 @@ def validateUser():
 		print("hash: " + resHash)
 		print("active: " + str(resActive))
 		if (resActive == 0 and activationCode == resHash ):
-			sql = "UPDATE " + user_table + " SET active=1 WHERE user=%s AND activation=%s AND active=0"
+			sql = "UPDATE " + USER_TABLE + " SET active=1 WHERE user=%s AND activation=%s AND active=0"
 			try:
 				curs.execute(sql, (user, activationCode))
 				conn.commit()
@@ -85,7 +85,7 @@ def addUser():
 	password = responseData['password']
 	salt = responseData['salt']
 	activationCode = responseData['activationCode']
-	sql = "INSERT INTO " + user_table + " (user, email, pass, salt, activation, active) VALUES (%s, %s, %s, %s, %s, 0)"
+	sql = "INSERT INTO " + USER_TABLE + " (user, email, pass, salt, activation, active) VALUES (%s, %s, %s, %s, %s, 0)"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -102,7 +102,7 @@ def addUser():
 @cross_origin()
 def getUser():
 	user = request.args.get('user')
-	sql = "SELECT user, pass, salt, active FROM " + user_table + " WHERE user=%s"
+	sql = "SELECT user, pass, salt, active FROM " + USER_TABLE + " WHERE user=%s"
 	
 	conn = mysql.connect()
 	curs = conn.cursor()
@@ -126,6 +126,18 @@ def testEmail():
 def testServer():
 	return "Hello world"
 	
-	
+
+def getUserId(user):
+	sql = "SELECT id FROM " + USER_TABLE + " WHERE user=%s"
+
+	conn = mysql.connect()
+	curs = conn.cursor()
+	curs.execute(sql, user)
+	sqlRes = curs.fetchone()
+	if sqlRes == None:
+		return Response(status=404)
+	else:
+		return sqlRes
+
 if __name__ == '__main__':
     app.run(host='10.0.2.15')

@@ -57,6 +57,8 @@ export default class LoginApp extends React.Component {
   }
   
   render() {
+	const { serverAddress } = this.props;
+	
 	var visibility = this.props.showLoginApp ? styles.visible : styles.hidden;
 	var loginApp = <React.Fragment>
 	<div className={classnames(styles.opaqueBackground, visibility)}></div>
