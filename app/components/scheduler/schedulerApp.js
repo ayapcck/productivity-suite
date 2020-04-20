@@ -4,8 +4,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 import classnames from 'classnames';
 
-import FormButton from '../forms/button.js';
-import CenterPanel from '../centerPanel/centerPanel'
+import CenterPanel from '../centerPanel/centerPanel';
+import { CompletedTodos } from './completedTodos';
 import Icon from '../icons/icon.js';
 import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
@@ -295,12 +295,7 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	render() {
-		let finishedElements = [];
-
-		for (let i in this.state.elementDicts.Completed) {
-			let element = this.state.elementDicts.Completed[i];
-			finishedElements.push(<span key={i} className={styles.finishedItem}>{element.title}</span>);
-		}
+		const { elementDicts } = this.state;
 
 		let todoFormProps = {
 			currentTab: this.state.activeTab,
@@ -310,13 +305,14 @@ export default class SchedulerApp extends React.Component {
 		let todoColumnProps = {
 			activeTab: this.state.activeTab,
 			classes: styles.todoColumn,
-			elementDicts: this.state.elementDicts[this.state.activeTab],
+			elementDicts: elementDicts[this.state.activeTab],
 			markTodoCompleted: this.markCompleted,
 			onEditClicked: this.showEditTodoForm,
 			order: this.state.orderObj,
 			updateOrder: this.updateOrder
 		}
-		const todoForm = <React.Fragment>
+
+		const todoFormAsPopup = <React.Fragment>
 			<Icon iconClass='far fa-times-circle' onClick={this.hideEditTodoForm} />
 			<TodoForm {...todoFormProps} headerText='Edit Todo'
 				handleAfterSubmit={this.updateTodoElement} displayAsPopup={true}
@@ -324,8 +320,10 @@ export default class SchedulerApp extends React.Component {
 		</React.Fragment>;
 
 		const schedulerApp = <div name='schedulerBody' className={styles.schedulerContent}>
-			{this.state.showEditTodoPopup && <CenterPanel content={todoForm} id="EditFormPopup"
-				handleClose={this.hideEditTodoForm} />}
+			{this.state.showEditTodoPopup 
+				&& <CenterPanel content={todoFormAsPopup}
+						id="EditFormPopup"
+						handleClose={this.hideEditTodoForm} />}
 			<div className={classnames(styles.gridElement, styles.leftColumn)}>
 				<TodoForm {...todoFormProps} headerText='Add Todo'
 					handleAfterSubmit={this.postTodoElement} />
@@ -335,15 +333,10 @@ export default class SchedulerApp extends React.Component {
 				<TodoColumn {...todoColumnProps} />
 			</div>
 			<div className={classnames(styles.gridElement, styles.rightColumn)}>
-				<div className={styles.completedTasksContainer}>
-					<span className={styles.spanHeader}>Completed Tasks</span>
-					<div className={styles.finishedItems}>
-						{finishedElements}
-					</div>
-					<FormButton text='Clear' type='button' containerClass={styles.pushDown} onClick={this.clearCompleted} />
-				</div>
+				<CompletedTodos clearCompleted={this.clearCompleted} elementDicts={elementDicts} />
 			</div>
 		</div>
+
 		return <ThemeProvider theme={colorTheme}>
 			{schedulerApp}
 		</ThemeProvider>;

@@ -34,8 +34,14 @@ const PopupContainer = styled.div`
 	position: absolute;
 	top: 0;
 	display: grid;
-	grid-template-columns: 35% auto 35%;
-	grid-template-rows: 20% auto 20%;
+	${ ({ widthSpacing }) => widthSpacing 
+		? `grid-template-columns: ${widthSpacing} auto ${widthSpacing};`
+		: `grid-template-columns: 35% auto 35%;`
+	}
+	${ ({ heightSpacing }) => heightSpacing 
+		? `grid-template-rows: ${heightSpacing} auto ${heightSpacing};`
+		: `grid-template-rows: 20% auto 20%;`
+	}
 	z-index: 101;
 `;
 
@@ -53,11 +59,13 @@ export default class CenterPanel extends React.Component {
 	}
 
 	render() {
-		const { content, handleClose, id } = this.props;
+		const { content, heightSpacing, id, widthSpacing } = this.props;
 
 		return <React.Fragment>
 			<OpaqueBackground />
-			<PopupContainer onMouseDown={this.handleCloseFromClickOutside}>
+			<PopupContainer heightSpacing={heightSpacing}
+				onMouseDown={this.handleCloseFromClickOutside}
+				widthSpacing={widthSpacing}>
 				<CenteredBox id={id}>
 					{content}
 				</CenteredBox>;

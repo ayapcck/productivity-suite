@@ -1,23 +1,36 @@
-var React = require('react');
+import React from 'react';
+import styled from 'styled-components';
 
-import styles from './form.less';
-
-import classnames from 'classnames';
+const StyledButton = styled.button`
+	width: 25%;
+	color: ${(props) => props.theme.darkTextColor};
+	border: 2px solid ${(props) => props.theme.accentColor};
+	background-color: ${(props) => props.theme.buttonColor};
+	border-radius: 15px;
+	margin: 5px auto;
+	padding: 5px 2.5px;
+	cursor: pointer;
+	box-sizing: border-box;
+	&:hover {
+		background-color: ${(props) => props.theme.onHoverColor};
+	}
+	&:active {
+		background-color: ${(props) => props.theme.onActiveColor};
+	}
+	&:focus {
+		outline: 0;
+		box-shadow: 0 0 2pt 1pt ${(props) => props.theme.inputFocusColor};
+	}
+`;
 
 export default class FormButton extends React.Component {
 	render() {
-		let buttonProps = {
+		const buttonProps = {
 			type: this.props.type,
-			className: styles.formButton,
 			onClick: this.props.onClick,
 			name: this.props.name
 		}
 		
-		var formButton = <div className={this.props.containerClass} style={{"textAlign": "center"}}>
-			{this.props.type === "button" ? 
-			<button {...buttonProps} readOnly>{this.props.text}</button> : 
-			<input {...buttonProps} value={this.props.text} readOnly /> }
-		</div>
-		return formButton;
+		return <StyledButton {...buttonProps} readOnly>{this.props.text}</StyledButton>;
 	}
 }

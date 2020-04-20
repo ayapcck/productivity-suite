@@ -125,7 +125,7 @@ export default class NotesApp extends React.Component {
 
         return <ThemeProvider theme={colorTheme}>
             <AppContent>
-                { showDeleteConfirmation && <DeleteConfirmationBox /> }
+                { showDeleteConfirmation && <DeleteConfirmationBox handleClose={this.toggleDeleteNoteConfirmation} /> }
                 { firstFetch && notes }
             </AppContent>
         </ThemeProvider>;
