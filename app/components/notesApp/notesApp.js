@@ -10,6 +10,8 @@ import { LinkedList } from '../utilities/dataStructures';
 
 import { colorTheme } from '../../colors';
 
+import Logger from '../utilities/logger';
+
 const AppContent = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
     display: grid;
@@ -41,10 +43,16 @@ export default class NotesApp extends React.Component {
         };
 
         this.addNote = this.addNote.bind(this);
+        this.deleteNote = this.deleteNote.bind(this);
         this.getNotes = this.getNotes.bind(this);
-        this.toggleDeleteNoteConfirmation = this.toggleDeleteNoteConfirmation.bind(this);
+        this.hideDeleteNoteConfirmation = this.hideDeleteNoteConfirmation.bind(this);
+        this.showDeleteNoteConfirmation = this.showDeleteNoteConfirmation.bind(this);
         this.updateNote = this.updateNote.bind(this);
     }
+
+    log(message, functionName) {
+		Logger.log(message, 'notesApp', functionName);
+	}
 
     componentDidMount(){
         this.getNotes();
@@ -55,13 +63,17 @@ export default class NotesApp extends React.Component {
         if (username && username !== '') {
             const url = `${serverAddress}/retrieveNotes?user=${username}`;
 
+            this.log('starting note update', 'getNotes');
             getJson(url).then(response => {
+                this.log('inside promise return for note update', 'getNotes');
                 let allNotes = [];
                 _.forEach(response, (note) => allNotes.push(note));
 
                 allNotes = parseNotes(allNotes);
-                this.setState({ firstFetch: true, allNotes });
+                this.setState({ allNotes, firstFetch: true, needsUpdate: false });
+                this.log('done with promise return for note update', 'getNotes');
             }).catch(error => alert(error));
+            this.log('finished note update', 'getNotes');
         } else {
             this.setState({ allNotes: [
                 { name: '',  listItems: new LinkedList() }
@@ -102,37 +114,73 @@ export default class NotesApp extends React.Component {
             }
 
             try {
+                this.log('before post', 'addNote');
                 await postJson(url, jsonBody);
+                this.log('after post', 'addNote');
+                this.log('calling get notes', 'addNote');
                 this.getNotes();
+                this.log('back from get notes', 'addNote')
             } catch (error) {
                 alert(error);
             }
         }
     }
 
-    toggleDeleteNoteConfirmation() {
-        const { showDeleteConfirmation } = this.state;
-        this.setState({ showDeleteConfirmation: !showDeleteConfirmation });
+    async deleteNote(id) {
+        const { serverAddress, username } = this.props;
+        const { noteToBeDeleted } = this.state
+        if (username && username !== '' && noteToBeDeleted) {
+            this.hideDeleteNoteConfirmation();
+            const url = `${serverAddress}/deleteNote`;
+            const jsonBody = {
+                id: noteToBeDeleted,
+                user: username
+            }
+
+            try {
+                this.log('before post', 'deleteNote');
+                await postJson(url, jsonBody);
+                this.log('after post', 'deleteNote');
+                this.setState({ needsUpdate: true });
+                this.log('calling get notes', 'deleteNote');
+                this.getNotes();
+                this.log('back from get notes', 'deleteNote');
+            } catch (error) {
+                alert(error);
+            }
+        }
+    }
+
+    showDeleteNoteConfirmation(id) {
+        this.setState({ noteToBeDeleted: id, showDeleteConfirmation: true });
+    }
+
+    hideDeleteNoteConfirmation() {
+        this.setState({ noteToBeDeleted: null, showDeleteConfirmation: false });
     }
 
     render() {
         const { allNotes, firstFetch, showDeleteConfirmation } = this.state;
 
+        this.log('creating notes component', 'render');
+        this.log('notes at this point: ' + _.map(allNotes, 'name'), 'render');
         const notes = renderNotes(allNotes, 
             this.addNote, 
-            this.toggleDeleteNoteConfirmation, 
+            this.showDeleteNoteConfirmation, 
             this.updateNote);
+        this.log('notes component created', 'render');
 
         return <ThemeProvider theme={colorTheme}>
             <AppContent>
-                { showDeleteConfirmation && <DeleteConfirmationBox handleClose={this.toggleDeleteNoteConfirmation} /> }
+                { showDeleteConfirmation && <DeleteConfirmationBox deleteNote={this.deleteNote} 
+                    handleClose={this.hideDeleteNoteConfirmation} /> }
                 { firstFetch && notes }
             </AppContent>
         </ThemeProvider>;
     }
 }
 
-const renderNotes = (allNotes, addNote, toggleDeleteNoteConfirmation, updateNote) => {
+const renderNotes = (allNotes, addNote, showDeleteNoteConfirmation, updateNote) => {
     let id = '';
     let lastIndex = 0;
     const notes = [];
@@ -143,7 +191,7 @@ const renderNotes = (allNotes, addNote, toggleDeleteNoteConfirmation, updateNote
             noteId={id} 
             step={note.type} 
             content={note}
-            toggleDeleteNoteConfirmation={toggleDeleteNoteConfirmation}
+            showDeleteNoteConfirmation={showDeleteNoteConfirmation}
             updateNote={updateNote} />);
     });
     id = `note${lastIndex}`;

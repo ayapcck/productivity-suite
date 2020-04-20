@@ -20,10 +20,10 @@ const parseNoteContentFromDOM = (noteId) => {
 
 const parseNote = (note) => {
     return { 
-        content: note.content !== null && note.content.replace(/\\n/g, '\n'), 
-        id: note.id, 
+        id: note.id,
         name: note.name, 
-        type: note.noteType 
+        type: note.noteType,
+        content: note.content !== null && note.content.replace(/\\n/g, '\n')
     };
 };
 

@@ -49,7 +49,7 @@ def updateNotes():
 
 @notes.route('/deleteNote', methods=['POST'])
 @cross_origin()
-def deleteNotes():
+def deleteNote():
     responseData = json.loads(request.data)
     user = responseData['user']
     id = responseData['id']
@@ -93,8 +93,8 @@ def addNoteFor(user, content, name, noteType, conn):
 
 def deleteNoteFor(user, id, conn):
     userId = getUserId(user)
-    sql = "DELETE FROM " + NOTES_TABLE + " WHERE userId={}, id={}".format(userId,id)
-
+    sql = "DELETE FROM " + NOTES_TABLE + " WHERE userId={} AND id={}".format(userId, id)
+    
     curs = conn.cursor()
     try:
         curs.execute(sql)

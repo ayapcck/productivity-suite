@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import CenterPanel from '../centerPanel/centerPanel';
 import FormButton from '../forms/button';
+import Icon from '../icons/icon';
 
 const ButtonContainer = styled.div`
     align-items: center;
@@ -11,34 +12,33 @@ const ButtonContainer = styled.div`
     justify-content: center;
 `;
 
-const DeleteButton = styled.button`
-    border-radius: 15px;
-    height: 35%;
-    width: 50%;
-
-    &:focus {
-        outline: 0;
-        box-shadow: 0 0 2pt 1pt ${(props) => props.theme.inputFocusColor};
-    }
-`;
-
 const DeleteConfirmation = styled.div`
     align-items: center;
     display: grid;
-    flex-direction: column;
+    grid-template-rows: 60% 1fr;
     height: 100%;
     justify-content: center;
 `;
 
-export const DeleteConfirmationBox = (props) => {
-    const { handleClose } = props;
+const DeleteText = styled.span`
+    font-size: x-large;
+    margin: 0 auto;
+    text-align: center;
+    width: 75%;
+`;
 
-    const deleteConfirmation = <DeleteConfirmation>
-        Are you sure you want to delete this note?
-        <ButtonContainer>
-            <FormButton />
-        </ButtonContainer>
-    </DeleteConfirmation>
+export const DeleteConfirmationBox = (props) => {
+    const { deleteNote, handleClose } = props;
+
+    const deleteConfirmation = <React.Fragment>
+        <Icon iconClass='far fa-times-circle' onClick={handleClose} />
+        <DeleteConfirmation>
+            <DeleteText>Are you sure you want to delete this note?</DeleteText>
+            <ButtonContainer>
+                <FormButton onClick={deleteNote} text="Delete" />
+            </ButtonContainer>
+        </DeleteConfirmation>
+    </React.Fragment>
 
     return <CenterPanel content={deleteConfirmation} 
         handleClose={handleClose}

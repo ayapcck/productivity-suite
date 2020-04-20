@@ -122,8 +122,8 @@ export default class Note extends React.Component {
     }
 
     render() {
-        const { content, noteId, toggleDeleteNoteConfirmation, updateNote } = this.props;
-        const { editing, name, stepName } = this.state;
+        const { content, noteId, showDeleteNoteConfirmation, updateNote } = this.props;
+        const { editing, id, name, stepName } = this.state;
         
         const currentStep = _.get(NoteSteps, stepName);
         const stepProps = {
@@ -139,7 +139,7 @@ export default class Note extends React.Component {
         const headerProps = {
             editing,
             listName: name,
-            onDeleteClick: toggleDeleteNoteConfirmation,
+            onDeleteClick: () => showDeleteNoteConfirmation(id),
             onEditClick: this.handleEditingChange,
             onNameChange: this.handleNameChange
         };
