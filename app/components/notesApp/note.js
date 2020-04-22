@@ -52,18 +52,19 @@ export default class Note extends React.Component {
     constructor(props) {
         super(props);
 
-        const { content, stepName } = this.props;
+        const { content, step } = this.props;
         const { id, name } = content;
         
         this.state = {
             editing: false,
             id,
             name,
-            stepName: this.props.step
+            stepName: step
         };
 
         this.changeStep = this.changeStep.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleDeleteStateChange = this.handleDeleteStateChange.bind(this);
         this.handleEditingChange = this.handleEditingChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
     }
@@ -72,10 +73,9 @@ export default class Note extends React.Component {
         if (nextStep === 'list' || nextStep === 'note') {
             const { addNote } = this.props;
             const { name } = this.state;
-            const listName = nextStep === 'list' 
-                && name === '' 
+            const listName = nextStep === 'list' && name === '' 
                 ? 'New List' : 'New Note';
-            this.setState({ name: listName, stepName: nextStep });
+            this.setState({ name: listName, stepName: 'final' });
             addNote("", listName, nextStep)
         } else {
             this.setState({ stepName: nextStep });
@@ -105,6 +105,10 @@ export default class Note extends React.Component {
         content = NoteTypes[stepName].getContent(noteId);
         content !== null && updateNote(content, name, id);
     }
+    
+    handleDeleteStateChange() {
+        this.setState({ stepName: 'uninitialized' });
+    }
 
     handleEditingChange() {
         const { editing } = this.state;
@@ -122,10 +126,11 @@ export default class Note extends React.Component {
     }
 
     render() {
-        const { content, noteId, showDeleteNoteConfirmation, updateNote } = this.props;
+        const { content, noteId, showDeleteNoteConfirmation, step, updateNote } = this.props;
         const { editing, id, name, stepName } = this.state;
         
-        const currentStep = _.get(NoteSteps, stepName);
+        const useStepName = stepName === 'final' ? step : stepName;
+        const currentStep = _.get(NoteSteps, useStepName);
         const stepProps = {
             changeStep: this.changeStep,
             content,
@@ -134,7 +139,7 @@ export default class Note extends React.Component {
             updateNote
         };
         const stepContent = currentStep.getContent(stepProps);
-        const finalStep = stepName === 'note' || stepName === 'list';
+        const finalStep = useStepName === 'note' || useStepName === 'list';
         
         const headerProps = {
             editing,
@@ -147,7 +152,7 @@ export default class Note extends React.Component {
             <NoteHeader {...headerProps} />
         </ThemeProvider>;
 
-        const stepWithWrappers = <Spacer stepName={stepName}>
+        const stepWithWrappers = <Spacer stepName={useStepName}>
             <Container>
                 {stepContent}
             </Container>

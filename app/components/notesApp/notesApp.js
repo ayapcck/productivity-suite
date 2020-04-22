@@ -58,22 +58,32 @@ export default class NotesApp extends React.Component {
         this.getNotes();
     }
 
-    getNotes() {
+    async getNotes() {
         const { serverAddress, username } = this.props;
         if (username && username !== '') {
             const url = `${serverAddress}/retrieveNotes?user=${username}`;
 
-            this.log('starting note update', 'getNotes');
-            getJson(url).then(response => {
-                this.log('inside promise return for note update', 'getNotes');
+            this.log('starting note retrieval', 'getNotes');
+            try {
+                this.log('calling getJson, awaiting results', 'getNotes');
+                let response = await getJson(url);
+                this.log('got response from getJson', 'getNotes');
+
                 let allNotes = [];
                 _.forEach(response, (note) => allNotes.push(note));
 
                 allNotes = parseNotes(allNotes);
+
+                this.log('calling setState', 'getNotes');
                 this.setState({ allNotes, firstFetch: true, needsUpdate: false });
-                this.log('done with promise return for note update', 'getNotes');
-            }).catch(error => alert(error));
-            this.log('finished note update', 'getNotes');
+                this.log('done with setState', 'getNotes');
+
+                this.log('done with note parsing', 'getNotes');
+            }
+            catch(error) {
+                alert(error);
+            }
+            this.log('finished note retrieval', 'getNotes');
         } else {
             this.setState({ allNotes: [
                 { name: '',  listItems: new LinkedList() }
@@ -111,14 +121,15 @@ export default class NotesApp extends React.Component {
                 user: username,
                 name,
                 type
-            }
+            };
 
             try {
                 this.log('before post', 'addNote');
                 await postJson(url, jsonBody);
                 this.log('after post', 'addNote');
+                
                 this.log('calling get notes', 'addNote');
-                this.getNotes();
+                await this.getNotes();
                 this.log('back from get notes', 'addNote')
             } catch (error) {
                 alert(error);
@@ -130,7 +141,6 @@ export default class NotesApp extends React.Component {
         const { serverAddress, username } = this.props;
         const { noteToBeDeleted } = this.state
         if (username && username !== '' && noteToBeDeleted) {
-            this.hideDeleteNoteConfirmation();
             const url = `${serverAddress}/deleteNote`;
             const jsonBody = {
                 id: noteToBeDeleted,
@@ -138,13 +148,15 @@ export default class NotesApp extends React.Component {
             }
 
             try {
-                this.log('before post', 'deleteNote');
+                this.log('calling postJson', 'deleteNote');
                 await postJson(url, jsonBody);
-                this.log('after post', 'deleteNote');
-                this.setState({ needsUpdate: true });
+                this.log('done with postJson', 'deleteNote');
+
                 this.log('calling get notes', 'deleteNote');
-                this.getNotes();
+                await this.getNotes();
                 this.log('back from get notes', 'deleteNote');
+                
+                this.hideDeleteNoteConfirmation();
             } catch (error) {
                 alert(error);
             }
@@ -182,11 +194,9 @@ export default class NotesApp extends React.Component {
 
 const renderNotes = (allNotes, addNote, showDeleteNoteConfirmation, updateNote) => {
     let id = '';
-    let lastIndex = 0;
     const notes = [];
-    _.forEach(allNotes, (note, index) => {
-        id = `note${index}`;
-        lastIndex = index + 1;
+    _.forEach(allNotes, (note) => {
+        id = `note${note.id}`;
         notes.push(<Note key={id} 
             noteId={id} 
             step={note.type} 
@@ -194,7 +204,7 @@ const renderNotes = (allNotes, addNote, showDeleteNoteConfirmation, updateNote) 
             showDeleteNoteConfirmation={showDeleteNoteConfirmation}
             updateNote={updateNote} />);
     });
-    id = `note${lastIndex}`;
+    id = 'note_temp';
     notes.push(unititializedNote(addNote, id));
     return <React.Fragment>
         {notes}

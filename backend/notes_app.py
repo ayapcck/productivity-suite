@@ -69,6 +69,14 @@ def addNote():
     return addNoteFor(user, content, name, noteType, conn)
 
 
+@notes.route('/getMostRecentNoteId')
+@cross_origin()
+def getMostRecentNoteId():
+    user = request.args.get('user')
+    conn = getMySQL().connect()
+    return getRecentlyAddedNoteIdFor(user, conn.cursor())
+
+
 ### API HELPERS ###
 def getUserId(user):
     from app import getUserId
@@ -116,6 +124,16 @@ def fetchNotesFor(user, curs):
         resNote = Note(note[0], note[1], note[2], note[4])
         notes.append(resNote.__dict__)
     return Response(json.dumps(notes), mimetype="application/json")
+
+
+def getRecentlyAddedNoteIdFor(user, curs):
+    userId = getUserId(user)
+    sql = "SELECT id FROM {} WHERE userId={} ORDER BY id DESC LIMIT 1".format(NOTES_TABLE, userId)
+
+    curs.execute(sql)
+    res = curs.fetchone()
+    id = res[0]
+    return Response(json.dumps({'id': id}), mimetype="application/json")
 
 
 def updateNotesFor(user, content, name, id, conn):
