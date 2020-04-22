@@ -75,7 +75,7 @@ export default class NotesApp extends React.Component {
                 allNotes = parseNotes(allNotes);
 
                 this.log('calling setState', 'getNotes');
-                this.setState({ allNotes, firstFetch: true, needsUpdate: false });
+                this.setState({ allNotes, firstFetch: true });
                 this.log('done with setState', 'getNotes');
 
                 this.log('done with note parsing', 'getNotes');

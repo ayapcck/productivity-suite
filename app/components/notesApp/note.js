@@ -71,14 +71,12 @@ export default class Note extends React.Component {
 
     changeStep(nextStep) {
         if (nextStep === 'list' || nextStep === 'note') {
-            const { addNote } = this.props;
             const { name } = this.state;
             const listName = nextStep === 'list' && name === '' 
                 ? 'New List' : 'New Note';
-            this.setState({ name: listName, stepName: 'final' });
-            addNote("", listName, nextStep)
+            this.handleAddNewNote(listName, nextStep);
         } else {
-            this.setState({ stepName: nextStep });
+            this.setState({ name: '', stepName: nextStep });
         }       
     }    
 
@@ -88,6 +86,13 @@ export default class Note extends React.Component {
 
     componentWillUnmount() {
         document.getElementById('content').removeEventListener('mousedown', this.handleClick);
+    }
+
+    async handleAddNewNote(name, step) {
+        const { addNote } = this.props;
+        
+        await addNote("", name, step);
+        this.setState({ stepName: 'uninitialized' });
     }
 
     handleClick(ev) {
@@ -127,7 +132,8 @@ export default class Note extends React.Component {
 
     render() {
         const { content, noteId, showDeleteNoteConfirmation, step, updateNote } = this.props;
-        const { editing, id, name, stepName } = this.state;
+        const { id } = content;
+        const { editing, name, stepName } = this.state;
         
         const useStepName = stepName === 'final' ? step : stepName;
         const currentStep = _.get(NoteSteps, useStepName);
