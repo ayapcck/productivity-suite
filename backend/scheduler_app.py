@@ -7,6 +7,7 @@ from flaskext.mysql import MySQL
 
 scheduler = Blueprint('scheduler', __name__)
 
+SCHEDULER_TABLE = 'todos'
 
 SCHEDULER_TABLE = "todos"
 
@@ -160,7 +161,6 @@ def updateTodoElementIn(user, dbConn, title, content, datetime, priority, id):
 	
 def markTodoCompleted(user, dbConn, id):
 	userId = getUserId(user)
-
 	sql = "UPDATE " + SCHEDULER_TABLE + " SET tab='Completed', ord=0 WHERE id=%s AND userId={}".format(userId)
 	curs = dbConn.cursor()
 	try:
@@ -173,7 +173,6 @@ def markTodoCompleted(user, dbConn, id):
 	
 def clearCompletedTodos(user, dbConn):
 	userId = getUserId(user)
-	
 	sql = "DELETE FROM " + SCHEDULER_TABLE + " WHERE tab='Completed' AND userId={}".format(userId)
 	curs = dbConn.cursor()
 	try:
@@ -182,6 +181,7 @@ def clearCompletedTodos(user, dbConn):
 	except Exception:
 		return Response(status=400)
 	return Response(status=200)
+
 
 def handleTodoMoveTabs(user, todo):
 	userId = getUserId(user)

@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import InputBox from './inputBox.js';
 import FormButton from './button.js';
@@ -17,12 +17,12 @@ export default class LoginForm extends React.Component {
   	loginUser(username, password) {
 		const { serverAddress } = this.props;
 		
-		let url = serverAddress + "/getUser?user=" + username + "";
+		let url = serverAddress + "/getUser?user=" + username;
 	
 		getJson(url).then(myJsonUser => {
-			var retPassword = myJsonUser[1];
-			var salt = myJsonUser[2];
-			var active = myJsonUser[3];
+			const retPassword = myJsonUser[1];
+			const salt = myJsonUser[2];
+			const active = myJsonUser[3];
 			if (generateHmac(password, salt) == retPassword) {
 				active === 1 ? 
 					this.props.handleLoginSuccess(username) : 

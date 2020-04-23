@@ -67,6 +67,9 @@ module.exports = {
     }
   },
   optimization: {
+    runtimeChunk: {
+      name: "vendor"
+    },
     splitChunks: {
       chunks: 'all',
       maxInitialRequests: Infinity,

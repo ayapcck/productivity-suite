@@ -1,5 +1,5 @@
-var React = require('react');
-
+import React from 'react';
+import styled from 'styled-components';
 import classnames from 'classnames';
 
 import InputBox from '../forms/inputBox';
@@ -23,6 +23,13 @@ const getTimeByTab = (tab) => {
 			return currentISOTime();
 	}
 }
+
+const FormButtonContainer = styled.div`
+	align-items: center;
+	display: flex;
+	grid-row: 2;
+	width: -webkit-fill-available;
+`;
 
 export default class TodoForm extends React.Component {
     constructor(props) {
@@ -157,8 +164,9 @@ export default class TodoForm extends React.Component {
 					</div>
 					<InputBox text='Content' type='area' name='toDoBody' val={this.state.content} />
 				</div>
-				<FormButton text='Submit' type='submit' name='addTodoFormSubmit' 
-					containerClass={styles.pushDown} />
+				<FormButtonContainer>
+					<FormButton text='Submit' type='submit' name='addTodoFormSubmit' />
+				</FormButtonContainer>
             </form>
         </div>;
 

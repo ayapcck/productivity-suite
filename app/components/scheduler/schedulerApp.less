@@ -31,18 +31,6 @@
 	border-radius: 25px;
 }
 
-.completedTasksContainer {
-	border-color: @accentColor;
-	border-radius: @borderRadius;
-	border-style: solid;
-	border-width: 2px;
-	display: grid;
-	grid-template-rows: 10% 75% 15%;
-	margin: 10px auto;
-	user-select: none;
-	width: 90%;
-}
-
 .gridElement {
 	box-sizing: border-box;
 	border-style: solid;
@@ -67,32 +55,6 @@
 	border-width: 0 0 0 1px;
 	display: grid;
 	grid-template-rows: 65% 35%;
-}
-
-.finishedItem {
-	width: 100%;
-	display: block;
-	height: 10%;
-	line-height: 1.5;
-	padding: 5px;
-}
-
-.finishedItems {
-	color: @textColor;
-	grid-row: 2;
-	overflow: auto;
-	overflow-x: hidden;
-	padding: 5px 0;
-	position: relative;
-	text-align: center;
-	width: 100%;
-}
-
-.pushDown {
-	width: -webkit-fill-available;
-	display: flex;
-	align-items: flex-end;
-	margin: 0 0 5px 0;
 }
 
 .schedulerContent {

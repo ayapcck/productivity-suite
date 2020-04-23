@@ -7,10 +7,12 @@ from flask_cors import CORS, cross_origin
 from flaskext.mysql import MySQL
 
 from email_server import sendMessage, returnMailApp
+from notes_app import notes
 from scheduler_app import scheduler
 
 app = Flask(__name__)
 app.register_blueprint(scheduler)
+app.register_blueprint(notes)
 mail = returnMailApp(app)
 cors = CORS(app)
 
@@ -18,6 +20,7 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'ayapcck'
 app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['REACT_DATABASE_PASSWORD']
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_DB'] = 'reactWebsiteData'
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['MYSQL_DATABASE_DB'] = 'productivity_suite'
 mysql.init_app(app)

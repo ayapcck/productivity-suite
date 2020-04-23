@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 import PageHeader from './components/pageTemplate/pageHeader.js';
 import WelcomeContent from './components/welcomeContent/welcomeContent.js';
