@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import ToDoElement from './todoElement.js';
 import styles from './todoColumn.less';
-import todoStyles from './todoElement.less';
 
 var Logger = require('../utilities/logger');
 
@@ -94,15 +93,12 @@ export default class TodoColumn extends React.Component {
 	drop(ev) {
 		this.log('starting', 'drop');
 		
-		// let eventX = ev.clientX;
-		// let eventY = ev.clientY;
-		
 		const targetNode = ev.target;
 		const prevSibNode = targetNode.previousSibling;
 		const previousTodoId = prevSibNode == null ? null : prevSibNode.id.replace('todo_', '');
 		const draggedTodoId = ev.dataTransfer.getData('idText').replace('todo_', '');
 		
-		const todos = document.getElementsByClassName(todoStyles.todoElement);
+		const todos = document.getElementsByClassName("todoElement");
 		let orderObj = {};
 		let order = 1;
 		if (previousTodoId == null) {

@@ -5,8 +5,8 @@ import _ from 'lodash';
 import classnames from 'classnames';
 
 import CenterPanel from '../centerPanel/centerPanel';
+import { CloseIcon } from '../icons/closeIcon';
 import { CompletedTodos } from './completedTodos';
-import Icon from '../icons/icon.js';
 import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
@@ -313,7 +313,7 @@ export default class SchedulerApp extends React.Component {
 		}
 
 		const todoFormAsPopup = <React.Fragment>
-			<Icon iconClass='far fa-times-circle' onClick={this.hideEditTodoForm} />
+			<CloseIcon onClick={this.hideEditTodoForm} />
 			<TodoForm {...todoFormProps} headerText='Edit Todo'
 				handleAfterSubmit={this.updateTodoElement} displayAsPopup={true}
 				prePopulatedContent={this.state.editingTodoProps} />

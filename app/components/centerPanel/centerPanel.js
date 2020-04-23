@@ -40,7 +40,7 @@ const PopupContainer = styled.div`
 	}
 	${ ({ heightSpacing }) => heightSpacing 
 		? `grid-template-rows: ${heightSpacing} auto ${heightSpacing};`
-		: `grid-template-rows: 20% auto 20%;`
+		: `grid-template-rows: 19% auto 19%;`
 	}
 	z-index: 101;
 `;

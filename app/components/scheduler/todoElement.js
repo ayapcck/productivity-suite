@@ -1,12 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import classnames from 'classnames';
-
-import Icon from '../icons/icon.js';
 import { formatTime, formatDate } from '../utilities/dates.js';
-
-import styles from './todoElement.less';
 
 const TodoElement = styled.div`
 	height: calc(100% / 8);
@@ -28,6 +23,31 @@ const TodoElement = styled.div`
         color: ${theme.priorityTodoColor}!important;
 		border-color: ${theme.priorityTodoColor}!important;
     `}
+`;
+
+const TodoIcon = styled.i`
+	cursor: pointer;
+	font-size: xx-large;
+	margin: 0 0 5px 0;
+`;
+const TodoIconWrapper = css`
+	align-items: center;
+	display: flex;
+	justify-content: center;
+`;
+
+const DoneIcon = styled.div`
+	${TodoIconWrapper}
+	grid-column: 4;
+	grid-row: 1;
+	grid-area: 1 / 4 / span 2 / span 1;
+`;
+
+const EditIcon = styled.div`
+	${TodoIconWrapper}
+	grid-column: 3;
+	grid-row: 1;
+	grid-area: 1 / 3 / span 2 / span 1;
 `;
 
 const TodoPiece = css`
@@ -99,10 +119,16 @@ export default class ToDoElement extends React.Component {
 		let elementId = id.split('_')[1];
 		let onEditProps = { title, content: text, datetime, priority, id: elementId };
 		
-		let element = <TodoElement id={id} priority={priority} {...dragSettings} {...hoverSettings}>
+		let element = <TodoElement className="todoElement" id={id} priority={priority} {...dragSettings} {...hoverSettings}>
 			{ this.state.hovered && <React.Fragment>
-				<EditIcon onClick={() => onEditClicked(onEditProps)} />
-				<DoneIcon onClick={() => onTodoCompleted(elementId)} />
+				<EditIcon>
+					<TodoIcon className="far fa-edit"
+						onClick={() => onEditClicked(onEditProps)} />
+				</EditIcon>
+				<DoneIcon>
+					<TodoIcon className="far fa-check-circle" 
+						onClick={() => onTodoCompleted(elementId)} />
+				</DoneIcon>
 			</React.Fragment> }
 			<TodoTitle>{title}</TodoTitle>
 			<TodoContent>{text}</TodoContent>
@@ -113,20 +139,6 @@ export default class ToDoElement extends React.Component {
 		return element;
 	}
 }
-
-const DoneIcon = (props) => {
-	const { onClick } = props;
-	return <Icon iconClass="far fa-check-circle"
-		wrapperStyles={classnames(styles.elementDone, styles.todoIconWrapper)} 
-		iconStyles={styles.todoIcon} onClick={onClick} />;
-};
-
-const EditIcon = (props) => {
-	const { onClick } = props;
-	return <Icon iconClass="far fa-edit"
-		wrapperStyles={classnames(styles.elementEdit, styles.todoIconWrapper)} 
-		iconStyles={styles.todoIcon} onClick={onClick} />;
-};
 
 ToDoElement.defaultProps = {
 	datetime: ' T '
