@@ -58,6 +58,12 @@ export default class NotesApp extends React.Component {
         this.getNotes();
     }
 
+    componentDidUpdate(prevProps) {
+        const { username } = this.props;
+
+		prevProps.username != username && this.getNotes();
+	}
+
     async getNotes() {
         const { serverAddress, username } = this.props;
         if (username && username !== '') {
@@ -85,9 +91,7 @@ export default class NotesApp extends React.Component {
             }
             this.log('finished note retrieval', 'getNotes');
         } else {
-            this.setState({ allNotes: [
-                { name: '',  listItems: new LinkedList() }
-            ]});
+            this.setState({ allNotes: [/*{ name: '',  listItems: new LinkedList() }*/], firstFetch: true });
         }
     }
 
@@ -172,6 +176,7 @@ export default class NotesApp extends React.Component {
     }
 
     render() {
+        const { userLoggedIn } = this.props;
         const { allNotes, firstFetch, showDeleteConfirmation } = this.state;
 
         this.log('creating notes component', 'render');
@@ -179,7 +184,8 @@ export default class NotesApp extends React.Component {
         const notes = renderNotes(allNotes, 
             this.addNote, 
             this.showDeleteNoteConfirmation, 
-            this.updateNote);
+            this.updateNote,
+            userLoggedIn);
         this.log('notes component created', 'render');
 
         return <ThemeProvider theme={colorTheme}>
@@ -192,7 +198,7 @@ export default class NotesApp extends React.Component {
     }
 }
 
-const renderNotes = (allNotes, addNote, showDeleteNoteConfirmation, updateNote) => {
+const renderNotes = (allNotes, addNote, showDeleteNoteConfirmation, updateNote, userLoggedIn) => {
     let id = '';
     const notes = [];
     _.forEach(allNotes, (note) => {
@@ -205,13 +211,14 @@ const renderNotes = (allNotes, addNote, showDeleteNoteConfirmation, updateNote) 
             updateNote={updateNote} />);
     });
     id = 'note_temp';
-    notes.push(unititializedNote(addNote, id));
+    notes.push(unititializedNote(addNote, id, userLoggedIn));
     return <React.Fragment>
         {notes}
     </React.Fragment>;
 };
 
-const unititializedNote = (addNote, id) => {
+const unititializedNote = (addNote, id, userLoggedIn) => {
     const content = {id, name: ''};
-    return <Note key={id} noteId={id} step="uninitialized" addNote={addNote} content={content} />;
+    return <Note key={id} noteId={id} step="uninitialized"
+        addNote={addNote} content={content} userLoggedIn={userLoggedIn} />;
 };
