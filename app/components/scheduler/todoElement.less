@@ -2,22 +2,6 @@
 
 @import "@{utilities}/colors.less";
 
-.upperLeft {
-	grid-row: 1;
-}
-.lowerLeft {
-	grid-row: 2;
-}
-.upperRight {
-	grid-column: 2;
-	grid-row: 1;
-	text-align: right;
-}
-.lowerRight {
-	grid-column: 2;
-	grid-row: 2;
-	text-align: right;
-}
 .elementEdit {
 	grid-column: 3;
 	grid-row: 1;
@@ -27,29 +11,6 @@
 	grid-column: 4;
 	grid-row: 1;
 	grid-area: e('1 / 4') / span 2 / span 1;
-}
-
-.priority {
-	color: @priorityTodoColor!important;
-	border-color: @priorityTodoColor!important;
-}
-
-.todoElement {
-	height: calc(100% / 8);
-	color: @textColor;
-	border-style: solid;
-	border-width: 1.5px;
-	border-color: @textColor;
-	box-sizing: border-box;
-	cursor: -webkit-grab;
-	display: grid;
-	grid-template-rows: 35% 65%;
-	grid-template-columns: 45% 25% 15% 15%;
-	border-radius: 25px;
-	padding: 5px 15px;
-	margin: 2.5px 10px;
-	user-select: none;
-	position: relative;
 }
 
 .todoIcon {
@@ -62,10 +23,4 @@
 	align-items: center;
 	display: flex;
 	justify-content: center;
-}
-
-.todoPiece {
-	margin: 0;
-	padding: 5px;
-	text-align: left;
 }
