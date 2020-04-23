@@ -70,14 +70,20 @@ export default class Note extends React.Component {
     }
 
     changeStep(nextStep) {
-        if (nextStep === 'list' || nextStep === 'note') {
-            const { name } = this.state;
-            const listName = nextStep === 'list' && name === '' 
-                ? 'New List' : 'New Note';
-            this.handleAddNewNote(listName, nextStep);
+        const { userLoggedIn } = this.props;
+
+        if (userLoggedIn) {
+            if (nextStep === 'list' || nextStep === 'note') {
+                const { name } = this.state;
+                const listName = nextStep === 'list' && name === '' 
+                    ? 'New List' : 'New Note';
+                this.handleAddNewNote(listName, nextStep);
+            } else {
+                this.setState({ name: '', stepName: nextStep });
+            }
         } else {
-            this.setState({ name: '', stepName: nextStep });
-        }       
+            alert('You need an account to use this feature');
+        }
     }    
 
     componentDidMount() {

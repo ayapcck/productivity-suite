@@ -1,11 +1,11 @@
 var React = require('react');
 var classnames = require('classnames');
 
-import CenterPanel from '../centerPanel/centerPanel.js';
+import CenterPanel from '../centerPanel/centerPanel';
 import { clickedInsideContainer } from '../utilities/DOMHelper.js';
-import Icon from '../icons/icon.js';
-import LoginForm from '../forms/loginForm.js';
-import SignupForm from '../forms/signupForm.js';
+import Icon from '../icons/icon';
+import LoginForm from './loginForm';
+import SignupForm from './signupForm';
 
 import styles from './loginApp.less';
 

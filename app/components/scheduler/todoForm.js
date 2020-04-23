@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import classnames from 'classnames';
 
-import InputBox from '../forms/inputBox';
-import FormButton from '../forms/button';
+import InputBox from '../formElements/inputBox';
+import FormButton from '../formElements/button';
 import { currentISOTime, soonISOTime, tomorrowISOTime } from '../utilities/dates';
 import styles from './todoForm.less';
 
