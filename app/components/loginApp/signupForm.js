@@ -1,11 +1,9 @@
 import React from 'react';
 
-import InputBox from './inputBox.js';
-import FormButton from './button.js';
+import { BasicForm } from '../formElements/basicForm';
+import InputBox from '../formElements/inputBox';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 import { generateSalt, generateActivationCode, generateHmac } from '../utilities/validation.js';
-
-import styles from './form.less';
 
 var Logger = require('../utilities/logger');
 
@@ -85,8 +83,6 @@ export default class SignupForm extends React.Component {
 
 		let invalidKey = inputName.replace('signup', '').toLowerCase() + "Invalid";
 
-		let invalid = inputValue == "";
-
 		inputNames.forEach((obj) => {
 			if (obj.name === inputName) {
 				this.setState({ 
@@ -131,22 +127,21 @@ export default class SignupForm extends React.Component {
   }
   
   render() {
-    var signupForm = <div className={styles.form}>
-			<h1 className={styles.formTitle}>Create an Account</h1>
-			<form onSubmit={this.handleSubmit}>
-				<InputBox text="Username" name="signupUsername" invalid={this.state.usernameInvalid}
-					tooltipText="5-12 characters, case insensitive, a-b, 0-9, and underscores allowed" 
-					onBlur={this.checkValididity} onFocus={this.clearError} />
-				<InputBox text="Email" name="signupEmail" invalid={this.state.emailInvalid}
-					tooltipText="Must be of form me@me.com" 
-					onBlur={this.checkValididity} onFocus={this.clearError} />
-				<InputBox text="Password" type="password" name="signupPassword" invalid={this.state.passwordInvalid}
-					tooltipText="Must be over 10 characters" 
-					onBlur={this.checkValididity} onFocus={this.clearError} />
-				<InputBox text="Confirm Password" type="password" name="signupConfirmPassword" />
-				<FormButton text="Submit" type="submit"/>
-			</form>
-		</div>
-		return signupForm;
+	const { emailInvalid, passwordInvalid, usernameInvalid } = this.state;
+
+	const inputs = <React.Fragment>
+		<InputBox text="Username" name="signupUsername" invalid={usernameInvalid}
+			tooltipText="5-12 characters, case insensitive, a-b, 0-9, and underscores allowed" 
+			onBlur={this.checkValididity} onFocus={this.clearError} />
+		<InputBox text="Email" name="signupEmail" invalid={emailInvalid}
+			tooltipText="Must be of form me@me.com" 
+			onBlur={this.checkValididity} onFocus={this.clearError} />
+		<InputBox text="Password" type="password" name="signupPassword" invalid={passwordInvalid}
+			tooltipText="Must be over 10 characters" 
+			onBlur={this.checkValididity} onFocus={this.clearError} />
+		<InputBox text="Confirm Password" type="password" name="signupConfirmPassword" />
+	</React.Fragment>;
+	
+	return <BasicForm inputs={inputs} onSubmit={this.handleSubmit} title="Create an Account" />;
   }
 }

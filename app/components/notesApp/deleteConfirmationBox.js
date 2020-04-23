@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import CenterPanel from '../centerPanel/centerPanel';
-import FormButton from '../forms/button';
+import FormButton from '../formElements/button';
 import Icon from '../icons/icon';
 
 const ButtonContainer = styled.div`

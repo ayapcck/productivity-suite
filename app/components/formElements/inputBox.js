@@ -56,43 +56,49 @@ export default class InputBox extends React.Component {
 	}
 
 	render() {
-		let mouseProperties = {
+		const { disabled, disabledTooltipText, invalid, name, 
+			onBlur, onChange, onFocus, text, tooltipText, 
+			type, val } = this.props;
+
+		const { boxY, mouseX, showTooltip } = this.state;
+
+		const mouseProps = {
 			onMouseEnter: this.tooltipOn,
 			onMouseMove: this.updateTooltip,
 			onMouseLeave: this.tooltipOff,
 		};	
-		let properties = {
-			name: this.props.name,
-			disabled: this.props.disabled,
-			placeholder: this.props.text,
-			onBlur: this.props.onBlur,
-			onFocus: this.props.onFocus
+		const otherProps = {
+			name,
+			disabled,
+			placeholder: text,
+			onBlur,
+			onFocus
 		};
-		const props = {
-			val: this.props.val,
-			type: this.props.type,
-			inputProps: _.assign({}, mouseProperties, properties),
-			onChange: this.props.onChange,
-			invalid: this.props.invalid
+		const finalProps = {
+			val,
+			type,
+			inputProps: _.assign({}, mouseProps, otherProps),
+			onChange,
+			invalid
 		};
 
-		let showTooltip = this.state.showTooltip && 
-			((this.props.disabled && this.props.disabledTooltipText != "") || 
-			this.props.tooltipText != "");
-		let tooltipText = this.props.disabled ? this.props.disabledTooltipText : this.props.tooltipText;
+		const finalShowTooltip = showTooltip && 
+			((disabled && disabledTooltipText != "") || 
+			tooltipText != "");
+		const finalTooltipText = disabled ? disabledTooltipText : tooltipText;
 		
-		let type = 'box';
-		if (this.props.type === 'area') type = 'area';
-		if (this.props.type === 'date') type = 'date';
+		let finalType = 'box';
+		if (type === 'area') finalType = 'area';
+		if (type === 'date') finalType = 'date';
 
-		const inputElement = inputElements[type](props);
-		let disabledInput = <div {...mouseProperties}>
+		const inputElement = inputElements[finalType](finalProps);
+		const disabledInput = <div {...mouseProps}>
 			{inputElement}
 		</div>;
 		let returnElement = <div className={styles.inputContainer}>
-			{ showTooltip && <Tooltip top={this.state.boxY} left={this.state.mouseX} 
-				name={this.props.name + "Tooltip"} tooltipText={tooltipText} /> }
-			{this.props.disabled ? disabledInput : inputElement}
+			{ finalShowTooltip && <Tooltip top={boxY} left={mouseX} 
+				name={name + "Tooltip"} tooltipText={finalTooltipText} /> }
+			{disabled ? disabledInput : inputElement}
 		</div>;
 		return returnElement;
 	}

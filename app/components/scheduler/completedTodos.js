@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import FormButton from '../forms/button.js';
+import FormButton from '../formElements/button.js';
 import { SpanHeader } from '../utilities/utilityStyles';
 
 const ClearButtonContainer = styled.div`
