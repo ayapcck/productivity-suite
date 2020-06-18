@@ -1,11 +1,85 @@
-var React = require('react');
+import React from 'react';
 import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
-import Icon from '../icons/icon.js';
 import { capitalizeUsername } from '../utilities/stringUtils';
 
-import styles from './navigationBar.less';
+const MenuText = styled.span`
+	padding: 0 5px 0 0;
+`;
 
+const MenuIcon = styled.i`
+	float: none;
+	padding: 0 0 0 5px;
+`;
+
+const MenuElement = styled.div`
+	color: ${(props) => props.theme.darkTextColor};
+	cursor: pointer;
+	background-color: ${(props) => props.theme.navBarColor};
+	border-color: ${(props) => props.theme.navBarAccentColor};
+	border-style: solid;
+	border-width: 0 0 2px 2px;
+	box-sizing: border-box;
+	float: right;
+	height: 100%;
+	padding: 8px 0;
+	text-align: center;
+	user-select: none;
+	width: 8%;
+
+	&:hover ${MenuText}, &:hover ${MenuIcon} {
+		color: white;
+	}
+
+	&:hover ${MenuText} {
+		text-decoration: underline;
+	}
+`;
+
+const HoverElement = css`
+	grid-row: 2;
+	padding: 0;
+	position: absolute;	
+	width: 8%;
+	z-index: 10;
+`;
+
+const AccountOptions = styled.div`
+	${HoverElement}
+	right: 0;
+
+	${MenuElement} {
+		clear: right;
+		width: 100%;
+	}
+`;
+
+const AppMenuElements = styled.div`
+	${HoverElement}
+	right: 8%;
+
+	${MenuElement} {
+		border-width: 0 2px 2px 2px;
+		width: 100%;
+	}
+`;
+
+const NavBarContainer = styled.div`
+	width: 100%;
+	background-color: ${(props) => props.theme.navBarColor};
+	overflow: hidden;
+`;
+
+const Spacer = styled.div`
+	border-color: ${(props) => props.theme.navBarAccentColor};
+	border-style: solid;
+	border-width: 0 0 2px 0;
+	box-sizing: border-box;
+	float: right;
+	height: 100%;
+	width: 76%;
+`;
 
 const appMenuHeaderId = ev => ev.currentTarget.id === 'appMenuHeader';
 const appMenuElementsId = ev => {
@@ -76,29 +150,28 @@ export default class NavigationBar extends React.Component {
 			onMouseLeave: this.hideHoverElementsOnMove
 		}
 		
-		const accountOptions = <div id='acccountMenuElements' className={styles.accountOptions} {...handleHoverSettings}>
+		const accountOptions = <AccountOptions id='acccountMenuElements' {...handleHoverSettings}>
 			<TextMenuElement contentText={this.props.userLoggedIn ? 'Logout' : 'Login/Create'}
 				onClick={this.loginLogoutClick} />
 			<TextMenuElement contentText='Settings' />
-		</div>
+		</AccountOptions>
 
-		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} 
-			{...handleHoverSettings}>
+		const appMenuElements = <AppMenuElements id='appMenuElements' {...handleHoverSettings}>
 			<LinkMenuElement linkTo='/notes' menuText='Notes' />
 			<LinkMenuElement linkTo='/scheduler' menuText='Scheduler' />
-		</div>;
+		</AppMenuElements>;
 		
 		const accountOrName = this.props.userLoggedIn ? capitalizeUsername(this.props.username) : 'Account';
 
 		const navigationBar = <React.Fragment>
-			<div name='navMenu' className={styles.navBarContainer}>
+			<NavBarContainer name='navMenu'>
 				<DropDownMenuHeader id='accountMenuHeader' hoverSettings={handleHoverSettings}
-					iconUp={this.state.accountHovered} iconText={accountOrName} />
+					iconUp={this.state.accountHovered} menuText={accountOrName} />
 				<DropDownMenuHeader id='appMenuHeader' hoverSettings={handleHoverSettings}
-					iconUp={this.state.appsHovered} iconText='Apps' />
+					iconUp={this.state.appsHovered} menuText='Apps' />
 				<LinkMenuElement linkTo='/' menuText='Home' />
-				<div name='navSpacer' className={styles.spacer}></div>
-			</div>
+				<Spacer name='navSpacer'></Spacer>
+			</NavBarContainer>
 			{this.state.accountHovered && accountOptions}
 			{this.state.appsHovered && appMenuElements}
 		</React.Fragment>
@@ -106,12 +179,11 @@ export default class NavigationBar extends React.Component {
 	}
 };
 
-const DropDownMenuHeader = ({ id, hoverSettings, iconUp, iconText }) => {
-	return <div id={id} className={styles.menuElement} 
-		{...hoverSettings}>
-		<Icon iconClass={iconUp ? 'fas fa-angle-up' : 'fas fa-angle-down'}
-			iconText={iconText} iconStyles={styles.menuIcon} iconTextStyles={styles.menuText} />
-	</div>;
+const DropDownMenuHeader = ({ id, hoverSettings, iconUp, menuText }) => {
+	return <MenuElement id={id} {...hoverSettings}>
+		<MenuText>{menuText}</MenuText>
+		<MenuIcon className={iconUp ? 'fas fa-angle-up' : 'fas fa-angle-down'} />
+	</MenuElement>;
 };
 
 const LinkMenuElement = ({ linkTo, menuText }) => {
@@ -121,7 +193,7 @@ const LinkMenuElement = ({ linkTo, menuText }) => {
 };
 
 const TextMenuElement = ({ contentText, onClick=null }) => {
-	return <div className={styles.menuElement} onClick={onClick}>
-		<span className={styles.menuText}>{contentText}</span>
-	</div>;
+	return <MenuElement onClick={onClick}>
+		<MenuText>{contentText}</MenuText>
+	</MenuElement>;
 };
