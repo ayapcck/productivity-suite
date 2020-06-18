@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import _ from 'lodash';
 
 import { connect, Provider } from 'react-redux';
 import { getStore } from '../redux/store';

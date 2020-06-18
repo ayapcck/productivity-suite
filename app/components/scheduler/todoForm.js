@@ -7,7 +7,7 @@ import FormButton from '../formElements/button';
 import { currentISOTime, soonISOTime, tomorrowISOTime } from '../utilities/dates';
 import styles from './todoForm.less';
 
-var Logger = require('../utilities/logger');
+import { logger } from '../utilities/logger';
 
 const containerHeader = (text) => <span className={styles.spanHeader}>{text}</span>;
 const popupHeader = (text) => <h1 className={styles.textHeader}>{text}</h1>;
@@ -64,7 +64,7 @@ export default class TodoForm extends React.Component {
 	}
 	
 	log(message, functionName) {
-		Logger.log(message, 'todoForm', functionName);
+		logger.log(message, 'todoForm', functionName);
 	}
 
 	shouldComponentUpdate(nextProps) {

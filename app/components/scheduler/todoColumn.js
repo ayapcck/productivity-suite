@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import ToDoElement from './todoElement.js';
 import styles from './todoColumn.less';
 
-var Logger = require('../utilities/logger');
+import { logger } from '../utilities/logger';
 
 export default class TodoColumn extends React.Component {
 	constructor(props) {
@@ -26,7 +26,7 @@ export default class TodoColumn extends React.Component {
 	}
 	
 	log(message, functionName) {
-		Logger.log(message, 'todoColumn', functionName);
+		logger.log(message, 'todoColumn', functionName);
 	}
 	
 	previousOrNextSpacer(dropTargetId) {

@@ -16,7 +16,7 @@ import { currentTimeString, tomorrowTimeString } from '../utilities/dates.js';
 
 import { colorTheme } from '../../colors';
 
-var Logger = require('../utilities/logger');
+import { logger } from '../utilities/logger';
 
 const tabHeaders = [{
 	name: 'Today',
@@ -63,7 +63,7 @@ export default class SchedulerApp extends React.Component {
 	}
 
 	log(message, functionName) {
-		Logger.log(message, 'schedulerApp', functionName);
+		logger.log(message, 'schedulerApp', functionName);
 	}
 
 	componentDidMount() {

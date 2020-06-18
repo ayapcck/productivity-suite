@@ -5,7 +5,7 @@ import InputBox from '../formElements/inputBox';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 import { generateSalt, generateActivationCode, generateHmac } from '../utilities/validation.js';
 
-var Logger = require('../utilities/logger');
+import { logger } from '../utilities/logger';
 
 const usernamePattern = new RegExp("[A-Za-z_\d]{5,12}");
 const emailPattern = new RegExp("[A-Za-z_\-\d]+@[A-Za-z_\-\d]+.com");
@@ -37,7 +37,7 @@ export default class SignupForm extends React.Component {
   }
 	
   log(message, functionName) {
-    Logger.log(message, "signupForm", functionName);
+    logger.log(message, "signupForm", functionName);
   }
   
   createUser(username, email, password) {

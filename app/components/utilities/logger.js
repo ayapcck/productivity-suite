@@ -27,4 +27,4 @@ class Logger {
 	
 }
 
-module.exports = new Logger("DEBUG");
+export const logger = new Logger("DEBUG");

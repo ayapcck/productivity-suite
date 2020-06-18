@@ -30,6 +30,10 @@ const DSLEntryContainer = styled.div`
 
 export const DSLEntry = () => {
     return <DSLEntryContainer>
-        <DSLTextEntry></DSLTextEntry>
+        <DSLTextEntry id="DSLEntryArea"></DSLTextEntry>
     </DSLEntryContainer>;
+}
+
+export const getDSLContent = () => {
+    return document.getElementById("DSLEntryArea").value;
 }

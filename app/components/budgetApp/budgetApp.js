@@ -1,9 +1,10 @@
 import React from 'react';
-import styled, { css, ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 
+import { BuildButton } from './buildButton';
 import { ContentExplanation } from './contentExplanation';
-import { DSLEntry } from './DSLEntry';
+import { DSLEntry, getDSLContent } from './DSLEntry';
 
 import { colorTheme } from '../../colors';
 
@@ -31,9 +32,14 @@ const RightContainer = styled.div`
     border-style: solid;
     border-width: 0 0 0 1px;
     display: flex;
+    flex-direction: column;
     grid-column: 2;
     justify-content: center;
 `;
+
+const build = () => {
+    content = getDSLContent();
+}
 
 export default class BudgetApp extends React.Component {
     constructor(props) {
@@ -49,6 +55,7 @@ export default class BudgetApp extends React.Component {
                 </LeftContainer>
                 <RightContainer>
                     <DSLEntry />
+                    <BuildButton onClick={() => build()} />
                 </RightContainer>
             </AppContent>
         </ThemeProvider>;
