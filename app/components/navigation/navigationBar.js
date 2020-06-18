@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import Icon from '../icons/icon.js';
 import { capitalizeUsername } from '../utilities/stringUtils';
 
+import { routes } from '../../routes/routeHelper';
+
 import styles from './navigationBar.less';
 
 
@@ -82,10 +84,8 @@ export default class NavigationBar extends React.Component {
 			<TextMenuElement contentText='Settings' />
 		</div>
 
-		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} 
-			{...handleHoverSettings}>
-			<LinkMenuElement linkTo='/notes' menuText='Notes' />
-			<LinkMenuElement linkTo='/scheduler' menuText='Scheduler' />
+		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} {...handleHoverSettings}>
+			{_.map(routes, (val, key) => key !== 'index' && <LinkMenuElement linkTo={val.address} menuText={val.name} />)}
 		</div>;
 		
 		const accountOrName = this.props.userLoggedIn ? capitalizeUsername(this.props.username) : 'Account';

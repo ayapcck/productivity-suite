@@ -1,5 +1,5 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import { connect, Provider } from 'react-redux';
 import { getStore } from '../redux/store';
@@ -11,8 +11,8 @@ import { setUsername, setUserLoggedIn } from '../redux/loginActions';
 const history = createBrowserHistory();
 
 import IndexPage from '../index';
-import NotesPage from '../pages/notesPage';
-import SchedulerPage from '../pages/schedulerPage';
+
+import { routes } from './routeHelper';
 
 const mapStateToProps = (state) => {
     const { username, userLoggedIn } = state.auth;
@@ -29,9 +29,13 @@ const mapDispatchToProps = {
     setUserLoggedIn
 };
 
-const IndexPageContainer = connect(mapStateToProps, mapDispatchToProps)(IndexPage);
-const NotesPageContainer = connect(mapStateToProps, mapDispatchToProps)(NotesPage);
-const SchedulerPageContainer = connect(mapStateToProps, mapDispatchToProps)(SchedulerPage);
+const makeRoutes = () => {
+    return _.map(routes, (val, key) => {
+        const page = key === 'index' ? IndexPage : val.page;
+        const container = connect(mapStateToProps, mapDispatchToProps)(page);
+        return <Route exact path={val.address} component={container} />;
+    })
+}
 
 class RouteHandler extends React.Component {
     constructor(props) {
@@ -47,9 +51,7 @@ class RouteHandler extends React.Component {
         const routeHandler = <Provider store={store}>
             <Router history={history}>
                 <Switch>
-                    <Route exact path='/' component={IndexPageContainer} />
-                    <Route exact path='/notes' component={NotesPageContainer} />
-                    <Route exact path='/scheduler' component={SchedulerPageContainer} />
+                    {makeRoutes()}
                 </Switch>
             </Router>
         </Provider>;
