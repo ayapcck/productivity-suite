@@ -59,7 +59,8 @@ const AccountOptions = styled.div`
 
 const AppMenuElements = styled.div`
 	${HoverElement}
-	right: 8%;
+	right: 4%;
+	width: 16%;
 
 	${MenuElement} {
 		border-width: 0 2px 2px 2px;
@@ -158,9 +159,9 @@ export default class NavigationBar extends React.Component {
 			<TextMenuElement contentText='Settings' />
 		</AccountOptions>
 
-		const appMenuElements = <div id='appMenuElements' className={styles.appMenuElements} {...handleHoverSettings}>
+		const appMenuElements = <AppMenuElements id='appMenuElements' {...handleHoverSettings}>
 			{_.map(routes, (val, key) => key !== 'index' && <LinkMenuElement linkTo={val.address} menuText={val.name} />)}
-		</div>;
+		</AppMenuElements>;
 		
 		const accountOrName = this.props.userLoggedIn ? capitalizeUsername(this.props.username) : 'Account';
 

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import BudgetApp from '../components/budgetApp/budgetApp';
 import PageHeader from '../components/pageTemplate/pageHeader';
 
 export default class BudgetPage extends React.Component {
@@ -28,4 +29,5 @@ export default class BudgetPage extends React.Component {
 
 const budgetPage = (props) => <React.Fragment>
     <PageHeader {...props} />
+    <BudgetApp serverAddress={props.serverAddress} username={props.username} userLoggedIn={props.userLoggedIn} />
 </React.Fragment>;

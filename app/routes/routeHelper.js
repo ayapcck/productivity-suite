@@ -13,12 +13,12 @@ export const routes = {
     },
     notes: {
         address: '/notes',
-        name: 'Notes',
+        name: 'Notes Tracker',
         page: NotesPage
     },
     scheduler: {
         address: '/scheduler',
-        name: 'Scheduler',
+        name: 'To-Do Scheduler',
         page: SchedulerPage
     }
 }
