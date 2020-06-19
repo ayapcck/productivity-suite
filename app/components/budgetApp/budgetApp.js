@@ -6,6 +6,7 @@ import { BuildButton } from './buildButton';
 import { ContentExplanation } from './contentExplanation';
 import { DSLEntry, getDSLContent } from './DSLEntry';
 import { dslLiterals } from './DSL/dslLiterals';
+import { EvaluateVisitor } from './DSL/evaluateVisitor';
 import { Parser } from './DSL/parser';
 import { Tokenizer } from './DSL/tokenizer';
 
@@ -46,7 +47,8 @@ const build = () => {
     tokenizer.createTokenizer(dslContent, dslLiterals);
     tokenizer.tokenize();
     const AST = Parser(tokenizer).parse();
-    console.log('got here');
+    AST.accept(EvaluateVisitor().visitProgram);
+    
 }
 
 export default class BudgetApp extends React.Component {

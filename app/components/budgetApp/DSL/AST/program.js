@@ -1,7 +1,9 @@
-export const ProgramNode =  (id, sheetList) => {
+export const ProgramNode = (id, sheetList) => {
     return {
-        accept: (visitor) => visitor.visit(this),
+        accept: function(visitor) {
+            visitor.visit(this);
+        },
         id,
         sheetList
-    }
+    };
 }

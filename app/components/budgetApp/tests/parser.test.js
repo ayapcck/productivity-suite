@@ -14,7 +14,10 @@ describe('Parser', () => {
         expect(AST.id).toBe('XXXXX');
         expect(AST.sheetList.length).toBe(1);
         /* MonthlyBudget node correct */
-        const monthly_budget = AST.sheetList[0];
+        const sheet = AST.sheetList[0];
+        expect(sheet.type).toBe('monthlyBudget');
+        expect(sheet.content).toBeDefined();
+        const monthly_budget = sheet.content;
         expect(monthly_budget.date).toBeDefined();
         expect(monthly_budget.expenses).toBeDefined();
         /* Date node correct */

@@ -2,6 +2,7 @@ import { Date } from './AST/date';
 import { Expenses } from './AST/expenses';
 import { MonthlyBudget } from './AST/monthlyBudget';
 import { ProgramNode } from './AST/program';
+import { Sheet } from './AST/sheet';
 
 export const Parser = (tokenizer) => {
     let _id = null;
@@ -38,7 +39,7 @@ export const Parser = (tokenizer) => {
                     break;
             }
         }
-        return MonthlyBudget(date, expenses);
+        return Sheet('monthlyBudget', MonthlyBudget(date, expenses));
     };
     const _program = () => {
         let _sheetList = [];

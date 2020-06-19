@@ -1,6 +1,8 @@
 export const Date = (month, year) => {
     return {
-        accept: (visitor) => visitor.visit(this),
+        accept: function(visitor) {
+            visitor.visit(this);
+        },
         month,
         year
     };

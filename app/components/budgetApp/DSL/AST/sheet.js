@@ -1,8 +1,9 @@
-export const Expenses = (expenseList) => {
+export const Sheet = (type, content) => {
     return {
         accept: function(visitor) {
             visitor.visit(this);
         },
-        expenseList
+        content,
+        type
     };
 };

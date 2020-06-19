@@ -24,6 +24,14 @@ const DSLHowToContainer = styled.div`
 export const ContentExplanation = () => <DSLHowToContainer>
     <DSLHowToContent>
         <p>
+            use spreadsheet XXXXX <br /><br />
+            add monthly_budget <br /><br />
+            date June 2020 <br />
+            expenses [ "eating out", "something", "else" ] <br /><br />
+            add <br /><br />
+            use
+        </p>
+        <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque feugiat dui in feugiat interdum. Morbi eget fringilla mi. Quisque ut tortor magna. Nulla nisl nisl, iaculis in nibh ut, congue condimentum nisl. Fusce vulputate sollicitudin erat non congue. Maecenas in vestibulum nisi. Duis a est ac ipsum placerat mollis. Aenean nulla justo, volutpat sit amet egestas id, sagittis et nulla. Proin elementum a velit nec commodo. Nulla eleifend mollis sagittis. Ut vitae mi vitae quam vehicula ornare non id sem. Duis risus dolor, vulputate sit amet ultrices at, ullamcorper at ante. Nulla nisi sapien, scelerisque et faucibus sit amet, efficitur tincidunt tellus. Quisque iaculis tortor eget efficitur ullamcorper.
         </p>
 
