@@ -1,13 +1,14 @@
 import { Tokenizer } from '../DSL/tokenizer';
 
+import { dslLiterals } from '../DSL/dslLiterals';
+
 const tokenizer = Tokenizer();
 
-const tokenizerInput = 'use spreadsheet XXXXX\r\n\r\nadd monthly_budget\r\ndate June 2020\r\nexpenses [ "eating out", "something" ]\r\nadd\r\n\r\nuse';
-const literals = ['use', 'spreadsheet', 'add', 'monthly_budget', 'date', 'expenses', '\\[', '\\]'];
+const tokenizerInput = 'use spreadsheet XXXXX\r\n\r\nadd monthly_budget\r\ndate June 2020\r\nexpenses [ "eating out", "something", "else" ]\r\nadd\r\n\r\nuse';
 
 describe('Tokenizer', () => {
     it('creates single instance of tokenizer', () => {
-        tokenizer.createTokenizer(tokenizerInput, literals);
+        tokenizer.createTokenizer(tokenizerInput, dslLiterals);
         expect(tokenizer.getProgram()).toBe(tokenizerInput);
         tokenizer.createTokenizer('bad', ['bad1', 'bad2']);
         expect(tokenizer.getProgram()).toBe(tokenizerInput);
@@ -20,20 +21,49 @@ describe('Tokenizer', () => {
         const expectedTokens = ['use', 'spreadsheet', 'XXXXX', 
             'add', 'monthly_budget', 
             'date', 'June 2020', 
-            'expenses', '\\[', 'eating out', 'something', '\\]', 
+            'expenses', '\\[', 'eating out', 'something', 'else', '\\]', 
             'add', 'use'];
         expect(tokenizer.getTokens()).toEqual(expectedTokens);
     });
     it('has tokens after tokenization', () => {
         expect(tokenizer.hasTokensLeft()).toBeTruthy;
     });
-    it('nextToken returns correct next token', () => {
+    it('nextToken returns correct current token', () => {
         expect(tokenizer.nextToken()).toBe('use');
     });
     it('nextToken increments currentToken count properly', () => {
         expect(tokenizer.getCurrentTokenIndex()).toBe(1);
         tokenizer.nextToken();
         expect(tokenizer.getCurrentTokenIndex()).toBe(2);
+    });
+    it('viewCurrentToken returns correct current token', () => {
+        expect(tokenizer.viewCurrentToken()).toBe('XXXXX');
+    });
+    it('viewCurrentToken does not increment currentToken count', () => {
+        expect(tokenizer.getCurrentTokenIndex()).toBe(2);
+        tokenizer.viewCurrentToken();
+        expect(tokenizer.getCurrentTokenIndex()).toBe(2);
+    });
+    it('checkCurrentToken correctly matches next token', () => {
+        tokenizer.nextToken();
+        expect(tokenizer.checkCurrentToken(/add/)).toBeTruthy();
+    });
+    it('checkCurrentToken correctly distinguishes an incorrect match', () => {
+        expect(tokenizer.checkCurrentToken(/add/)).toBeTruthy();
+        expect(tokenizer.checkCurrentToken(/daad/)).toBeFalsy();
+    });
+    it('checkCurrentToken does not increment currentToken count', () => {
+        expect(tokenizer.getCurrentTokenIndex()).toBe(3);
+    });
+    it('getAndcheckCurrentToken correctly matches next token', () => {
+        const nextToken = tokenizer.getAndcheckCurrentToken(/add/);
+        expect(nextToken).toBe('add');
+    });
+    it('getAndcheckCurrentToken correctly increments currentToken count',() => {
+        expect(tokenizer.getCurrentTokenIndex()).toBe(4);
+    });
+    it('getAndcheckCurrentToken throws error on incorrect match', () => {
+        expect(() => tokenizer.getAndcheckCurrentToken(/dont_match/)).toThrow('Did not correctly match token');
     });
 });
 

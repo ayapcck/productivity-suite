@@ -5,6 +5,8 @@ import _ from 'lodash';
 import { BuildButton } from './buildButton';
 import { ContentExplanation } from './contentExplanation';
 import { DSLEntry, getDSLContent } from './DSLEntry';
+import { dslLiterals } from './DSL/dslLiterals';
+import { Tokenizer } from './DSL/tokenizer';
 
 import { colorTheme } from '../../colors';
 
@@ -38,7 +40,11 @@ const RightContainer = styled.div`
 `;
 
 const build = () => {
-    content = getDSLContent();
+    const tokenizer = Tokenizer();
+    const dslContent = getDSLContent();
+    tokenizer.createTokenizer(dslContent, dslLiterals);
+    tokenizer.tokenize();
+    alert(tokenizer.getTokens());
 }
 
 export default class BudgetApp extends React.Component {
