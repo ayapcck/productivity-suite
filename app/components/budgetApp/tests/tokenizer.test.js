@@ -2,11 +2,10 @@ import { Tokenizer } from '../DSL/tokenizer';
 
 import { dslLiterals } from '../DSL/dslLiterals';
 
-const tokenizer = Tokenizer();
-
-const tokenizerInput = 'use spreadsheet XXXXX\r\n\r\nadd monthly_budget\r\ndate June 2020\r\nexpenses [ "eating out", "something", "else" ]\r\nadd\r\n\r\nuse';
-
 describe('Tokenizer', () => {
+    const tokenizer = Tokenizer();
+    const tokenizerInput = 'use spreadsheet XXXXX\r\n\r\nadd monthly_budget\r\ndate June 2020\r\nexpenses [ "eating out", "something", "else" ]\r\nadd\r\n\r\nuse';
+
     it('creates single instance of tokenizer', () => {
         tokenizer.createTokenizer(tokenizerInput, dslLiterals);
         expect(tokenizer.getProgram()).toBe(tokenizerInput);
@@ -56,14 +55,16 @@ describe('Tokenizer', () => {
         expect(tokenizer.getCurrentTokenIndex()).toBe(3);
     });
     it('getAndcheckCurrentToken correctly matches next token', () => {
-        const nextToken = tokenizer.getAndcheckCurrentToken(/add/);
+        const nextToken = tokenizer.getAndCheckCurrentToken(/add/);
         expect(nextToken).toBe('add');
     });
-    it('getAndcheckCurrentToken correctly increments currentToken count',() => {
+    it('getAndCheckCurrentToken correctly increments currentToken count',() => {
         expect(tokenizer.getCurrentTokenIndex()).toBe(4);
     });
-    it('getAndcheckCurrentToken throws error on incorrect match', () => {
-        expect(() => tokenizer.getAndcheckCurrentToken(/dont_match/)).toThrow('Did not correctly match token');
+    it('getAndCheckCurrentToken throws error on incorrect match', () => {
+        const token = tokenizer.viewCurrentToken();
+        const regexp = /dont_match/;
+        expect(() => tokenizer.getAndCheckCurrentToken(regexp)).toThrow(`Failed matching ${token} to ${regexp}`);
     });
 });
 

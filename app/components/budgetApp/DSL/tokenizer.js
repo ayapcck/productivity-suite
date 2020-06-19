@@ -29,10 +29,10 @@ export const Tokenizer = () => {
                 _tokenizer = "created";
             }
         },
-        getAndcheckCurrentToken: (regexp) => {
+        getAndCheckCurrentToken: (regexp) => {
             let token = _nextToken();
             if (!regexp.test(token)) {
-                throw new Error('Did not correctly match token');
+                throw new Error(`Failed matching ${token} to ${regexp}`);
             }
             return token;
         },
