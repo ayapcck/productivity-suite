@@ -31,7 +31,7 @@ Currently, the Peacock Productivity Suite features a login system, to-do schedul
 
 ## COMING SOON: Budget Helper
 
-Goal: to implement a DSL that interfaces with Google Sheets API in order to simplify creation of various budget templates.
+**Goal:** to implement a DSL that interfaces with Google Sheets API in order to simplify creation of various budget templates.
 
 Sample DSL code
 ```
