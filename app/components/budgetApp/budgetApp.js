@@ -7,6 +7,7 @@ import { ContentExplanation } from './contentExplanation';
 import { DSLEntry, getDSLContent } from './DSLEntry';
 import { dslLiterals } from './DSL/dslLiterals';
 import { EvaluateVisitor } from './DSL/evaluateVisitor';
+import { handleClientLoad } from './sheetsAPI/quickstart';
 import { Parser } from './DSL/parser';
 import { Tokenizer } from './DSL/tokenizer';
 
@@ -56,6 +57,14 @@ export default class BudgetApp extends React.Component {
         super (props);
     }
 
+    componentDidMount() {
+        const script = document.createElement('script');
+        script.src = 'https://apis.google.com/js/api.js';
+        script.async = true;
+        script.onload = () => handleClientLoad();
+        document.body.appendChild(script);
+    }
+
     render() {
         console.log(__dirname);
         return <ThemeProvider theme={colorTheme}>
@@ -66,6 +75,8 @@ export default class BudgetApp extends React.Component {
                 <RightContainer>
                     <DSLEntry />
                     <BuildButton onClick={() => build()} />
+                    <button id="authorize_button">Authorize</button>
+                    <button id="signout_button">Sign out</button>
                 </RightContainer>
             </AppContent>
         </ThemeProvider>;

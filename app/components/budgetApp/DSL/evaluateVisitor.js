@@ -3,12 +3,12 @@ import _ from 'lodash';
 export const EvaluateVisitor = () => {
     const visitDate = {
         visit: (date) => {
-            alert(`${date.month} ${date.year}`);
+            // alert(`${date.month} ${date.year}`);
         }
     };
     const visitExpenses = {
         visit: (expenses) => {
-            alert(`${expenses.expenseList}`);
+            // alert(`${expenses.expenseList}`);
         }
     };
     const visitMonthlyBudget = {
@@ -21,6 +21,9 @@ export const EvaluateVisitor = () => {
     const visitProgram = {
         visit: (program) => {
             _.each(program.sheetList, (val) => val.accept(visitSheet));
+
+            
+            
         }
     };
     const visitSheet = { 

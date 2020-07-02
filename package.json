@@ -16,6 +16,7 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "core-js": "^3.6.5",
+    "googleapis": "^39.2.0",
     "lodash": "^4.17.15",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
