@@ -26,15 +26,36 @@ export async function createMonthlyExpenseSheet (props) {
     const sheetId = await createNewSheet(spreadsheetId, sheetTitle);
 
     const { trackedValues, mainValues } = makeData(expenses, month, trackingList, year);
-
+    
     const mainDataEndColumn = mainValues[0].length;
     const trackingStartColumn = mainDataEndColumn + 2;
     const trackingEndColumn = trackingStartColumn + 1;
 
+    const dataProps = { 
+        mainDataEndColumn,
+        mainValues,
+        sheetId,
+        sheetTitle,
+        spreadsheetId,
+        trackingEndColumn,
+        trackingStartColumn,
+        trackedValues
+    };
+
+    await addData(dataProps);
+    await formatData(dataProps);
+};
+
+async function addData (props) {
+    const { mainDataEndColumn, mainValues, sheetTitle, spreadsheetId,
+        trackingEndColumn, trackingStartColumn, trackedValues } = props;
+
+
     const mainDataEndColumnChar = getColumnChar(mainDataEndColumn);
-    const mainDataRange = `${sheetTitle}!A1:${mainDataEndColumnChar}${mainValues.length}`;
     const trackingStartColumnChar = getColumnChar(trackingStartColumn);
     const trackingEndColumnChar = getColumnChar(trackingEndColumn);
+
+    const mainDataRange = `${sheetTitle}!A1:${mainDataEndColumnChar}${mainValues.length}`;
     const trackingRange = `${sheetTitle}!${trackingStartColumnChar}2:${trackingEndColumnChar}${trackedValues.length + 1}`;
 
     const mainValueParams = updateValueParams(mainDataRange, spreadsheetId);
@@ -43,10 +64,21 @@ export async function createMonthlyExpenseSheet (props) {
     const mainValueRangeBody = updateValueRangeBody(mainDataRange, mainValues);
     const trackedValueRangeBody = updateValueRangeBody(trackingRange, trackedValues);
 
+    // adds main data to sheet
+    await gapi.client.sheets.spreadsheets.values.update(mainValueParams, mainValueRangeBody);
+    // adds tracking data to sheet
+    await gapi.client.sheets.spreadsheets.values.update(trackedValueParams, trackedValueRangeBody);
+}
+
+async function formatData (props) {
+    const { mainDataEndColumn, mainValues, sheetId, spreadsheetId, trackingEndColumn, 
+        trackingStartColumn, trackedValues } = props;
+
     // Creates ranges for formatting cells
     const headerRowRange = Range(sheetId, 0, 1, 0, mainDataEndColumn);
     const expensesRange = Range(sheetId, 0, 1, 1, mainDataEndColumn);
     const expenseDateCellRange = Range(sheetId, 0, 1, 0, 1);
+    const expenseEntryRange = Range(sheetId, 1, mainValues.length, 1, mainDataEndColumn);
     const datesColumnRange = Range(sheetId, 1, mainValues.length, 0, 1);
     const trackingCellHeaderRange = Range(sheetId, 1, 2, trackingStartColumn - 1, trackingEndColumn - 1);
     const trackingValuesRange = Range(sheetId, 2, trackedValues.length + 2, trackingStartColumn, trackingEndColumn);
@@ -56,9 +88,10 @@ export async function createMonthlyExpenseSheet (props) {
     const formatExpenseCells = RepeatCell(expensesRange, 
         { horizontalAlignment: 'CENTER', verticalAlignment: 'MIDDLE' });
     const formatExpenseDateCell = RepeatCell(expenseDateCellRange, { wrapStrategy: 'WRAP' });
+    const formatExpenseEntry = RepeatCell(expenseEntryRange, currency);
     const formatDateCells = RepeatCell(datesColumnRange, { horizontalAlignment: 'RIGHT' });
     const formatTrackingHeaderCell = RepeatCell(trackingCellHeaderRange, bold);
-    const formatTrackingValues = RepeatCell(trackingValuesRange, { numberFormat: { type: 'CURRENCY' } });
+    const formatTrackingValues = RepeatCell(trackingValuesRange, currency);
 
     const requests = [ 
         formatHeaderCells, 
@@ -66,20 +99,18 @@ export async function createMonthlyExpenseSheet (props) {
         formatTrackingValues,
         formatExpenseCells, 
         formatExpenseDateCell,
+        formatExpenseEntry,
         formatDateCells, 
         updateColumnWidths(sheetId, mainDataEndColumn), 
         freezeFirstColRow(sheetId)
     ];
     
-    // adds main data to sheet
-    await gapi.client.sheets.spreadsheets.values.update(mainValueParams, mainValueRangeBody);
-    // adds tracking data to sheet
-    await gapi.client.sheets.spreadsheets.values.update(trackedValueParams, trackedValueRangeBody);
     // formats data
     await gapi.client.sheets.spreadsheets.batchUpdate({ spreadsheetId }, BatchUpdateBody(requests));
-};
+}
 
 const bold = { textFormat: { bold: true } };
+const currency = { numberFormat: { type: 'CURRENCY' } };
 
 const freezeFirstColRow = (sheetId) => ({
     updateSheetProperties: {

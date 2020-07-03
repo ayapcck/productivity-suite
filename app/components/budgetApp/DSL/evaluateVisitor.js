@@ -19,7 +19,6 @@ export const EvaluateVisitor = () => {
             monthlyBudget.date.accept(visitDate);
             monthlyBudget.expenses.accept(visitExpenses);
             monthlyBudget.tracking.accept(visitTracking);
-            console.log(`eval monthly budget ${monthlyBudget}`);
         }
     };
     const visitProgram = {
@@ -50,7 +49,6 @@ export const EvaluateVisitor = () => {
                 default:
                     break;
             }
-            console.log(`eval sheet ${sheet}`);
         }
     };
     const visitTracking = {
