@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { addExpensesRow, createNewSheet } from '../sheetsAPI/helpers';
+import { addDataAndFormat, createNewSheet } from '../sheetsAPI/helpers';
 import { months, months30, months31 } from '../../utilities/dates';
 
 export const EvaluateVisitor = () => {
@@ -46,8 +46,7 @@ export const EvaluateVisitor = () => {
                         startCol: 0,
                         values
                     }
-                    let response = await addExpensesRow(expenseRowProps);
-                    console.log(response);
+                    await addDataAndFormat(expenseRowProps);
                 } catch (err) {
                     console.log(err);
                 }
