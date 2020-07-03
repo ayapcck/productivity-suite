@@ -3,6 +3,7 @@ import { Expenses } from './AST/expenses';
 import { MonthlyBudget } from './AST/monthlyBudget';
 import { ProgramNode } from './AST/program';
 import { Sheet } from './AST/sheet';
+import { Tracking } from './AST/tracking';
 
 export const Parser = (tokenizer) => {
     let _id = null;
@@ -27,6 +28,7 @@ export const Parser = (tokenizer) => {
     const _monthly_budget = () => {
         let date;
         let expenses;
+        let tracking;
         while (tokenizer.hasTokensLeft() && !tokenizer.checkCurrentToken(/add/)) {
             switch (tokenizer.nextToken()) {
                 case 'date':
@@ -35,11 +37,14 @@ export const Parser = (tokenizer) => {
                 case 'expenses':
                     expenses = _expenses();
                     break;
+                case 'track':
+                    tracking = _tracking();
+                    break;
                 default:
                     break;
             }
         }
-        return Sheet('monthlyBudget', MonthlyBudget(date, expenses));
+        return Sheet('monthlyBudget', MonthlyBudget(date, expenses, tracking));
     };
     const _program = () => {
         let _sheetList = [];
@@ -69,6 +74,18 @@ export const Parser = (tokenizer) => {
         }
         tokenizer.getAndCheckCurrentToken(/add/);
         return sheet;
+    }
+    const _tracking = () => {
+        tokenizer.getAndCheckCurrentToken(/\[/);
+            let trackingList = [];
+    
+            while (tokenizer.hasTokensLeft() && !tokenizer.checkCurrentToken(/\]/)) {
+                trackingList.push(tokenizer.nextToken());
+            }
+            
+            tokenizer.getAndCheckCurrentToken(/\]/);
+
+            return Tracking(trackingList);
     }
     return {
         parse: () => _program()

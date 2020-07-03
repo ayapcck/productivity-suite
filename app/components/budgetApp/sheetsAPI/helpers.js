@@ -30,3 +30,8 @@ const SheetProperties = (title) => {
         }
     };
 };
+
+export const getColumnChar = (index) => {
+    const keyCode = 65 + index - 1;
+    return String.fromCharCode(keyCode);
+};

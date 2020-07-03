@@ -18,6 +18,7 @@ export const EvaluateVisitor = () => {
         visit: (monthlyBudget) => {
             monthlyBudget.date.accept(visitDate);
             monthlyBudget.expenses.accept(visitExpenses);
+            monthlyBudget.tracking.accept(visitTracking);
             console.log(`eval monthly budget ${monthlyBudget}`);
         }
     };
@@ -28,12 +29,13 @@ export const EvaluateVisitor = () => {
                 const month = sheet.content.date.month;
                 const year = sheet.content.date.year;
                 const expenses = sheet.content.expenses.expenseList;
+                const trackingList = sheet.content.tracking.trackingList;
                 const props = {
                     expenses,
                     month, 
-                    year,
-                    spreadsheetId: program.id, 
-                    startCol: 0
+                    spreadsheetId: program.id,
+                    trackingList,
+                    year
                 }
                 createMonthlyExpenseSheet(props);                
             });
@@ -49,6 +51,11 @@ export const EvaluateVisitor = () => {
                     break;
             }
             console.log(`eval sheet ${sheet}`);
+        }
+    };
+    const visitTracking = {
+        visit: (tracking) => {
+
         }
     };
     return { visitProgram };

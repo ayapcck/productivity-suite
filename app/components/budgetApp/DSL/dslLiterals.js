@@ -5,6 +5,7 @@ export const dslLiterals = [
     'monthly_budget',
     'date',
     'expenses',
+    'track',
     '\\[',
     '\\]'
 ];
