@@ -46,19 +46,3 @@ const updateSigninStatus = (isSignedIn) => {
 
 const handleAuthClick = () => gapi.auth2.getAuthInstance().signIn();
 const handleSignoutClick = () => gapi.auth2.getAuthInstance().signOut();
-
-// const listMajors = () => {
-//     gapi.client.sheets.spreadsheets.values.get({
-//         spreadsheetId: '1BlpKMYSTycxih_93JBlbuHmTFh-HU7LvqgyttRD-ej4',
-//         range: 'June!A2',
-//     }).then((response) => {
-//         const range = response.result;
-//         if (range.values.length > 0) {
-//             alert(range.values);
-//         } else {
-//             alert('No data found');
-//         }
-//     }, (response) => {
-//         alert('Error: ' + response.result.error.message);
-//     })
-// }

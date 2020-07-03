@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { addDataAndFormat, createNewSheet } from '../sheetsAPI/helpers';
-import { months, months30, months31 } from '../../utilities/dates';
+import { createMonthlyExpenseSheet } from '../sheetsAPI/monthlyExpenses';
+import { months, getDays } from '../../utilities/dates';
 
 export const EvaluateVisitor = () => {
     const visitDate = {
@@ -23,33 +23,19 @@ export const EvaluateVisitor = () => {
     };
     const visitProgram = {
         visit: (program) => {
-            _.each(program.sheetList, async (sheet) => {
+            _.each(program.sheetList, (sheet) => {
                 sheet.accept(visitSheet);
-                const title = sheet.content.date.month;
+                const month = sheet.content.date.month;
                 const year = sheet.content.date.year;
                 const expenses = sheet.content.expenses.expenseList;
-                let sheetId = '';
-                try {
-                    sheetId = await createNewSheet(program.id, title);
-                    let expenseRow = ['Expenses: >  Date: V'];
-                    _.each(expenses, (expense) => expenseRow.push(expense));
-                    let values = [expenseRow];
-                    let days = months31.includes(title) ? 31 : 30;
-                    days = title === 'February' ? 29 : days;
-                    for (let day = 1; day < days + 1; day++) {
-                        values.push([`${months.indexOf(title)+1}/${day}/${year}`]);
-                    }
-                    const expenseRowProps = {
-                        sheetId,
-                        sheetTitle: title, 
-                        spreadsheetId: program.id, 
-                        startCol: 0,
-                        values
-                    }
-                    await addDataAndFormat(expenseRowProps);
-                } catch (err) {
-                    console.log(err);
+                const props = {
+                    expenses,
+                    month, 
+                    year,
+                    spreadsheetId: program.id, 
+                    startCol: 0
                 }
+                createMonthlyExpenseSheet(props);                
             });
         }
     };
