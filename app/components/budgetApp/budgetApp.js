@@ -7,7 +7,7 @@ import { ContentExplanation } from './contentExplanation';
 import { DSLEntry, getDSLContent } from './DSLEntry';
 import { dslLiterals } from './DSL/dslLiterals';
 import { EvaluateVisitor } from './DSL/evaluateVisitor';
-import { handleClientLoad } from './sheetsAPI/quickstart';
+import { handleClientLoad } from './sheetsAPI/setup';
 import { Parser } from './DSL/parser';
 import { Tokenizer } from './DSL/tokenizer';
 
@@ -49,7 +49,6 @@ const build = () => {
     tokenizer.tokenize();
     const AST = Parser(tokenizer).parse();
     AST.accept(EvaluateVisitor().visitProgram);
-    
 }
 
 export default class BudgetApp extends React.Component {
