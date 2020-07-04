@@ -6,7 +6,9 @@ const DSLTextEntry = styled.textarea`
     border-radius: 10px;
     box-sizing: border-box;
     height: 90%;
+    margin: auto;
     padding: 10px;
+    resize: none;
     width: 95%;
 
     &:focus {
@@ -16,7 +18,6 @@ const DSLTextEntry = styled.textarea`
 `;
 
 const DSLEntryContainer = styled.div`
-    align-items: center;
     border-color: ${(props) => props.theme.accentColor};
     border-radius: 15px;
     border-style: solid;
@@ -24,7 +25,7 @@ const DSLEntryContainer = styled.div`
     box-sizing: border-box;
     display: flex;
     height: 60%;
-    justify-content: center;
+    margin: auto;
     width: 90%;
 `;
 

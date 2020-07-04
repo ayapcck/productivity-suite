@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { device } from '../../config/device';
+
 const StyledButton = styled.button`
     background-color: ${(props) => props.theme.buttonColor};
     border-radius: 10px;
@@ -8,7 +10,7 @@ const StyledButton = styled.button`
     border-width: 3px;
     font-size: xx-large;
     font-weight: bold;
-    margin: 15px;
+    margin: auto;
 
     &:hover {
         background-color: ${(props) => props.theme.onHoverColor};
@@ -20,6 +22,10 @@ const StyledButton = styled.button`
     &:focus {
         outline: 0;
         box-shadow: 0 0 2pt 1pt ${(props) => props.theme.inputFocusColor};
+    }
+
+    @media ${device.mobileL} {
+        margin: auto 15px;
     }
 `;
 
