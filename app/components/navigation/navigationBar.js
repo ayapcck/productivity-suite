@@ -58,10 +58,12 @@ export default class NavigationBar extends React.Component {
 	}
 		
 	render() {
+		const { userLoggedIn } = this.props;
 		const { showMenu } = this.state;
 
 		const navigationBar = <React.Fragment>
-			<NavigationMenu showMenu={showMenu} hideMenu={this.hideNavMenu} />
+			<NavigationMenu showMenu={showMenu} hideMenu={this.hideNavMenu} 
+				loginLogoutClick={this.loginLogoutClick} userLoggedIn={userLoggedIn} />
 			<NavBarContainer name='navMenu'>
 				<OpenMenuIcon onClick={this.showNavMenu} />
 			</NavBarContainer>

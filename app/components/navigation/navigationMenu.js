@@ -82,7 +82,7 @@ const SubMenuElement = styled(MenuElement)`
     padding: 5px 10px 5px 45px;
 `;
 
-export const NavigationMenu = ({ hideMenu, showMenu }) => {
+export const NavigationMenu = ({ hideMenu, loginLogoutClick, showMenu, userLoggedIn }) => {
     const [ appsExpanded, setAppsExpanded ] = useState(false);
     const [ accountExpanded, setAccountExpanded ] = useState(false);
 
@@ -117,7 +117,9 @@ export const NavigationMenu = ({ hideMenu, showMenu }) => {
                 <MenuText>Account</MenuText>
             </MenuElement>
             <SubMenu expanded={accountExpanded}>
-                <SubMenuElement>Login/Logout</SubMenuElement>
+                <SubMenuElement onClick={loginLogoutClick}>
+                    {userLoggedIn ? 'Logout' : 'Login/Create'}
+                </SubMenuElement>
                 <SubMenuElement>Settings</SubMenuElement>
             </SubMenu>
         </StyledMenu>
