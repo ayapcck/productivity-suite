@@ -24,7 +24,7 @@ const DSLHowToContent = styled.div`
 
 const DSLHowToContainer = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
-    border-color: ${(props) => props.theme.accentColor};
+    border-color: ${(props) => props.theme.borderColor};
     border-radius: 10px;
     border-style: solid;
     border-width: 2px;

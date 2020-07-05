@@ -20,7 +20,7 @@ const DSLTextEntry = styled.textarea`
 `;
 
 const DSLEntryContainer = styled.div`
-    border-color: ${(props) => props.theme.accentColor};
+    border-color: ${(props) => props.theme.borderColor};
     border-radius: 15px;
     border-style: solid;
     border-width: 2px;

@@ -34,7 +34,7 @@ const ExplanationContainer = styled.div`
     padding: 10px;
 
     @media ${device.tablet} {
-        border-color: ${(props) => props.theme.accentColor};
+        border-color: ${(props) => props.theme.borderCplor};
         border-style: solid;
         border-width: 0 1px 0 0;
     }
@@ -46,6 +46,7 @@ const ExplanationContainer = styled.div`
         left: 0;
         position: absolute;
         top: 0;
+        width: 100%;
     }
 `;
 
@@ -67,7 +68,7 @@ const DSLEntryContainer = styled.div`
     height: 100%;
 
     @media ${device.tablet} {
-        border-color: black;
+        border-color: ${(props) => props.theme.borderColor};
         border-style: solid;
         border-width: 0 0 0 1px;
     }

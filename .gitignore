@@ -4,3 +4,4 @@ __pychache__
 /node_modules/
 npm-debug.log
 secrets.json
+.gitmessage.txt
