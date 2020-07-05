@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { device } from '../../config/device';
+
 const DSLTextEntry = styled.textarea`
     background-color: ${(props) => props.theme.lightGrey};
     border-radius: 10px;
@@ -27,6 +29,10 @@ const DSLEntryContainer = styled.div`
     height: 60%;
     margin: auto;
     width: 90%;
+
+    @media ${device.mobileL} {
+        margin: 0 auto;
+    }
 `;
 
 export const DSLEntry = () => {

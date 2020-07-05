@@ -1,8 +1,42 @@
-var React = require('react');
+import React from 'react';
+import styled from 'styled-components';
 
-import styles from './tabBar.less';
+const Extra = styled.div`
+    font-size: small;
+`;
 
-import classnames from 'classnames';
+const StyledTab = styled.div`
+    align-items: center;
+    border-color: ${(props) => props.active ? 
+        props.theme.lightAccentColor :
+        props.theme.lightGrey};
+    border-radius: 15px 15px 0 0;
+    border-style: solid;
+    border-width: 2px 2px 0 2px;
+    box-sizing: border-box;
+    color: ${(props) => props.theme.textColor};
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    user-select: none;
+    width: 25%;
+`;
+
+const TabBarContainer = styled.div`
+    border-color: ${(props) => props.theme.lightGrey};
+    border-style: solid;
+    border-width: 0 0 2px 0;
+    display: flex;
+    height: 10%;
+    justify-content: center;
+    width: -webkit-fill-available;
+`;
+
+const Title = styled.div`
+    font-size: medium;
+`;
 
 export default class TabBar extends React.Component {
     constructor(props) {
@@ -23,22 +57,21 @@ export default class TabBar extends React.Component {
     render() {
         let tabs = this.props.tabHeaders.map((val, index) => {
             let active = this.state.activeTab === val.name;
-            let classes = classnames(styles.tab, active && styles.activeTab);
-            return <Tab key={index} classes={classes} onClick={this.setActiveTab} 
+            return <Tab key={index} active={active} onClick={this.setActiveTab} 
                 title={val.name} val={val.getValue()} />;
         });
 
-        let tabBar = <div className={styles.tabBarContainer}>
+        let tabBar = <TabBarContainer>
             {tabs}
-        </div>;
+        </TabBarContainer>;
         
         return tabBar;
     }
 }
 
-const Tab = ({ classes, onClick, title, val }) => {
-    return <div className={classes} onClick={() => onClick(title)}>
-        <div className={styles.tabTitle}>{title}</div>
-        <div className={styles.tabExtra}>{val}</div>
-    </div>;
+const Tab = ({ active, onClick, title, val }) => {
+    return <StyledTab active={active} onClick={() => onClick(title)}>
+        <Title>{title}</Title>
+        <Extra>{val}</Extra>
+    </StyledTab>;
 };

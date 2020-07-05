@@ -27,28 +27,50 @@ const AppContent = styled.div`
 `;
 
 const ExplanationContainer = styled.div`
-    border-color: ${(props) => props.theme.accentColor};
-    border-style: solid;
-    border-width: 0 1px 0 0;
     box-sizing: border-box;
     grid-column: 1;
     height: 100%;
     overflow: hidden;
     padding: 10px;
 
+    @media ${device.tablet} {
+        border-color: ${(props) => props.theme.accentColor};
+        border-style: solid;
+        border-width: 0 1px 0 0;
+    }
+
     @media ${device.mobileL} {
+        background-color: rgba(255, 255, 255, 0.5);
+        display: ${({ showExplanation }) => showExplanation ? `flex` : `none` };
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+    }
+`;
+
+const ExplanationIcon = styled.i`
+    color: ${(props) => props.theme.textColor};
+    float: right;
+    font-size: x-large;
+    padding: 10px;
+
+    @media ${device.tablet} {
         display: none;
     }
 `;
 
 const DSLEntryContainer = styled.div`
-    border-color: black;
-    border-style: solid;
-    border-width: 0 0 0 1px;
     display: flex;
     flex-direction: column;
     grid-column: 2;
     height: 100%;
+
+    @media ${device.tablet} {
+        border-color: black;
+        border-style: solid;
+        border-width: 0 0 0 1px;
+    }
 `;
 
 const build = () => {
@@ -63,6 +85,10 @@ const build = () => {
 export default class BudgetApp extends React.Component {
     constructor(props) {
         super (props);
+
+        this.state = {
+            showExplanation: false
+        }
     }
 
     componentDidMount() {
@@ -74,13 +100,18 @@ export default class BudgetApp extends React.Component {
     }
 
     render() {
-        console.log(__dirname);
+        const { showExplanation } = this.state;
+
         return <ThemeProvider theme={colorTheme}>
             <AppContent>
-                <ExplanationContainer>
-                    <ContentExplanation />
+                <ExplanationContainer showExplanation={showExplanation}>
+                    <ContentExplanation closeMenu={() => this.setState({ showExplanation: false })} />
                 </ExplanationContainer>
                 <DSLEntryContainer>
+                    <div>
+                        <ExplanationIcon className="fa fa-question-circle-o" aria-hidden="true" 
+                            onClick={() => this.setState({ showExplanation: true })} />
+                    </div>
                     <DSLEntry />
                     <BuildButton onClick={() => build()} />
                     <button id="authorize_button">Authorize</button>

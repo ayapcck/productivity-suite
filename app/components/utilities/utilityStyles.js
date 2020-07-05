@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const SpanHeader = styled.span`
 	align-items: center;
-	background-color: ${(props) => props.theme.lightPurple};
+	background-color: ${(props) => props.theme.lightAccentColor};
 	border-color: ${(props) => props.theme.accentColor};
 	border-style: solid;
 	border-radius: 15px 15px 0 0;

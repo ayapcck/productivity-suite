@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import { routes } from '../../routes/routeHelper';
+import { device } from '../../config/device';
 
 import { capitalizeUsername } from '../utilities/stringUtils';
 
@@ -19,7 +20,7 @@ const MenuContainer = styled.div`
 `;
 
 const MenuElement = styled.div`
-    color: ${(props) => props.theme.textColor};
+    color: ${(props) => props.expanded ? props.theme.inputFocusColor : props.theme.textColor};
     display: flex;
     padding: 5px 0 5px 10px;
     user-select: none;
@@ -66,6 +67,10 @@ const StyledMenu = styled.div`
     & a, a:active {
         text-decoration: none;
     }
+
+    @media ${device.mobileL} {
+        width: 50%;
+    }
 `;
 
 const SubMenu = styled.div`
@@ -73,21 +78,28 @@ const SubMenu = styled.div`
 `;
 
 const SubMenuElement = styled(MenuElement)`
-    padding: 5px 45px;
+    color: ${(props) => props.theme.textColor};
+    padding: 5px 10px 5px 45px;
 `;
 
 export const NavigationMenu = ({ hideMenu, showMenu }) => {
     const [ appsExpanded, setAppsExpanded ] = useState(false);
     const [ accountExpanded, setAccountExpanded ] = useState(false);
 
+    const handleClose = () => {
+        hideMenu();
+        setAppsExpanded(false);
+        setAccountExpanded(false);
+    };
+
     return <MenuContainer showMenu={showMenu}>
-        <ScreenOverlay onClick={hideMenu} />
+        <ScreenOverlay onClick={handleClose} />
         <StyledMenu>
-            <StyledCloseIcon className="fa fa-times" onClick={hideMenu} aria-hidden="true"/>
+            <StyledCloseIcon className="fa fa-times" onClick={handleClose} aria-hidden="true"/>
             <Link to="/">
                 <MenuElement>Home</MenuElement>
             </Link>
-            <MenuElement onClick={() => setAppsExpanded(!appsExpanded)}>
+            <MenuElement expanded={appsExpanded} onClick={() => setAppsExpanded(!appsExpanded)}>
                 { appsExpanded ? 
                     <MinimizeIcon className="fa fa-minus" aria-hidden="true" /> :
                     <ExpandIcon className="fa fa-plus" aria-hidden="true" /> }
@@ -98,7 +110,7 @@ export const NavigationMenu = ({ hideMenu, showMenu }) => {
                         <SubMenuElement>{val.name}</SubMenuElement>
                     </Link>))}
             </SubMenu>
-            <MenuElement onClick={() => setAccountExpanded(!accountExpanded)} >
+            <MenuElement expanded={accountExpanded} onClick={() => setAccountExpanded(!accountExpanded)} >
                 { accountExpanded ? 
                     <MinimizeIcon className="fa fa-minus" aria-hidden="true" /> :
                     <ExpandIcon className="fa fa-plus" aria-hidden="true" /> }
