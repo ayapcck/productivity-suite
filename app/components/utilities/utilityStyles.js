@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const SpanHeader = styled.span`
 	align-items: center;
 	background-color: ${(props) => props.theme.lightAccentColor};
-	border-color: ${(props) => props.theme.accentColor};
+	border-color: ${(props) => props.theme.borderColor};
 	border-style: solid;
 	border-radius: 15px 15px 0 0;
 	border-width: 0 0 2px 0;

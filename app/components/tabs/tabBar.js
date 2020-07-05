@@ -9,7 +9,7 @@ const StyledTab = styled.div`
     align-items: center;
     border-color: ${(props) => props.active ? 
         props.theme.lightAccentColor :
-        props.theme.lightGrey};
+        props.theme.borderColor};
     border-radius: 15px 15px 0 0;
     border-style: solid;
     border-width: 2px 2px 0 2px;
@@ -25,7 +25,7 @@ const StyledTab = styled.div`
 `;
 
 const TabBarContainer = styled.div`
-    border-color: ${(props) => props.theme.lightGrey};
+    border-color: ${(props) => props.theme.borderColor};
     border-style: solid;
     border-width: 0 0 2px 0;
     display: flex;

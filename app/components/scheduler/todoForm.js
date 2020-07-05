@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import classnames from 'classnames';
 
 import InputBox from '../formElements/inputBox';
 import FormButton from '../formElements/button';
 import { currentISOTime, soonISOTime, tomorrowISOTime } from '../utilities/dates';
-import styles from './todoForm.less';
+import { SpanHeader } from '../utilities/utilityStyles';
 
 import { logger } from '../utilities/logger';
 
-const containerHeader = (text) => <span className={styles.spanHeader}>{text}</span>;
-const popupHeader = (text) => <h1 className={styles.textHeader}>{text}</h1>;
+const containerHeader = (text) => <SpanHeader>{text}</SpanHeader>;
+const popupHeader = (text) => <TextHeader>{text}</TextHeader>;
 const getTimeByTab = (tab) => {
 	switch (tab) {
 		case 'Today':
@@ -24,11 +23,66 @@ const getTimeByTab = (tab) => {
 	}
 }
 
+const AddTodoContainer = styled.div`
+	display: grid;
+	grid-template-rows: 10% 90%;
+	margin: 10px auto;
+	user-select: none;
+	width: 90%;
+
+	${ ({ displayAsPopup, theme }) => !displayAsPopup && `
+		border-color: ${theme.borderColor};
+		border-radius: 15px;
+		border-style: solid;
+		border-width: 2px;
+	`}
+`;
+
+const AddTodoForm = styled.form`
+	display: grid;
+	grid-template-rows: 85% 15%;
+`;
+
+const CheckboxContainer = styled.div`
+	display: grid;
+	grid-template-columns: 50% 50%;
+	color: ${(props) => props.theme.textColor};
+
+	& label {
+		display: flex;
+		justify-content: center;
+	}
+
+	& label, input {
+		cursor: pointer;
+	}
+`;
+
+const DateTimeContainer = styled.div`
+	display: grid;
+	grid-template-columns: 50% 50%;
+
+	& input {
+		text-align: center;
+	}
+`;
+
 const FormButtonContainer = styled.div`
 	align-items: center;
 	display: flex;
 	grid-row: 2;
 	width: -webkit-fill-available;
+`;
+
+const FormInputs = styled.div`
+	grid-row: 1;
+	margin: auto 0;
+`;
+
+const TextHeader = styled.h1`
+	text-align: center;
+	margin: 0;
+	padding: 0 0 10px 0;
 `;
 
 export default class TodoForm extends React.Component {
@@ -133,19 +187,18 @@ export default class TodoForm extends React.Component {
 
     render() {
 		let header = (text) => this.props.displayAsPopup ? popupHeader(text) : containerHeader(text);
-		let borderClass = !this.props.displayAsPopup && styles.addTodoContainerBorder;
 
 		let timeCheckbox = <input type='checkbox' value='time' 
 			onChange={this.handleTimeChange} checked={this.state.todoTimeEnabled} />;
 		let priorityCheckbox = <input type='checkbox' value='priority' 
 			onChange={this.handlePriorityChange} checked={this.state.priority || this.state.priority === 1} />;
 
-		let todoForm = <div className={classnames(styles.addTodoContainer, borderClass)}>
+		let todoForm = <AddTodoContainer displayAsPopup={this.props.displayAsPopup}>
             {header(this.props.headerText)}
-			<form id='addTodoForm' className={styles.addTodoForm} onSubmit={this.submitClicked}>
-                <div className={styles.formInputs}>
+			<AddTodoForm id='addTodoForm' onSubmit={this.submitClicked}>
+                <FormInputs>
 					<InputBox text='Title' type='text' name='toDoTitle' val={this.state.title} />
-					<div className={styles.checkboxContainer}>
+					<CheckboxContainer>
 						<label>
 							High priority: 
 							{priorityCheckbox}
@@ -154,21 +207,21 @@ export default class TodoForm extends React.Component {
 							Time enabled: 
 							{timeCheckbox}
 						</label>
-					</div>
-					<div className={styles.dateTimeContainer}>
+					</CheckboxContainer>
+					<DateTimeContainer>
 						<InputBox text='Date' type='date' name='toDoDate'
 							val={this.state.date} onChange={this.changeDate} />
 						<InputBox text='Time' type='time' name='toDoTime' 
 							val={this.state.time} disabled={!this.state.todoTimeEnabled} 
 							disabledTooltipText='Disabled' />
-					</div>
+					</DateTimeContainer>
 					<InputBox text='Content' type='area' name='toDoBody' val={this.state.content} />
-				</div>
+				</FormInputs>
 				<FormButtonContainer>
 					<FormButton text='Submit' type='submit' name='addTodoFormSubmit' />
 				</FormButtonContainer>
-            </form>
-        </div>;
+            </AddTodoForm>
+        </AddTodoContainer>;
 
         return todoForm;
     }

@@ -1,8 +1,7 @@
 import React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { css, ThemeProvider } from 'styled-components';
 
 import _ from 'lodash';
-import classnames from 'classnames';
 
 import CenterPanel from '../centerPanel/centerPanel';
 import { CloseIcon } from '../icons/closeIcon';
@@ -10,7 +9,6 @@ import { CompletedTodos } from './completedTodos';
 import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
-import styles from './schedulerApp.less';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
 import { currentTimeString, tomorrowTimeString } from '../utilities/dates.js';
 
@@ -37,6 +35,45 @@ const initialElementDicts = () => {
 	elements['Completed'] = {};
 	return elements;
 };
+
+const GridElement = css`
+	box-sizing: border-box;
+	border-style: solid;
+	border-color: ${(props) => props.theme.borderColor};
+`;
+
+const LeftColumn = styled.div`
+	${GridElement}
+	grid-column: 1;
+	border-width: 0 1px 0 0;
+	display: grid;
+	grid-template-rows: 65% 35%;
+`;
+
+const MiddleColumn = styled.div`
+	${GridElement}
+	border-width: 0 1px;
+	grid-column: 2;
+	overflow: auto;
+	overflow-y: hidden;
+	padding: 5px;
+`;
+
+const RightColumn = styled.div`
+	${GridElement}
+	grid-column: 3;
+	border-width: 0 0 0 1px;
+	display: grid;
+	grid-template-rows: 65% 35%;
+`;
+
+const SchedulerContent = styled.div`
+	background-color: ${(props) => props.theme.backgroundColor};
+	display: grid;
+	grid-template-columns: 25% 50% 25%;
+	height: 100%;
+	width: 100%;
+`;
 
 export default class SchedulerApp extends React.Component {
 	constructor(props) {
@@ -304,7 +341,6 @@ export default class SchedulerApp extends React.Component {
 
 		let todoColumnProps = {
 			activeTab: this.state.activeTab,
-			classes: styles.todoColumn,
 			elementDicts: elementDicts[this.state.activeTab],
 			markTodoCompleted: this.markCompleted,
 			onEditClicked: this.showEditTodoForm,
@@ -319,23 +355,23 @@ export default class SchedulerApp extends React.Component {
 				prePopulatedContent={this.state.editingTodoProps} />
 		</React.Fragment>;
 
-		const schedulerApp = <div name='schedulerBody' className={styles.schedulerContent}>
+		const schedulerApp = <SchedulerContent name='schedulerBody'>
 			{this.state.showEditTodoPopup 
 				&& <CenterPanel content={todoFormAsPopup}
 						id="EditFormPopup"
 						handleClose={this.hideEditTodoForm} />}
-			<div className={classnames(styles.gridElement, styles.leftColumn)}>
+			<LeftColumn>
 				<TodoForm {...todoFormProps} headerText='Add Todo'
 					handleAfterSubmit={this.postTodoElement} />
-			</div>
-			<div className={classnames(styles.gridElement, styles.middleColumn)} >
+			</LeftColumn>
+			<MiddleColumn>
 				<TabBar tabHeaders={tabHeaders} showTabHeaderContent={this.showTabHeaderContent} />
 				<TodoColumn {...todoColumnProps} />
-			</div>
-			<div className={classnames(styles.gridElement, styles.rightColumn)}>
+			</MiddleColumn>
+			<RightColumn>
 				<CompletedTodos clearCompleted={this.clearCompleted} elementDicts={elementDicts} />
-			</div>
-		</div>
+			</RightColumn>
+		</SchedulerContent>
 
 		return <ThemeProvider theme={colorTheme}>
 			{schedulerApp}

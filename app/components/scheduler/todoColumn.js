@@ -1,4 +1,5 @@
-var React = require('react');
+import React from 'react';
+import styled from 'styled-components';
 
 import classnames from 'classnames';
 
@@ -6,6 +7,11 @@ import ToDoElement from './todoElement.js';
 import styles from './todoColumn.less';
 
 import { logger } from '../utilities/logger';
+
+const StyledTodoColumn = styled.div`
+	height: 90%;
+	overflow: auto;
+`;
 
 export default class TodoColumn extends React.Component {
 	constructor(props) {
@@ -196,9 +202,9 @@ export default class TodoColumn extends React.Component {
 			}
 		}
 
-		let todoColumn = <div id='todoContainer' className={classnames(this.props.classes)}>
+		let todoColumn = <StyledTodoColumn id='todoContainer'>
 			{todosAndDropLocations}
-		</div>;
+		</StyledTodoColumn>;
 		return todoColumn;
 	}
 }

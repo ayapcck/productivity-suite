@@ -14,6 +14,7 @@ const orange = '#ffdd8f';
 
 const accentColor = darkerGrey;
 const backgroundColor = darkGrey;
+const borderColor = lightGrey;
 const buttonColor = orange;
 const darkTextColor = accentColor;
 const datetimeSelectionColor = lightPurple;
@@ -46,6 +47,7 @@ export const colorTheme = {
     orange,
     accentColor,
     backgroundColor,
+    borderColor,
     buttonColor,
     darkTextColor,
     datetimeSelectionColor,
