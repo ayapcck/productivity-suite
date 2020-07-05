@@ -1,4 +1,4 @@
-export const MonthlyBudget = (date, expenses, tracking) => {
+export const MonthlyExpenses = (date, expenses, tracking) => {
     return {
         accept: function(visitor) {
             visitor.visit(this);

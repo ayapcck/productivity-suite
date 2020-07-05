@@ -5,6 +5,7 @@ const darkerGrey = '#2f2f2f';
 const opaqueDarkerGrey = '#2f2f2fa6';
 const lightGrey = '#969696';
 const moreOpaqueGrey = '#2f2f2f47';
+const mediumGrey = '#515151';
 const lightPurple = '#cf87dc';
 const lightPurple_2 = '#f966be';
 const offWhite = '#cecece';
@@ -37,6 +38,7 @@ export const colorTheme = {
     darkerGrey,
     lightGrey,
     opaqueDarkerGrey,
+    mediumGrey,
     moreOpaqueGrey,
     lightAccentColor,
     lightPurple,

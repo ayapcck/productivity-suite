@@ -4,7 +4,7 @@ import { dslLiterals } from '../DSL/dslLiterals';
 
 describe('Tokenizer', () => {
     const tokenizer = Tokenizer();
-    const tokenizerInput = 'use spreadsheet XXXXX\r\n\r\nadd monthly_budget\r\ndate June 2020\r\nexpenses [ "eating out", "something", "else" ]\r\nadd\r\n\r\nuse';
+    const tokenizerInput = 'use spreadsheet XXXXX\r\n\r\nadd monthlyExpenses\r\ndate June 2020\r\nexpenses [ "eating out", "something", "else" ]\r\nadd\r\n\r\nuse';
 
     it('creates single instance of tokenizer', () => {
         tokenizer.createTokenizer(tokenizerInput, dslLiterals);
@@ -18,7 +18,7 @@ describe('Tokenizer', () => {
     it('tokenizes simple input', () => {
         tokenizer.tokenize();
         const expectedTokens = ['use', 'spreadsheet', 'XXXXX', 
-            'add', 'monthly_budget', 
+            'add', 'monthlyExpenses', 
             'date', 'June 2020', 
             'expenses', '\\[', 'eating out', 'something', 'else', '\\]', 
             'add', 'use'];

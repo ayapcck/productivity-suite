@@ -1,6 +1,6 @@
 import { Date } from './AST/date';
 import { Expenses } from './AST/expenses';
-import { MonthlyBudget } from './AST/monthlyBudget';
+import { MonthlyExpenses } from './AST/monthlyExpenses';
 import { ProgramNode } from './AST/program';
 import { Sheet } from './AST/sheet';
 import { Tracking } from './AST/tracking';
@@ -25,7 +25,7 @@ export const Parser = (tokenizer) => {
         
         return Expenses(expenseList);
     };
-    const _monthly_budget = () => {
+    const _monthlyExpenses = () => {
         let date;
         let expenses;
         let tracking;
@@ -44,7 +44,7 @@ export const Parser = (tokenizer) => {
                     break;
             }
         }
-        return Sheet('monthlyBudget', MonthlyBudget(date, expenses, tracking));
+        return Sheet('monthlyExpenses', MonthlyExpenses(date, expenses, tracking));
     };
     const _program = () => {
         let _sheetList = [];
@@ -65,8 +65,8 @@ export const Parser = (tokenizer) => {
         tokenizer.getAndCheckCurrentToken(/add/);
         let sheet = null;
         switch (tokenizer.nextToken()) {
-            case 'monthly_budget':
-                sheet = _monthly_budget();
+            case 'monthlyExpenses':
+                sheet = _monthlyExpenses();
                 break;
             default:
                 alert('sheet type unknown');

@@ -14,11 +14,11 @@ export const EvaluateVisitor = () => {
             // alert(`${expenses.expenseList}`);
         }
     };
-    const visitMonthlyBudget = {
-        visit: (monthlyBudget) => {
-            monthlyBudget.date.accept(visitDate);
-            monthlyBudget.expenses.accept(visitExpenses);
-            monthlyBudget.tracking.accept(visitTracking);
+    const visitMonthlyExpenses = {
+        visit: (monthlyExpenses) => {
+            monthlyExpenses.date.accept(visitDate);
+            monthlyExpenses.expenses.accept(visitExpenses);
+            monthlyExpenses.tracking.accept(visitTracking);
         }
     };
     const visitProgram = {
@@ -43,8 +43,8 @@ export const EvaluateVisitor = () => {
     const visitSheet = { 
         visit: (sheet) => {
             switch (sheet.type) {
-                case 'monthlyBudget':
-                    sheet.content.accept(visitMonthlyBudget);
+                case 'monthlyExpenses':
+                    sheet.content.accept(visitMonthlyExpenses);
                     break;
                 default:
                     break;
