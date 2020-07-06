@@ -28,10 +28,6 @@ const DSLHowToContent = styled.div`
 
 const DSLHowToContainer = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
-    border-color: ${(props) => props.theme.borderColor};
-    border-radius: 10px;
-    border-style: solid;
-    border-width: 2px;
     box-sizing: border-box;
     height: 100%;
     padding: 5px 5px 10px 5px;
@@ -47,6 +43,59 @@ const DSLHowToContainer = styled.div`
         margin: auto;
         position: relative;
         width: 90%;
+    }
+`;
+
+const ExpandExplanationMenuIcon = styled.i`
+    margin: auto;
+`;
+
+const ExpandIconContainer = styled.div`
+    background-color: ${(props) => props.theme.backgroundColor};
+    border-color: ${(props) => props.theme.borderColor};
+    border-radius: 0 10px 10px 0;
+    border-style: solid;
+    border-width: 2px 2px 2px 0;
+    color: ${(props) => props.theme.textColor};
+    cursor: pointer;
+    display: flex;
+    height: 35px;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    width: 28px;
+
+    &:hover {
+        color: black;
+    }
+
+    @media ${device.mobileL} {
+        display: hidden;
+    }
+`;
+
+const ExplanationContainer = styled.div`
+    box-sizing: border-box;
+    grid-column: 1;
+    height: 100%;
+    overflow: hidden;
+    padding: 10px;
+
+    @media ${device.tablet} {
+        flex: 1;
+        margin-right: -30px;
+        padding-right: 30px;
+        position: relative;
+    }
+
+    @media ${device.mobileL} {
+        background-color: rgba(255, 255, 255, 0.5);
+        display: ${({ showExplanation }) => showExplanation ? `flex` : `none` };
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
     }
 `;
 
@@ -79,16 +128,43 @@ const TokenTitle = styled.p`
     margin: 10px;
 `;
 
-export const ContentExplanation = ({ closeMenu }) => <DSLHowToContainer>
-    <CloseIcon className="fa fa-times" aria-hidden="true" onClick={closeMenu} />
-    <DSLHowToContent>
-        <InitialDescription>
-            To modify an existing spreadsheet, you need a 'use' tag. Expand the below entires for more information on the individual tags of this DSL.
-        </InitialDescription>
-        <UseBlock />
-        <UseOptions />
-    </DSLHowToContent>
-</DSLHowToContainer>;
+const Wrapper = styled.div`
+    background-color: ${(props) => props.theme.backgroundColor};
+    border-color: ${(props) => props.theme.borderColor};
+    border-style: solid;
+    border-width: 0 2px 0 0;
+    height: 94%;    
+    left: 0;
+    position: absolute;
+    transition: 1s;
+    width: ${ ({ expandExplanation }) => expandExplanation ? `60%` : `30%`};
+`;
+
+export const ContentExplanation = ({ hideExplanation }) => {
+    const [ expandExplanation, setExpandExplanation ] = useState(false);
+    const [ showExplanation, setShowExplanation ] = useState(false);
+
+    return <Wrapper expandExplanation={expandExplanation}>
+        <ExplanationContainer showExplanation={showExplanation}>
+        <ExpandIconContainer onClick={() => setExpandExplanation(!expandExplanation)}>
+            {expandExplanation ?
+                <ExpandExplanationMenuIcon className="fas fa-angle-double-left" /> :
+                <ExpandExplanationMenuIcon className="fas fa-angle-double-right" /> }  
+        </ExpandIconContainer>
+        <DSLHowToContainer>
+            <CloseIcon className="fa fa-times" aria-hidden="true" 
+                onClick={hideExplanation} />
+            <DSLHowToContent>
+                <InitialDescription>
+                    To modify an existing spreadsheet, you need a 'use' tag. Expand the below entires for more information on the individual tags of this DSL.
+                </InitialDescription>
+                <UseBlock />
+                <UseOptions />
+            </DSLHowToContent>
+        </DSLHowToContainer>
+    </ExplanationContainer>
+    </Wrapper>;
+};
 
 export const LanguageBlock = ({ content, title }) => {
     const [ expandContent, setExpandContent ] = useState(false);

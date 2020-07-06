@@ -16,48 +16,12 @@ import { device } from '../../config/device';
 
 const AppContent = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
-    display: grid;
-    grid-template-columns: 30% 1fr;
+    display: flex;
+    flex-direction: row-reverse;
     height: 100%;
 
     @media ${device.mobileL} {
-        display: flex;
         flex-direction: column;
-    }
-`;
-
-const ExplanationContainer = styled.div`
-    box-sizing: border-box;
-    grid-column: 1;
-    height: 100%;
-    overflow: hidden;
-    padding: 10px;
-
-    @media ${device.tablet} {
-        border-color: ${(props) => props.theme.borderCplor};
-        border-style: solid;
-        border-width: 0 1px 0 0;
-    }
-
-    @media ${device.mobileL} {
-        background-color: rgba(255, 255, 255, 0.5);
-        display: ${({ showExplanation }) => showExplanation ? `flex` : `none` };
-        height: 100%;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-    }
-`;
-
-const ExplanationIcon = styled.i`
-    color: ${(props) => props.theme.textColor};
-    float: right;
-    font-size: x-large;
-    padding: 10px;
-
-    @media ${device.tablet} {
-        display: none;
     }
 `;
 
@@ -70,7 +34,19 @@ const DSLEntryContainer = styled.div`
     @media ${device.tablet} {
         border-color: ${(props) => props.theme.borderColor};
         border-style: solid;
-        border-width: 0 0 0 1px;
+        border-width: 0 0 0 2px;
+        width: 70%;
+    }
+`;
+
+const ExplanationIcon = styled.i`
+    color: ${(props) => props.theme.textColor};
+    float: right;
+    font-size: x-large;
+    padding: 10px;
+
+    @media ${device.tablet} {
+        display: none;
     }
 `;
 
@@ -88,6 +64,7 @@ export default class BudgetApp extends React.Component {
         super (props);
 
         this.state = {
+            expandExplanation: false,
             showExplanation: false
         }
     }
@@ -105,9 +82,8 @@ export default class BudgetApp extends React.Component {
 
         return <ThemeProvider theme={colorTheme}>
             <AppContent>
-                <ExplanationContainer showExplanation={showExplanation}>
-                    <ContentExplanation closeMenu={() => this.setState({ showExplanation: false })} />
-                </ExplanationContainer>
+                <ContentExplanation showExplanation={showExplanation} 
+                    hideExplanation={() => this.setState({ showExplanation: false })} />
                 <DSLEntryContainer>
                     <div>
                         <ExplanationIcon className="fa fa-question-circle-o" aria-hidden="true" 
