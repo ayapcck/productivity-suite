@@ -13,10 +13,10 @@ const ExpandIcon = styled.i`
 `;
 
 const MenuContainer = styled.div`
-    display: ${ ({ showMenu }) => !showMenu && `none`};
+    visibility: ${ ({ showMenu }) => showMenu ? `visible` : `hidden`};
     height: 100%;
     position: absolute;
-    transition: 1s;
+    transition: 0.5s;
     width: 100%;
     z-index: 10;
 `;
@@ -40,11 +40,12 @@ const MenuText = styled.span`
 const MinimizeIcon = styled(ExpandIcon)``;
 
 const ScreenOverlay = styled.div`
-    background-color: ${(props) => props.theme.textColor};
+    background-color: ${ ({ theme, showMenu }) => showMenu ? `${theme.opaqueOverLay}` : `rgba(0,0,0,0)`};
     height: 100%;
     position: absolute;
-    opacity: 0.5;
+    transition: 0.5s;
     width: 100%;
+    /* visibility: ${ ({ showMenu }) => showMenu ? `visible` : `hidden`}; */
 `;
 
 const StyledCloseIcon = styled.i`
@@ -63,8 +64,10 @@ const StyledMenu = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    position: absolute;
-    width: 25%;
+    overflow: hidden;
+    position: fixed;
+    transition: 0.5s;
+    width: ${ ({ showMenu }) => showMenu ? `25%` : `0`};
 
     & a, a:active {
         text-decoration: none;
@@ -95,8 +98,8 @@ export const NavigationMenu = ({ hideMenu, loginLogoutClick, showMenu, userLogge
     };
 
     return <MenuContainer showMenu={showMenu}>
-        <ScreenOverlay onClick={handleClose} />
-        <StyledMenu>
+        <ScreenOverlay onClick={handleClose} showMenu={showMenu} />
+        <StyledMenu showMenu={showMenu}>
             <StyledCloseIcon className="fa fa-times" onClick={handleClose} aria-hidden="true"/>
             <Link to="/">
                 <MenuElement>Home</MenuElement>

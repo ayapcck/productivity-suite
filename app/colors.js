@@ -28,6 +28,7 @@ const navBarColor = lightGrey;
 const navBarElementHover = '#bd6c6c';
 const onActiveColor = '#7e7eff';
 const onHoverColor = '#ff7c7c';
+const opaqueOverLay = 'rgba(206, 206, 206, 0.5)';
 const priorityTodoColor = '#d86767';
 const textColor = offWhite;
 
@@ -61,6 +62,7 @@ export const colorTheme = {
     navBarElementHover,
     onActiveColor,
     onHoverColor,
+    opaqueOverLay,
     priorityTodoColor,
     textColor
 };
