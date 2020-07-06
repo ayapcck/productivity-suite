@@ -16,7 +16,9 @@ const MenuContainer = styled.div`
     display: ${ ({ showMenu }) => !showMenu && `none`};
     height: 100%;
     position: absolute;
+    transition: 1s;
     width: 100%;
+    z-index: 10;
 `;
 
 const MenuElement = styled.div`
