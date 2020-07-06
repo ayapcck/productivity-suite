@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import _ from 'lodash';
 
 import { BuildButton } from './buildButton';
-import { ContentExplanation } from './contentExplanation';
+import { ContentExplanation } from './contentExplanation/contentExplanation';
 import { DSLEntry, getDSLContent } from './DSLEntry';
 import { dslLiterals } from './DSL/dslLiterals';
 import { EvaluateVisitor } from './DSL/evaluateVisitor';
