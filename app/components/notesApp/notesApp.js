@@ -9,18 +9,21 @@ import { postJson, getJson } from '../utilities/jsonHelpers';
 import { LinkedList } from '../utilities/dataStructures';
 
 import { colorTheme } from '../../colors';
+import { device } from '../../config/device';
 
 import { logger } from '../utilities/logger';
 
 const AppContent = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
-    display: grid;
-    grid-auto-rows: 50%;
-    grid-template-columns: 25% 25% 25% 25%;
-    grid-template-rows: 50% 50%;
-    justify-content: center;
+    display: flex;
+    flex-flow: row wrap;
     overflow: auto;
     padding: 10px;
+
+    @media ${device.mobileL} {
+        flex-direction: column;
+        flex-flow: column;
+    }
 `;
 
 const parseNotes = notes => {

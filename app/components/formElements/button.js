@@ -7,8 +7,8 @@ const StyledButton = styled.button`
 	border: 2px solid ${(props) => props.theme.accentColor};
 	background-color: ${(props) => props.theme.buttonColor};
 	border-radius: 15px;
-	margin: 5px auto;
-	padding: 5px 2.5px;
+	margin: auto;
+	padding: 5px;
 	cursor: pointer;
 	box-sizing: border-box;
 	&:hover {
