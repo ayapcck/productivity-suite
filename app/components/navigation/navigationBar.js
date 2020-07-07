@@ -16,7 +16,7 @@ const StyledOpenMenu = styled.i`
 `;
 
 const NavBarContainer = styled.div`
-	background-color: ${(props) => props.theme.navBarColor};
+	background-color: ${(props) => props.theme.lightAccentColor};
 	border-color: ${(props) => props.theme.accentColor};
 	border-style: solid;
 	border-width: 0 0 2px 0;
