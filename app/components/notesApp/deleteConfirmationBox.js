@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import CenterPanel from '../centerPanel/centerPanel';
 import FormButton from '../formElements/button';
-import Icon from '../icons/icon';
+import { CloseIcon } from '../icons/closeIcon';
 
 const ButtonContainer = styled.div`
     align-items: center;
@@ -31,7 +31,7 @@ export const DeleteConfirmationBox = (props) => {
     const { deleteNote, handleClose } = props;
 
     const deleteConfirmation = <React.Fragment>
-        <Icon iconClass='far fa-times-circle' onClick={handleClose} />
+        <CloseIcon onClick={handleClose} />
         <DeleteConfirmation>
             <DeleteText>Are you sure you want to delete this note?</DeleteText>
             <ButtonContainer>

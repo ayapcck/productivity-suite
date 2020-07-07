@@ -57,3 +57,15 @@ export const formatTime = (time) => {
 	} 
 	return '';
 };
+
+export const months31 = [ 'January', 'March', 'May', 'July', 'August', 'October', 'December'];
+export const months30 = ['April', 'June', 'September', 'November'];
+export const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+export const getDays = (month, year) => {
+	const leapyear = year % 4 === 0;
+	let days;
+	if (month === 'February') return leapyear ? 29 : 28;
+	days = months31.includes(month) ? 31 : 30;
+	return days;
+}

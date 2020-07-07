@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 var HTMLWebpackPlugin = require('html-webpack-plugin');
 var HTMLWebpackPluginIndex = new HTMLWebpackPlugin({
   template: __dirname + '/app/index.html',
@@ -83,6 +86,18 @@ module.exports = {
       },
     },
   },
-  plugins: [HTMLWebpackPluginIndex]
+  plugins: [HTMLWebpackPluginIndex],
+  externals: (context, request, callback) => {
+    if (request === './secrets.json') {
+      fs.stat(path.join(context, request), (err, stat) => {
+        if (err) {
+          return callback(null, '{}');
+        }
+        callback();
+      });
+    } else {
+      callback();
+    }
+  }
 };
 

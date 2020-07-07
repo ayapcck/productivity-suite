@@ -10,7 +10,7 @@ import { LinkedList } from '../utilities/dataStructures';
 
 import { colorTheme } from '../../colors';
 
-import Logger from '../utilities/logger';
+import { logger } from '../utilities/logger';
 
 const AppContent = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
@@ -51,7 +51,7 @@ export default class NotesApp extends React.Component {
     }
 
     log(message, functionName) {
-		Logger.log(message, 'notesApp', functionName);
+		logger.log(message, 'notesApp', functionName);
 	}
 
     componentDidMount(){

@@ -25,10 +25,10 @@ const StyledButton = styled.button`
 
 export default class FormButton extends React.Component {
 	render() {
-		const { name, onClick, type } = this.props;
+		const { name, onClick, text, type } = this.props;
 
 		const buttonProps = { name, onClick, type };
 		
-		return <StyledButton {...buttonProps} readOnly>{this.props.text}</StyledButton>;
+		return <StyledButton {...buttonProps} readOnly>{text}</StyledButton>;
 	}
 }

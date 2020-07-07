@@ -34,8 +34,8 @@ const HeaderContainer = styled.div`
 `;
 
 const NameInput = styled.input`
-    background-color: ${props => props.theme.lightPurple};
-    border-color: ${props => props.theme.lightPurple};
+    background-color: ${props => props.theme.lightAccentColor};
+    border-color: ${props => props.theme.lightAccentColor};
     border-radius: 15px;
     border-style: solid;
     border-width: 2px;
