@@ -74,7 +74,7 @@ const StyledMenu = styled.div`
     }
 
     @media ${device.mobileL} {
-        width: 50%;
+        width: ${ ({ showMenu }) => showMenu ? `50%` : `0`};;
     }
 `;
 

@@ -9,7 +9,8 @@ import { device } from '../../../config/device';
 const CloseIcon = styled.i`
     color: ${(props) => props.theme.textColor};
     position: absolute;
-    right: 6%;
+    right: 3%;
+    top: 3%;
 
     &:hover,:active {
         color: ${(props) => props.theme.inputFocusColor};
@@ -39,10 +40,11 @@ const DSLHowToContainer = styled.div`
     }
 
     @media ${device.mobileL} {
-        height: 90%;
+        border-radius: 15px;
+        height: 95%;
         margin: auto;
         position: relative;
-        width: 90%;
+        width: 95%;
     }
 `;
 
@@ -70,7 +72,7 @@ const ExpandIconContainer = styled.div`
     }
 
     @media ${device.mobileL} {
-        display: hidden;
+        display: none;
     }
 `;
 
@@ -89,7 +91,6 @@ const ExplanationContainer = styled.div`
     }
 
     @media ${device.mobileL} {
-        background-color: rgba(255, 255, 255, 0.5);
         display: flex;
         height: 100%;
         left: 0;
@@ -102,6 +103,10 @@ const ExplanationContainer = styled.div`
 const ExpandIcon = styled.i`
     font-size: small;
     padding: 0 5px 0 0;
+
+    @media ${device.mobileL} {
+        display: none;
+    }
 `;
 const MinimizeIcon = styled(ExpandIcon)``;
 
@@ -141,7 +146,7 @@ const TokenTitle = styled.p`
 `;
 
 const ExplanationPositionedParent = styled.div`
-    background-color: ${(props) => props.theme.backgroundColor};
+    background-color: rgba(255, 255, 255, 0.5);
     border-color: ${(props) => props.theme.borderColor};
     border-style: solid;
     border-width: 0 2px 0 0;
@@ -153,17 +158,17 @@ const ExplanationPositionedParent = styled.div`
 
     @media ${device.mobileL} {
         display: ${({ showExplanation }) => !showExplanation && `none` };
+        width: 100%;
     }
 `;
 
-export const ContentExplanation = ({ hideExplanation }) => {
-    const [ expandExplanation, setExpandExplanation ] = useState(false);
-    const [ showExplanation, setShowExplanation ] = useState(false);
+export const ContentExplanation = ({ hideExplanation, showExplanation }) => {
+    const [ expandExplanation, setExpandExplanation ] = useState(false); 
 
     return <MenuWrapper >
         <ScreenOverlay expandExplanation={expandExplanation} 
             onClick={() => setExpandExplanation(!expandExplanation)} />
-        <ExplanationPositionedParent expandExplanation={expandExplanation}>
+        <ExplanationPositionedParent showExplanation={showExplanation} expandExplanation={expandExplanation}>
             <ExplanationContainer showExplanation={showExplanation}>
                 <ExpandIconContainer onClick={() => setExpandExplanation(!expandExplanation)}>
                     {expandExplanation ?
