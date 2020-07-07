@@ -48,7 +48,7 @@ const StyledNote = styled.div`
         padding: 0;
     `}
 
-    @media ${device.laptop} {
+    @media ${device.laptopL} {
         width: 24%;
     }
 

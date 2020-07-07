@@ -30,23 +30,27 @@ const DSLEntryContainer = styled.div`
     flex-direction: column;
     grid-column: 2;
     height: 100%;
-
-    @media ${device.tablet} {
-        border-color: ${(props) => props.theme.borderColor};
-        border-style: solid;
-        border-width: 0 0 0 2px;
+    
+    @media ${device.laptopL} {
         width: 70%;
+    }
+
+    @media ${device.mobileL} {
+        width: 100%;
     }
 `;
 
 const ExplanationIcon = styled.i`
-    color: ${(props) => props.theme.textColor};
-    float: right;
-    font-size: x-large;
-    padding: 10px;
-
-    @media ${device.tablet} {
-        display: none;
+    @media ${device.laptopL} {
+        visibility: hidden;
+    }
+    
+    @media ${device.mobileL} {
+        color: ${(props) => props.theme.textColor};
+        float: right;
+        font-size: x-large;
+        padding: 10px;
+        visibility: visible;
     }
 `;
 
