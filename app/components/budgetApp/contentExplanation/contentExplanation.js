@@ -117,7 +117,7 @@ const InitialDescription = styled.p`
 const MenuWrapper = styled.div``;
 
 const ScreenOverlay = styled.div`
-    background-color: ${ ({ theme, expandExplanation }) => expandExplanation ? `${theme.opaqueOverLay}` : `rgba(0,0,0,0)`};
+    background-color: ${ ({ theme, expandExplanation }) => expandExplanation ? `${theme.opaqueOverlay}` : `rgba(0,0,0,0)`};
     height: 94%;
     left: 0;
     position: absolute;
