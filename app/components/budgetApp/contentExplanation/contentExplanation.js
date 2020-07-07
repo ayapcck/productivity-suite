@@ -90,7 +90,7 @@ const ExplanationContainer = styled.div`
 
     @media ${device.mobileL} {
         background-color: rgba(255, 255, 255, 0.5);
-        display: ${({ showExplanation }) => showExplanation ? `flex` : `none` };
+        display: flex;
         height: 100%;
         left: 0;
         position: absolute;
@@ -107,6 +107,18 @@ const MinimizeIcon = styled(ExpandIcon)``;
 
 const InitialDescription = styled.p`
     padding: 10px 15px!important;
+`;
+
+const MenuWrapper = styled.div``;
+
+const ScreenOverlay = styled.div`
+    background-color: ${ ({ theme, expandExplanation }) => expandExplanation ? `${theme.opaqueOverLay}` : `rgba(0,0,0,0)`};
+    height: 94%;
+    left: 0;
+    position: absolute;
+    transition: 1s;
+    width: 100%;
+    visibility: ${ ({ expandExplanation }) => expandExplanation ? `visible` : `hidden`};
 `;
 
 const StyledBlock = styled.div`
@@ -128,7 +140,7 @@ const TokenTitle = styled.p`
     margin: 10px;
 `;
 
-const Wrapper = styled.div`
+const ExplanationPositionedParent = styled.div`
     background-color: ${(props) => props.theme.backgroundColor};
     border-color: ${(props) => props.theme.borderColor};
     border-style: solid;
@@ -138,32 +150,40 @@ const Wrapper = styled.div`
     position: absolute;
     transition: 1s;
     width: ${ ({ expandExplanation }) => expandExplanation ? `60%` : `30%`};
+
+    @media ${device.mobileL} {
+        display: ${({ showExplanation }) => !showExplanation && `none` };
+    }
 `;
 
 export const ContentExplanation = ({ hideExplanation }) => {
     const [ expandExplanation, setExpandExplanation ] = useState(false);
     const [ showExplanation, setShowExplanation ] = useState(false);
 
-    return <Wrapper expandExplanation={expandExplanation}>
-        <ExplanationContainer showExplanation={showExplanation}>
-        <ExpandIconContainer onClick={() => setExpandExplanation(!expandExplanation)}>
-            {expandExplanation ?
-                <ExpandExplanationMenuIcon className="fas fa-angle-double-left" /> :
-                <ExpandExplanationMenuIcon className="fas fa-angle-double-right" /> }  
-        </ExpandIconContainer>
-        <DSLHowToContainer>
-            <CloseIcon className="fa fa-times" aria-hidden="true" 
-                onClick={hideExplanation} />
-            <DSLHowToContent>
-                <InitialDescription>
-                    To modify an existing spreadsheet, you need a 'use' tag. Expand the below entires for more information on the individual tags of this DSL.
-                </InitialDescription>
-                <UseBlock />
-                <UseOptions />
-            </DSLHowToContent>
-        </DSLHowToContainer>
-    </ExplanationContainer>
-    </Wrapper>;
+    return <MenuWrapper >
+        <ScreenOverlay expandExplanation={expandExplanation} 
+            onClick={() => setExpandExplanation(!expandExplanation)} />
+        <ExplanationPositionedParent expandExplanation={expandExplanation}>
+            <ExplanationContainer showExplanation={showExplanation}>
+                <ExpandIconContainer onClick={() => setExpandExplanation(!expandExplanation)}>
+                    {expandExplanation ?
+                        <ExpandExplanationMenuIcon className="fas fa-angle-double-left" /> :
+                        <ExpandExplanationMenuIcon className="fas fa-angle-double-right" /> }  
+                </ExpandIconContainer>
+                <DSLHowToContainer>
+                    <CloseIcon className="fa fa-times" aria-hidden="true" 
+                        onClick={hideExplanation} />
+                    <DSLHowToContent>
+                        <InitialDescription>
+                            To modify an existing spreadsheet, you need a 'use' tag. Expand the below entires for more information on the individual tags of this DSL.
+                        </InitialDescription>
+                        <UseBlock />
+                        <UseOptions />
+                    </DSLHowToContent>
+                </DSLHowToContainer>
+            </ExplanationContainer>
+        </ExplanationPositionedParent>
+    </MenuWrapper>;
 };
 
 export const LanguageBlock = ({ content, title }) => {
