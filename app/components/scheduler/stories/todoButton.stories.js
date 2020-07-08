@@ -3,7 +3,7 @@ import React from 'react';
 import { TodoButton } from '../todoButton';
 
 export default {
-    title: 'TodoButton',
+    title: 'To-Do Scheduler/TodoButton',
     component: TodoButton,
 };
 

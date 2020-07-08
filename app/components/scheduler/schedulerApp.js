@@ -10,31 +10,12 @@ import TabBar from '../tabs/tabBar.js';
 import TodoColumn from './todoColumn.js';
 import TodoForm from './todoForm.js';
 import { postJson, getJson } from '../utilities/jsonHelpers.js';
-import { currentTimeString, tomorrowTimeString } from '../utilities/dates.js';
+import { initialElementDicts, tabHeaders } from './helpers';
 
 import { colorTheme } from '../../colors';
+import { device } from '../../config/device';
 
 import { logger } from '../utilities/logger';
-
-const tabHeaders = [{
-	name: 'Today',
-	getValue: () => currentTimeString()
-}, {
-	name: 'Tomorrow',
-	getValue: () => tomorrowTimeString()
-}, {
-	name: 'Soon',
-	getValue: () => ''
-}];
-const initialElementDicts = () => {
-	let elements = {};
-	tabHeaders.map(value => {
-		let tabName = value.name;
-		elements[tabName] = {};
-	});
-	elements['Completed'] = {};
-	return elements;
-};
 
 const GridElement = css`
 	box-sizing: border-box;
@@ -49,30 +30,25 @@ const LeftColumn = styled.div`
 	border-width: 0 2px 0 0;
 	display: flex;
 	margin-top: 10px;
+	width: 25%;
+
+	@media ${device.tablet} {
+		display: none;
+	}
 `;
 
 const MiddleColumn = styled.div`
 	${GridElement}
 	border-width: 0;
-	grid-column: 2;
+	flex-grow: 1;
 	overflow: auto;
 	overflow-y: hidden;
 	padding: 5px;
 `;
 
-const RightColumn = styled.div`
-	${GridElement}
-	border-radius: 15px 0 0 0;
-	border-width: 0 0 0 2px;
-	display: flex;
-	grid-column: 3;
-	margin-top: 10px;
-`;
-
 const SchedulerContent = styled.div`
 	background-color: ${(props) => props.theme.backgroundColor};
-	display: grid;
-	grid-template-columns: 25% 50% 25%;
+	display: flex;
 	height: 100%;
 	width: 100%;
 `;
@@ -370,9 +346,7 @@ export default class SchedulerApp extends React.Component {
 				<TabBar tabHeaders={tabHeaders} showTabHeaderContent={this.showTabHeaderContent} />
 				<TodoColumn {...todoColumnProps} />
 			</MiddleColumn>
-			<RightColumn>
-				<CompletedTodos clearCompleted={this.clearCompleted} elementDicts={elementDicts} />
-			</RightColumn>
+			<CompletedTodos clearCompleted={this.clearCompleted} elementDicts={elementDicts} />
 		</SchedulerContent>
 
 		return <ThemeProvider theme={colorTheme}>

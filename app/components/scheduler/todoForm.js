@@ -8,7 +8,10 @@ import { currentISOTime, soonISOTime, tomorrowISOTime } from '../utilities/dates
 
 import { logger } from '../utilities/logger';
 
-const containerHeader = (text) => <TodoHeader side='left' title={text} />;
+const containerHeader = (text) => {
+	const title = <AddTodoTitle>{text}</AddTodoTitle>;
+	return <TodoHeader side='left' title={title} />;
+}
 const popupHeader = (text) => <TextHeader>{text}</TextHeader>;
 const getTimeByTab = (tab) => {
 	switch (tab) {
@@ -35,6 +38,10 @@ const AddTodoForm = styled.form`
 	flex-direction: column;
 	flex-grow: 1;
 	overflow: hidden;
+`;
+
+const AddTodoTitle = styled.div`
+	margin: auto;
 `;
 
 const CheckboxContainer = styled.div`

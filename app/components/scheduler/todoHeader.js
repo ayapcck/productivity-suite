@@ -6,9 +6,13 @@ const Header = styled.div`
 	border-color: ${(props) => props.theme.borderColor};
 	border-style: solid;
     border-width: 0 0 2px 0;
+	box-sizing: border-box;
 	color: ${(props) => props.theme.backgroundColor};
+	display: flex;
 	font-size: x-large;
 	font-weight: bold;
+	max-height: 50px;
+	overflow: hidden;
 	padding: 10px;
 	text-align: center;
 

@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components';
 
 import { NavigationMenu } from './navigationMenu';
 
+import { device } from '../../config/device';
+
 const StyledOpenMenu = styled.i`
 	float: left;
 	font-size: x-large;
@@ -16,12 +18,20 @@ const StyledOpenMenu = styled.i`
 `;
 
 const NavBarContainer = styled.div`
-	background-image: linear-gradient(to right, ${ ({ theme }) => 
-		`${theme.navBarColor}, ${theme.navBarColor}, ${theme.backgroundColor}` });
 	display: flex;
 	height: 100%;
 	transition: 0.5s;
-	width: ${ ({ hoverMenu }) => hoverMenu ? `100%` : `30%`};
+
+	@media ${device.laptopL} {
+		background-image: linear-gradient(to right, ${ ({ theme }) => 
+			`${theme.navBarColor}, ${theme.navBarColor}, ${theme.backgroundColor}` });
+		width: ${ ({ hoverMenu }) => hoverMenu ? `100%` : `30%`};
+	}
+
+	@media ${device.mobileL} {
+		background-color: ${(props) => props.theme.navBarColor};
+		width: 100%;
+	}
 `;
 
 const NavBarWrapper = styled.div`
