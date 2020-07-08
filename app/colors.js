@@ -1,4 +1,5 @@
 const black = '#000000';
+const calmCyan = '#7ab8b8';
 const cyan = '#00ffff';
 const darkGrey = '#383838';
 const darkerGrey = '#2f2f2f';
@@ -25,7 +26,7 @@ const inputFocusColor = cyan;
 const invalidFormInputColor = red;
 const lightAccentColor = orange;
 const navBarAccentColor = black;
-const navBarColor = lightGrey;
+const navBarColor = calmCyan;
 const navBarElementHover = '#bd6c6c';
 const onActiveColor = '#7e7eff';
 const onHoverColor = '#ff7c7c';
@@ -36,6 +37,7 @@ const textColor = offWhite;
 
 export const colorTheme = {
     black,
+    calmCyan,
     cyan,
     darkGrey,
     darkerGrey,
