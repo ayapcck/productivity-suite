@@ -1,45 +1,52 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import FormButton from '../formElements/button.js';
-import { SpanHeader } from '../utilities/utilityStyles';
+import { TodoButton } from './todoButton';
 
 const ClearButtonContainer = styled.div`
-	width: -webkit-fill-available;
 	display: flex;
-	align-items: flex-end;
-	margin: 0 0 5px 0;
-`;
-
-const FinishedTodo = styled.span`
-	width: 100%;
-	display: block;
 	height: 10%;
-	line-height: 1.5;
-	padding: 5px;
-`;
-
-const FinishedItems = styled.div`
-	color: ${(props) => props.theme.textColor};
-	grid-row: 2;
-	overflow: auto;
-	overflow-x: hidden;
-	padding: 5px 0;
-	position: relative;
-	text-align: center;
-    width: 100%;
+	margin-top: auto;
+	overflow: hidden;
+	width: 100%;
 `;
 
 const CompletedTasksContainer = styled.div`
-	border-color: ${(props) => props.theme.borderColor};
-	border-radius: 15px;
-	border-style: solid;
-	border-width: 2px;
-	display: grid;
-	grid-template-rows: 10% 75% 15%;
-	margin: 10px auto;
+	display: flex;
+	flex-direction: column;
 	user-select: none;
-	width: 90%;
+	width: 100%;
+`;
+
+const FinishedTodo = styled.p`
+	margin: 0;
+	padding: 5px;
+	width: 100%;
+
+	&::before {
+		content: '• ';
+	}
+`;
+
+const FinishedItems = styled.div`
+	box-sizing: border-box;
+	color: ${(props) => props.theme.textColor};
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+	overflow-x: hidden;
+	padding: 10px;
+    width: 100%;
+`;
+
+const Header = styled.div`
+	border-color: ${(props) => props.theme.borderColor};
+	border-style: solid;
+	border-width: 0 0 2px 0;
+	color: ${(props) => props.theme.textColor};
+	font-size: x-large;
+	padding: 10px;
+	text-align: center;
 `;
 
 export const CompletedTodos = (props) => {
@@ -53,12 +60,12 @@ export const CompletedTodos = (props) => {
     }
 
     return <CompletedTasksContainer>
-        <SpanHeader>Completed Tasks</SpanHeader>
+        <Header>Completed Tasks</Header>
         <FinishedItems>
             {finishedElements}
         </FinishedItems>
-        <ClearButtonContainer>
-            <FormButton text='Clear' type='button' onClick={clearCompleted} />
-        </ClearButtonContainer>
+		<ClearButtonContainer>
+			<TodoButton onClick={clearCompleted} text='Clear' />
+		</ClearButtonContainer>
     </CompletedTasksContainer>;
 };

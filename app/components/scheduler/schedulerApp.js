@@ -61,10 +61,9 @@ const MiddleColumn = styled.div`
 
 const RightColumn = styled.div`
 	${GridElement}
-	grid-column: 3;
 	border-width: 0 0 0 1px;
-	display: grid;
-	grid-template-rows: 65% 35%;
+	display: flex;
+	grid-column: 3;
 `;
 
 const SchedulerContent = styled.div`
