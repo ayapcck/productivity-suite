@@ -45,14 +45,14 @@ const GridElement = css`
 const LeftColumn = styled.div`
 	${GridElement}
 	grid-column: 1;
-	border-width: 0 1px 0 0;
+	border-width: 0 2px 0 0;
 	display: grid;
 	grid-template-rows: 65% 35%;
 `;
 
 const MiddleColumn = styled.div`
 	${GridElement}
-	border-width: 0 1px;
+	border-width: 0;
 	grid-column: 2;
 	overflow: auto;
 	overflow-y: hidden;
@@ -61,9 +61,11 @@ const MiddleColumn = styled.div`
 
 const RightColumn = styled.div`
 	${GridElement}
-	border-width: 0 0 0 1px;
+	border-radius: 15px 0 0 0;
+	border-width: 0 0 0 2px;
 	display: flex;
 	grid-column: 3;
+	margin-top: 10px;
 `;
 
 const SchedulerContent = styled.div`

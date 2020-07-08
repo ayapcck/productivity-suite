@@ -12,6 +12,7 @@ const offWhite = '#cecece';
 const red = '#ff0000';
 const darkRed = '#6b0000';
 const orange = '#ffdd8f';
+const opaqueOrange = `${orange}cc`;
 
 const accentColor = darkerGrey;
 const backgroundColor = darkGrey;
@@ -28,6 +29,7 @@ const navBarColor = lightGrey;
 const navBarElementHover = '#bd6c6c';
 const onActiveColor = '#7e7eff';
 const onHoverColor = '#ff7c7c';
+const opaqueLightAccent = opaqueOrange;
 const opaqueOverlay = 'rgba(206, 206, 206, 0.5)';
 const priorityTodoColor = '#d86767';
 const textColor = offWhite;
@@ -39,6 +41,7 @@ export const colorTheme = {
     darkerGrey,
     lightGrey,
     opaqueDarkerGrey,
+    opaqueLightAccent,
     mediumGrey,
     moreOpaqueGrey,
     lightAccentColor,

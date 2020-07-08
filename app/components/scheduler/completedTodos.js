@@ -40,11 +40,14 @@ const FinishedItems = styled.div`
 `;
 
 const Header = styled.div`
+	background-color: ${(props) => props.theme.opaqueLightAccent};
 	border-color: ${(props) => props.theme.borderColor};
+	border-radius: 15px 0 0 0;
 	border-style: solid;
 	border-width: 0 0 2px 0;
-	color: ${(props) => props.theme.textColor};
+	color: ${(props) => props.theme.backgroundColor};
 	font-size: x-large;
+	font-weight: bold;
 	padding: 10px;
 	text-align: center;
 `;
