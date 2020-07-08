@@ -45,9 +45,10 @@ const GridElement = css`
 const LeftColumn = styled.div`
 	${GridElement}
 	grid-column: 1;
+	border-radius: 0 15px 0 0;
 	border-width: 0 2px 0 0;
-	display: grid;
-	grid-template-rows: 65% 35%;
+	display: flex;
+	margin-top: 10px;
 `;
 
 const MiddleColumn = styled.div`

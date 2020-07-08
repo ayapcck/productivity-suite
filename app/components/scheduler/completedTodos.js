@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { TodoButton } from './todoButton';
+import { TodoHeader } from './todoHeader';
 
 const ClearButtonContainer = styled.div`
 	display: flex;
@@ -39,19 +40,6 @@ const FinishedItems = styled.div`
     width: 100%;
 `;
 
-const Header = styled.div`
-	background-color: ${(props) => props.theme.opaqueLightAccent};
-	border-color: ${(props) => props.theme.borderColor};
-	border-radius: 15px 0 0 0;
-	border-style: solid;
-	border-width: 0 0 2px 0;
-	color: ${(props) => props.theme.backgroundColor};
-	font-size: x-large;
-	font-weight: bold;
-	padding: 10px;
-	text-align: center;
-`;
-
 export const CompletedTodos = (props) => {
     const { clearCompleted, elementDicts } = props;
 	
@@ -63,7 +51,7 @@ export const CompletedTodos = (props) => {
     }
 
     return <CompletedTasksContainer>
-        <Header>Completed Tasks</Header>
+        <TodoHeader side='right' title='Completed Tasks'></TodoHeader>
         <FinishedItems>
             {finishedElements}
         </FinishedItems>

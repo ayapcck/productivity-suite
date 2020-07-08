@@ -2,25 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
-	width: 25%;
-	color: ${(props) => props.theme.darkTextColor};
-	border: 2px solid ${(props) => props.theme.accentColor};
-	background-color: ${(props) => props.theme.buttonColor};
-	border-radius: 15px;
-	margin: auto;
-	padding: 5px;
-	cursor: pointer;
-	box-sizing: border-box;
-	&:hover {
-		background-color: ${(props) => props.theme.onHoverColor};
-	}
-	&:active {
-		background-color: ${(props) => props.theme.onActiveColor};
-	}
-	&:focus {
-		outline: 0;
-		box-shadow: 0 0 2pt 1pt ${(props) => props.theme.inputFocusColor};
-	}
+    background-color: ${(props) => props.theme.backgroundColor};
+    border-color: ${(props) => props.theme.borderColor};
+    border-radius: 7px;
+    border-width: 1px;
+    box-shadow: 3px 3px ${(props) => props.theme.lightAccentColor};
+    color: ${(props) => props.theme.textColor};
+    margin: 10px;
+	padding: 10px;
+    width: 100%;
+
+    &:hover {
+        background-color: ${(props) => props.theme.lightAccentColor};
+        box-shadow: 1px 1px ${(props) => props.theme.lightAccentColor};
+        color: ${(props) => props.theme.backgroundColor};
+        transform: translate(2px, 2px);
+    }
 `;
 
 export default class FormButton extends React.Component {
