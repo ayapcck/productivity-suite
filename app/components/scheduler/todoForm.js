@@ -3,12 +3,15 @@ import styled from 'styled-components';
 
 import InputBox from '../formElements/inputBox';
 import FormButton from '../formElements/button';
+import { TodoHeader } from './todoHeader';
 import { currentISOTime, soonISOTime, tomorrowISOTime } from '../utilities/dates';
-import { SpanHeader } from '../utilities/utilityStyles';
 
 import { logger } from '../utilities/logger';
 
-const containerHeader = (text) => <SpanHeader>{text}</SpanHeader>;
+const containerHeader = (text) => {
+	const title = <AddTodoTitle>{text}</AddTodoTitle>;
+	return <TodoHeader side='left' title={title} />;
+}
 const popupHeader = (text) => <TextHeader>{text}</TextHeader>;
 const getTimeByTab = (tab) => {
 	switch (tab) {
@@ -24,23 +27,21 @@ const getTimeByTab = (tab) => {
 }
 
 const AddTodoContainer = styled.div`
-	display: grid;
-	grid-template-rows: 10% 90%;
-	margin: 10px auto;
+	display: flex;
+	flex-direction: column;
 	user-select: none;
-	width: 90%;
-
-	${ ({ displayAsPopup, theme }) => !displayAsPopup && `
-		border-color: ${theme.borderColor};
-		border-radius: 15px;
-		border-style: solid;
-		border-width: 2px;
-	`}
+	width: 100%;
 `;
 
 const AddTodoForm = styled.form`
-	display: grid;
-	grid-template-rows: 85% 15%;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	overflow: hidden;
+`;
+
+const AddTodoTitle = styled.div`
+	margin: auto;
 `;
 
 const CheckboxContainer = styled.div`
@@ -68,15 +69,18 @@ const DateTimeContainer = styled.div`
 `;
 
 const FormButtonContainer = styled.div`
-	align-items: center;
 	display: flex;
-	grid-row: 2;
-	width: -webkit-fill-available;
+	height: 10%;
+	margin-top: auto;
+
+	${ ({ displayAsPopup }) => displayAsPopup && `
+		margin: auto;
+		margin-bottom: 10px;
+	`}
 `;
 
 const FormInputs = styled.div`
-	grid-row: 1;
-	margin: auto 0;
+	padding: 10px;
 `;
 
 const TextHeader = styled.h1`
@@ -186,16 +190,18 @@ export default class TodoForm extends React.Component {
 	}
 
     render() {
-		let header = (text) => this.props.displayAsPopup ? popupHeader(text) : containerHeader(text);
+		const { displayAsPopup } = this.props;
 
-		let timeCheckbox = <input type='checkbox' value='time' 
+		const header = (text) => displayAsPopup ? popupHeader(text) : containerHeader(text);
+
+		const timeCheckbox = <input type='checkbox' value='time' 
 			onChange={this.handleTimeChange} checked={this.state.todoTimeEnabled} />;
-		let priorityCheckbox = <input type='checkbox' value='priority' 
+		const priorityCheckbox = <input type='checkbox' value='priority' 
 			onChange={this.handlePriorityChange} checked={this.state.priority || this.state.priority === 1} />;
 
-		let todoForm = <AddTodoContainer displayAsPopup={this.props.displayAsPopup}>
-            {header(this.props.headerText)}
+		return <AddTodoContainer>
 			<AddTodoForm id='addTodoForm' onSubmit={this.submitClicked}>
+				{header(this.props.headerText)}
                 <FormInputs>
 					<InputBox text='Title' type='text' name='toDoTitle' val={this.state.title} />
 					<CheckboxContainer>
@@ -217,13 +223,11 @@ export default class TodoForm extends React.Component {
 					</DateTimeContainer>
 					<InputBox text='Content' type='area' name='toDoBody' val={this.state.content} />
 				</FormInputs>
-				<FormButtonContainer>
+				<FormButtonContainer displayAsPopup={displayAsPopup}>
 					<FormButton text='Submit' type='submit' name='addTodoFormSubmit' />
 				</FormButtonContainer>
             </AddTodoForm>
         </AddTodoContainer>;
-
-        return todoForm;
     }
 }
 

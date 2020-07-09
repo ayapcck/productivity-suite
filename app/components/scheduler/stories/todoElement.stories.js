@@ -19,7 +19,7 @@ const todoProps = {
 }
 
 export default {
-    title: 'TodoElement',
+    title: 'To-Do Scheduler/TodoElement',
     component: TodoElement,
 };
 
