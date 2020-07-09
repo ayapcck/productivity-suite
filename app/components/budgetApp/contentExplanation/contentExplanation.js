@@ -16,8 +16,12 @@ const CloseIcon = styled.i`
         color: ${(props) => props.theme.inputFocusColor};
     }
 
-    @media ${device.tablet} {
-        display: none;
+    @media ${device.laptopL} {
+        visibility: hidden;
+    }
+
+    @media ${device.mobileL} {
+        visibility: visible;
     }
 `;
 
@@ -71,8 +75,12 @@ const ExpandIconContainer = styled.div`
         color: black;
     }
 
+    @media ${device.laptopL} {
+        visibility: visible;
+    }
+
     @media ${device.mobileL} {
-        display: none;
+        visibility: hidden;
     }
 `;
 
@@ -83,7 +91,7 @@ const ExplanationContainer = styled.div`
     overflow: hidden;
     padding: 10px;
 
-    @media ${device.tablet} {
+    @media ${device.laptopL} {
         flex: 1;
         margin-right: -30px;
         padding-right: 30px;
@@ -94,6 +102,8 @@ const ExplanationContainer = styled.div`
         display: flex;
         height: 100%;
         left: 0;
+        margin-right: 0;
+        padding-right: 10px;
         position: absolute;
         top: 0;
         width: 100%;
@@ -103,10 +113,6 @@ const ExplanationContainer = styled.div`
 const ExpandIcon = styled.i`
     font-size: small;
     padding: 0 5px 0 0;
-
-    @media ${device.mobileL} {
-        display: none;
-    }
 `;
 const MinimizeIcon = styled(ExpandIcon)``;
 
@@ -117,7 +123,7 @@ const InitialDescription = styled.p`
 const MenuWrapper = styled.div``;
 
 const ScreenOverlay = styled.div`
-    background-color: ${ ({ theme, expandExplanation }) => expandExplanation ? `${theme.opaqueOverLay}` : `rgba(0,0,0,0)`};
+    background-color: ${ ({ theme, expandExplanation }) => expandExplanation ? `${theme.opaqueOverlay}` : `rgba(0,0,0,0)`};
     height: 94%;
     left: 0;
     position: absolute;
@@ -146,7 +152,7 @@ const TokenTitle = styled.p`
 `;
 
 const ExplanationPositionedParent = styled.div`
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: ${(props) => props.theme.backgroundColor};
     border-color: ${(props) => props.theme.borderColor};
     border-style: solid;
     border-width: 0 2px 0 0;
@@ -157,6 +163,7 @@ const ExplanationPositionedParent = styled.div`
     width: ${ ({ expandExplanation }) => expandExplanation ? `60%` : `30%`};
 
     @media ${device.mobileL} {
+        background-color: ${(props) => props.theme.opaqueOverlay};
         display: ${({ showExplanation }) => !showExplanation && `none` };
         width: 100%;
     }

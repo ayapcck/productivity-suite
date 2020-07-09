@@ -8,6 +8,7 @@ import { NoteSteps } from './steps';
 import { NoteTypes } from './types';
 
 import { colorTheme } from '../../colors';
+import { device } from '../../config/device';
 
 const Container = styled.div`
     display: block;
@@ -26,7 +27,7 @@ const Spacer = styled.div`
 
 const StyledNote = styled.div`
     align-items: center;
-    border-color: ${props => props.theme.accentColor};
+    border-color: ${props => props.theme.borderColor};
     border-radius: 20px;
     box-sizing: border-box;
     border-style: solid;
@@ -34,7 +35,7 @@ const StyledNote = styled.div`
     color: ${props => props.theme.textColor};
     display: inline-grid;
     margin: 5px;
-    max-height: 100%;
+    max-height: 50%;
     min-height: 45%;
     overflow: hidden;
     text-align: center;
@@ -46,6 +47,18 @@ const StyledNote = styled.div`
         grid-template-rows: 40px;
         padding: 0;
     `}
+
+    @media ${device.laptopL} {
+        width: 24%;
+    }
+
+    @media ${device.tablet} {
+        width: 48%;
+    }
+
+    @media ${device.mobileL} {
+        width: 100%;
+    }
 `;
 
 export default class Note extends React.Component {

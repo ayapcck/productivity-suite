@@ -9,7 +9,6 @@ const StyledButton = styled.button`
     box-shadow: 3px 3px ${(props) => props.theme.lightAccentColor};
     color: ${(props) => props.theme.textColor};
     margin: 10px;
-	padding: 10px;
     width: 100%;
 
     &:hover {
@@ -20,12 +19,4 @@ const StyledButton = styled.button`
     }
 `;
 
-export default class FormButton extends React.Component {
-	render() {
-		const { name, onClick, text, type } = this.props;
-
-		const buttonProps = { name, onClick, type };
-		
-		return <StyledButton {...buttonProps} readOnly>{text}</StyledButton>;
-	}
-}
+export const TodoButton = ({ onClick, text }) => <StyledButton onClick={onClick}>{text}</StyledButton>;

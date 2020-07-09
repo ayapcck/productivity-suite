@@ -1,4 +1,5 @@
 const black = '#000000';
+const calmCyan = '#7ab8b8';
 const cyan = '#00ffff';
 const darkGrey = '#383838';
 const darkerGrey = '#2f2f2f';
@@ -12,33 +13,37 @@ const offWhite = '#cecece';
 const red = '#ff0000';
 const darkRed = '#6b0000';
 const orange = '#ffdd8f';
+const opaqueOrange = `${orange}cc`;
 
 const accentColor = darkerGrey;
 const backgroundColor = darkGrey;
 const borderColor = lightGrey;
-const buttonColor = orange;
+const buttonColor = lightAccentColor;
 const darkTextColor = accentColor;
 const datetimeSelectionColor = lightPurple;
 const inputDisabledColor = '#a7a7a7';
 const inputFocusColor = cyan;
 const invalidFormInputColor = red;
-const lightAccentColor = buttonColor;
+const lightAccentColor = orange;
 const navBarAccentColor = black;
-const navBarColor = lightGrey;
+const navBarColor = calmCyan;
 const navBarElementHover = '#bd6c6c';
 const onActiveColor = '#7e7eff';
 const onHoverColor = '#ff7c7c';
-const opaqueOverLay = 'rgba(206, 206, 206, 0.5)';
+const opaqueLightAccent = opaqueOrange;
+const opaqueOverlay = 'rgba(206, 206, 206, 0.5)';
 const priorityTodoColor = '#d86767';
 const textColor = offWhite;
 
 export const colorTheme = {
     black,
+    calmCyan,
     cyan,
     darkGrey,
     darkerGrey,
     lightGrey,
     opaqueDarkerGrey,
+    opaqueLightAccent,
     mediumGrey,
     moreOpaqueGrey,
     lightAccentColor,
@@ -62,7 +67,7 @@ export const colorTheme = {
     navBarElementHover,
     onActiveColor,
     onHoverColor,
-    opaqueOverLay,
+    opaqueOverlay,
     priorityTodoColor,
     textColor
 };

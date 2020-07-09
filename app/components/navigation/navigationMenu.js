@@ -40,7 +40,7 @@ const MenuText = styled.span`
 const MinimizeIcon = styled(ExpandIcon)``;
 
 const ScreenOverlay = styled.div`
-    background-color: ${ ({ theme, showMenu }) => showMenu ? `${theme.opaqueOverLay}` : `rgba(0,0,0,0)`};
+    background-color: ${ ({ theme, showMenu }) => showMenu ? `${theme.opaqueOverlay}` : `rgba(0,0,0,0)`};
     height: 100%;
     position: absolute;
     transition: 0.5s;
@@ -97,6 +97,11 @@ export const NavigationMenu = ({ hideMenu, loginLogoutClick, showMenu, userLogge
         setAccountExpanded(false);
     };
 
+    const handleLoginMenuOpen = () => {
+        handleClose();
+        loginLogoutClick();
+    }
+
     return <MenuContainer showMenu={showMenu}>
         <ScreenOverlay onClick={handleClose} showMenu={showMenu} />
         <StyledMenu showMenu={showMenu}>
@@ -122,7 +127,7 @@ export const NavigationMenu = ({ hideMenu, loginLogoutClick, showMenu, userLogge
                 <MenuText>Account</MenuText>
             </MenuElement>
             <SubMenu expanded={accountExpanded}>
-                <SubMenuElement onClick={loginLogoutClick}>
+                <SubMenuElement onClick={handleLoginMenuOpen}>
                     {userLoggedIn ? 'Logout' : 'Login/Create'}
                 </SubMenuElement>
                 <SubMenuElement>Settings</SubMenuElement>
