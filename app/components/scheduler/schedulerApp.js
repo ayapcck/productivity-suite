@@ -6,10 +6,10 @@ import _ from 'lodash';
 import CenterPanel from '../centerPanel/centerPanel';
 import { CloseIcon } from '../icons/closeIcon';
 import { CompletedTodos } from './completedTodos';
-import TabBar from '../tabs/tabBar.js';
-import TodoColumn from './todoColumn.js';
-import TodoForm from './todoForm.js';
-import { postJson, getJson } from '../utilities/jsonHelpers.js';
+import { TodoTabs } from './todoTabs';
+import TodoColumn from './todoColumn';
+import TodoForm from './todoForm';
+import { postJson, getJson } from '../utilities/jsonHelpers';
 import { initialElementDicts, tabHeaders } from './helpers';
 
 import { colorTheme } from '../../colors';
@@ -343,7 +343,7 @@ export default class SchedulerApp extends React.Component {
 					handleAfterSubmit={this.postTodoElement} />
 			</LeftColumn>
 			<MiddleColumn>
-				<TabBar tabHeaders={tabHeaders} showTabHeaderContent={this.showTabHeaderContent} />
+				<TodoTabs tabHeaders={tabHeaders} showTabHeaderContent={this.showTabHeaderContent} />
 				<TodoColumn {...todoColumnProps} />
 			</MiddleColumn>
 			<CompletedTodos clearCompleted={this.clearCompleted} elementDicts={elementDicts} />

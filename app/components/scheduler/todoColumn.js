@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import classnames from 'classnames';
-
 import ToDoElement from './todoElement.js';
 import styles from './todoColumn.less';
 
