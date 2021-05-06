@@ -4,7 +4,7 @@ click==7.1.1
 cryptography==2.3
 enum34==1.1.6
 Flask==1.1.2
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 Flask-Mail==0.9.1
 Flask-MySQL==1.5.1
 gyp==0.1
